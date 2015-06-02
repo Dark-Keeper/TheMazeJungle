@@ -1,0 +1,39 @@
+textureAtlas.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arrow
+  rotate: false
+  xy: 804, 2
+  size: 133, 103
+  orig: 133, 103
+  offset: 0, 0
+  index: -1
+flag
+  rotate: true
+  xy: 2, 504
+  size: 251, 248
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+menuBackground
+  rotate: false
+  xy: 2, 2
+  size: 800, 500
+  orig: 800, 500
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 2, 757
+  size: 230, 244
+  orig: 256, 256
+  offset: 12, 2
+  index: -1
+wall
+  rotate: false
+  xy: 939, 2
+  size: 83, 14
+  orig: 83, 14
+  offset: 0, 0
+  index: -1
