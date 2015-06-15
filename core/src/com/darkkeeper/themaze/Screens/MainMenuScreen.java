@@ -5,12 +5,16 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -27,8 +31,6 @@ import com.darkkeeper.themaze.TheMaze;
  */
 public class MainMenuScreen implements Screen {
 
-    public static float WIDTH = 1920;
-    public static float HEIGHT = 1080;
 
     private Camera camera;
     private Viewport viewPort;
@@ -44,13 +46,75 @@ public class MainMenuScreen implements Screen {
 
     public MainMenuScreen () {
 
-        viewPort = new ExtendViewport(1920,1080);
+        viewPort = new ExtendViewport(TheMaze.WIDTH,TheMaze.HEIGHT);
         stage = new Stage(viewPort);
         Gdx.input.setInputProcessor(stage);
 
         System.out.println("mainMenuScreen");
+        
+        int buttonWidth = 300;
+        int buttonHeight = 100;
+        
+        Button playButton = new Button( Assets.skin, "play" );
+        playButton.setOrigin( buttonWidth/2, buttonHeight/2 );
+        playButton.setPosition( TheMaze.WIDTH/2 - buttonWidth/2, 2*TheMaze.HEIGHT/3 );
+        playButton.setSize( buttonWidth, buttonHeight );
+        playButton.addListener( new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                
+                TheMaze.game.setScreen( new LevelChooseScreen() );
 
-        TextButton playButton = new TextButton( "Play", Assets.textButtonStyle );
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            }
+        });
+
+        Button rateButton = new Button( Assets.skin, "rate" );
+        rateButton.setOrigin( buttonWidth/2, buttonHeight/2 );
+        rateButton.setPosition( TheMaze.WIDTH/2 - buttonWidth/2, TheMaze.HEIGHT/2 );
+        rateButton.setSize( buttonWidth, buttonHeight );
+        rateButton.addListener( new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+
+                TheMaze.game.setScreen( new LevelChooseScreen() );
+
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            }
+        });
+
+        Button exitButton = new Button( Assets.skin, "exit" );
+        exitButton.setOrigin( buttonWidth/2, buttonHeight/2 );
+        exitButton.setPosition( TheMaze.WIDTH/2 - buttonWidth/2, TheMaze.HEIGHT/3 );
+        exitButton.setSize( buttonWidth, buttonHeight );
+        exitButton.addListener( new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+
+                TheMaze.game.setScreen( new LevelChooseScreen() );
+
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            }
+        });
+
+        rootTable = new Table();
+        rootTable.background( Assets.menuBackground );
+        rootTable.setFillParent( true );
+        stage.addActor( rootTable );
+
+        stage.addActor( playButton );
+        stage.addActor( rateButton );
+        stage.addActor( exitButton );
+
+
+
+/*        TextButton playButton = new TextButton( "Play", Assets.textButtonStyle );
 
         playButton.addListener( new ChangeListener() {
             @Override
@@ -66,7 +130,7 @@ public class MainMenuScreen implements Screen {
         rootTable.setDebug( true );
         stage.setDebugAll( true );
 
-        rootTable.add( playButton ).expand().center();
+        rootTable.add( playButton ).expand().center();*/
 
     }
 

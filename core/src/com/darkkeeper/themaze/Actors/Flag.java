@@ -8,20 +8,20 @@ import com.darkkeeper.themaze.Basics.Assets;
  * Created by andreipiatosin on 6/1/15.
  */
 public class Flag extends Actor {
-    private int x;
-    private int y;
-    private int WIDTH = 60;
-    private int HEIGHT = 60;
+    private float x;
+    private float y;
 
-    public Flag ( int x, int y ) {
+    public Flag ( float x, float y ) {
         this.x = x;
         this.y = y;
+        setWidth( Cell.width );
+        setHeight( Cell.height );
         setPosition( x, y );
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(Assets.flag,getX(),getY() + 15,getOriginX(),getOriginY(),WIDTH,HEIGHT,getScaleX(),getScaleY(), 270);
+        batch.draw(Assets.flag,getX(),getY(),getOriginX(),getOriginY(),Cell.width,Cell.height,getScaleX(),getScaleY(), 0);
     }
 
 }

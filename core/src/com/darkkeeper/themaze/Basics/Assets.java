@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
+import javax.xml.soap.Text;
+
 
 /**
  * Created by andreipiatosin on 5/15/15.
@@ -23,7 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 public class Assets {
     public static Skin skin;
     public static TextButton.TextButtonStyle textButtonStyle;
-    public static Button.ButtonStyle arrowButtonStyle;
+    public static Button.ButtonStyle menuButtonStyle;
     public static Sprite character;
     public static Sprite wall;
     public static Sprite flag;
@@ -34,6 +36,15 @@ public class Assets {
 
     public static TextureRegion logo;
 
+    //Background Textures
+    public static Texture winterStyleTexture;
+    public static Texture hellStyleTexture;
+    public static Texture classicStyleTexture;
+
+    public static Texture currentStyleTexture;
+
+    //net Texture
+    public static TextureRegion netTextureRegion;
 
     //Logo Textures
     public static TextureAtlas logoTextureAtlas;
@@ -43,13 +54,22 @@ public class Assets {
     public static TextureAtlas menuTextureAtlas;
 
     public static TextureRegionDrawable menuBackground;
+    public static TextureRegionDrawable playButton;
+    public static TextureRegionDrawable rateButton;
+    public static TextureRegionDrawable exitButton;
 
     public static Texture loadTexture ( String file ){
         return new Texture(Gdx.files.internal( file ) );
     }
 
     public static void loadGame () {
-        textureAtlas = new TextureAtlas( "menu/textureAtlas.pack");
+        winterStyleTexture = new Texture( "game/winter_texture.jpg" );
+        hellStyleTexture = new Texture ( "game/hell_texture.jpg" );
+        classicStyleTexture = new Texture ( "game/classic_texture.jpg" );
+
+        textureAtlas = new TextureAtlas( "menu/mainTextureAtlas.txt");
+
+        netTextureRegion = new TextureRegion( textureAtlas.findRegion( "net_square" ) );
 
         character = new Sprite( textureAtlas.findRegion( "player" ) );
         wall = new Sprite( textureAtlas.findRegion( "wall" ) );
@@ -61,16 +81,18 @@ public class Assets {
 
     }
 
+
     public static void loadMenu () {
-        menuTextureAtlas = new TextureAtlas( "menu/textureAtlas.pack" );
-        menuBackground = new TextureRegionDrawable( menuTextureAtlas.findRegion( "menuBackground" ) );
-
-
+        menuTextureAtlas = new TextureAtlas( "menu/mainTextureAtlas.txt" );
+        menuBackground = new TextureRegionDrawable( menuTextureAtlas.findRegion( "mainMenuScreen" ) );
+        playButton = new TextureRegionDrawable( menuTextureAtlas.findRegion( "playButton" ) );
+        rateButton = new TextureRegionDrawable( menuTextureAtlas.findRegion( "rateButton" ) );
+        exitButton = new TextureRegionDrawable( menuTextureAtlas.findRegion( "exitButton" ) );
     }
 
     public static void loadLogo() {
-        logoTextureAtlas = new TextureAtlas( "menu/textureAtlas.pack" );
-        logoBackground = new TextureRegionDrawable( logoTextureAtlas.findRegion( "menuBackground" ) );
+        logoTextureAtlas = new TextureAtlas( "logo/logoTextureAtlas.txt" );
+        logoBackground = new TextureRegionDrawable( logoTextureAtlas.findRegion( "logoScreen" ) );
     }
 
     public static void loadFonts () {
@@ -103,6 +125,28 @@ public class Assets {
         textButtonStyle.over        = skin.newDrawable( "black", 0.5f, 0.5f, 0.5f, 0.5f );
         textButtonStyle.font = defaultFont;
         skin.add( "default", textButtonStyle );
+
+        menuButtonStyle = new Button.ButtonStyle();
+        menuButtonStyle.up = skin.newDrawable(Assets.playButton);
+        menuButtonStyle.down = skin.newDrawable(Assets.playButton);
+        menuButtonStyle.checked = skin.newDrawable(Assets.playButton,1,1,1,0.5f);
+        menuButtonStyle.over = skin.newDrawable(Assets.playButton);
+        skin.add( "play", menuButtonStyle );
+
+        menuButtonStyle = new Button.ButtonStyle();
+        menuButtonStyle.up = skin.newDrawable(Assets.rateButton);
+        menuButtonStyle.down = skin.newDrawable(Assets.rateButton);
+        menuButtonStyle.checked = skin.newDrawable(Assets.rateButton);
+        menuButtonStyle.over = skin.newDrawable(Assets.rateButton);
+        skin.add( "rate", menuButtonStyle );
+
+        menuButtonStyle = new Button.ButtonStyle();
+        menuButtonStyle.up = skin.newDrawable(Assets.exitButton);
+        menuButtonStyle.down = skin.newDrawable(Assets.exitButton);
+        menuButtonStyle.checked = skin.newDrawable(Assets.exitButton);
+        menuButtonStyle.over = skin.newDrawable(Assets.exitButton);
+        skin.add( "exit", menuButtonStyle );
+
 /*
         arrowButtonStyle = new Button.ButtonStyle();
         arrowButtonStyle.up = skin.newDrawable(Assets.arrowDirection);

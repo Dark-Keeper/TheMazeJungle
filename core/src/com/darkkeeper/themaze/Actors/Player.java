@@ -27,46 +27,33 @@ public class Player extends Actor {
     private boolean unlocked;
     public boolean isMoovingToNextIntersection = false;
 
-    private int charX;
-    private int charY;
+    private float charX;
+    private float  charY;
 
     public Cell currentCell;
     private Cell prevCell;
     private Cell[][] cells;
 
-    public Player ( int x, int y , Cell[][] cells ) {
+    public Player ( float x, float y , Cell[][] cells ) {
         this.cells = cells;
         this.charX = x;
         this.charY = y;
+        setWidth( Cell.width );
+        setHeight(Cell.height);
         setPosition( x, y );
         unlocked = true;
-        currentCell = new Cell( true, true, true, true );
+        currentCell = cells[1][1];
     }
-
-/*    @Override
-    public void create() {
-        quadTexture = new Texture("data/quads.png");
-        batch = new SpriteBatch();
-        redRegion = new TextureRegion(quadTexture, 0, 0, 32, 32);
-        stage = new Stage();
-
-
-        Player player = new Player();
-        player.setSize(100, 50);
-        player.setPosition(50, 50);
-
-        stage.addActor( player );
-    }*/
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(Assets.character, getX() + 10, getY() - 40 , 40, 40);
+        batch.draw(Assets.character, getX(), getY(), Cell.width, Cell.height);
     }
 
     @Override
     public void act ( float delta ) {
         super.act(delta);
-        checkCell();
+        //checkCell();
         updateState();
     }
 
@@ -78,6 +65,8 @@ public class Player extends Actor {
                 System.out.println( this.getY() + " == " + cells[i][j].getY() );*/
                     if ( cells[i][j] != null ) {
                         if (this.getX() == cells[i][j].getX() && this.getY() == cells[i][j].getY()) {
+                            System.out.println( this.getX() + " == " + cells[i][j].getX() );
+                            System.out.println( this.getY() + " == " + cells[i][j].getY() );
                             prevCell = currentCell;
                             currentCell = cells[i][j];
                             return;
@@ -108,52 +97,82 @@ public class Player extends Actor {
     }
 
     public void mooveUp (){
-        if ( (!currentCell.north && unlocked) || isMoovingToNextIntersection ){
-            this.addAction( Actions.sequence( lock() , Actions.moveTo(getX(), getY() + Cell.SIZE, 0.1f), mooveToNextIntersection() ) );
+        if ( ( isNoWallUp() && unlocked) || isMoovingToNextIntersection ){
+            System.out.println("UP");
+            this.addAction( Actions.sequence( lock() , Actions.moveTo(getX(), getY() + Cell.height, 0.1f), setCell( currentCell.i - 1, currentCell.j ), mooveToNextIntersection( currentCell.i - 1, currentCell.j ) ) );
         }
     }
 
     public void mooveDown() {
-        if ( (!currentCell.south && unlocked) || isMoovingToNextIntersection ) {
-            this.addAction( Actions.sequence( lock(), Actions.moveTo(getX(), getY() - Cell.SIZE, 0.1f), mooveToNextIntersection() ) );
+        if ( (isNoWallDown() && unlocked) || isMoovingToNextIntersection ) {
+            System.out.println("DOWN");
+            this.addAction( Actions.sequence( lock(), Actions.moveTo(getX(), getY() - Cell.height, 0.1f), setCell( currentCell.i + 1, currentCell.j ), mooveToNextIntersection( currentCell.i + 1, currentCell.j ) ) );
         }
     }
 
     public void mooveLeft() {
-        if ( (!currentCell.west && unlocked) || isMoovingToNextIntersection ) {
-            this.addAction( Actions.sequence( lock(), Actions.moveTo(getX() - Cell.SIZE, getY(), 0.1f), mooveToNextIntersection() ) );
+        if ( ( isNoWallLeft() && unlocked) || isMoovingToNextIntersection ) {
+            System.out.println("LEFT");
+            this.addAction( Actions.sequence( lock(), Actions.moveTo(getX() - Cell.width, getY(), 0.1f), setCell( currentCell.i, currentCell.j - 1), mooveToNextIntersection( currentCell.i, currentCell.j - 1 ) ) );
         }
     }
 
     public void mooveRight() {
-        if ( (!currentCell.east && unlocked) || isMoovingToNextIntersection ) {
-            this.addAction( Actions.sequence( lock(), Actions.moveTo(getX() + Cell.SIZE, getY(), 0.1f), mooveToNextIntersection() ) );
+        if ( ( isNoWallRight() && unlocked) || isMoovingToNextIntersection ) {
+            System.out.println("RIGHT");
+            this.addAction( Actions.sequence( lock(), Actions.moveTo(getX() + Cell.width, getY(), 0.1f), setCell( currentCell.i, currentCell.j + 1 ), mooveToNextIntersection( currentCell.i, currentCell.j + 1 ) ) );
         }
     }
+    private Action setCell ( final int newI, final int newJ ) {
 
-    private Action mooveToNextIntersection (){
+        return Actions.run(new Runnable() {
+            public void run() {
+                prevCell = currentCell;
+                currentCell = cells[newI][newJ];
+            }
+        });
 
+    }
+
+    private int getOpenDirections (){
+        int directions = 4;
+        if ( !isNoWallUp() ){
+            directions--;
+        }
+        if ( !isNoWallDown() ){
+            directions--;
+        }
+        if ( !isNoWallLeft() ){
+            directions--;
+        }
+        if ( !isNoWallRight() ){
+            directions--;
+        }
+        return directions;
+    }
+
+    private Action mooveToNextIntersection ( int newI, int newJ){
 
         return Actions.run(new Runnable() {
             public void run() {
                 isMoovingToNextIntersection = true;
 
 
-                if ( currentCell.getOpenDirections() == 1 ){
-                    prevCell = new Cell( true, true, true, true );
+                if ( getOpenDirections() == 1 ){
+                    prevCell = cells[0][0];
                 }
 
-                if ( currentCell.getOpenDirections() == 2 ) {
-                    if ( !currentCell.north && currentCell.getY() + Cell.SIZE != prevCell.getY() ){
+                if ( getOpenDirections() == 2 ) {
+                    if ( isNoWallUp() && currentCell.i - 1 != prevCell.i ){
                         mooveUp();
                     }
-                    if ( !currentCell.east && currentCell.getX() + Cell.SIZE != prevCell.getX() ){
+                    if ( isNoWallRight() && currentCell.j + 1 != prevCell.j ){
                         mooveRight();
                     }
-                    if ( !currentCell.south && currentCell.getY() - Cell.SIZE != prevCell.getY() ){
+                    if ( isNoWallDown() && currentCell.i + 1 != prevCell.i ){
                         mooveDown();
                     }
-                    if ( !currentCell.west && currentCell.getX() - Cell.SIZE != prevCell.getX() ){
+                    if ( isNoWallLeft() && currentCell.j - 1 != prevCell.j ){
                         mooveLeft();
                     }
                 }   else {
@@ -163,5 +182,34 @@ public class Player extends Actor {
             }
         });
 
+    }
+
+    public boolean isNoWallUp (){
+        if ( cells[currentCell.i - 1][currentCell.j].isWall ){
+            return false;
+        }   else    {
+            return true;
+        }
+    }
+    public boolean isNoWallDown (){
+        if ( cells[currentCell.i + 1][currentCell.j].isWall ){
+            return false;
+        }   else    {
+            return true;
+        }
+    }
+    public boolean isNoWallLeft (){
+        if ( cells[currentCell.i][currentCell.j - 1 ].isWall ){
+            return false;
+        }   else    {
+            return true;
+        }
+    }
+    public boolean isNoWallRight (){
+        if ( cells[currentCell.i][currentCell.j + 1].isWall ){
+            return false;
+        }   else    {
+            return true;
+        }
     }
 }

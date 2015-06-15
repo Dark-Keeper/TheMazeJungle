@@ -24,23 +24,22 @@ public class LogoScreen implements Screen {
     private Viewport viewPort;
 
     public LogoScreen (){
-        viewPort = new ExtendViewport(1920,1080);
+        viewPort = new ExtendViewport(TheMaze.WIDTH,TheMaze.HEIGHT);
         stage = new Stage(viewPort);
         Gdx.input.setInputProcessor(stage);
 
-        Gdx.input.setInputProcessor( stage );
-        Table rootTable = new Table();
-        stage.addActor( rootTable );
-        rootTable.setColor(Color.BLUE);
-        //Image logo = new Image( Assets.menuBackground );
-      //  rootTable.add( logo );
-        rootTable.setFillParent( true );
-        rootTable.setDebug( true );
+        Assets.loadLogo();
 
-        //rootTable.background( Assets.menuBackground );
+        Table rootTable = new Table();
+        rootTable.setFillParent( true );
+        rootTable.background( Assets.logoBackground );
+
+        stage.addActor( rootTable );
 
     }
-    public void loadGameAssets () {
+
+
+    private void loadGameAssets () {
         Settings.load();
         Assets.loadMenu();
         Assets.loadGame();
@@ -53,11 +52,19 @@ public class LogoScreen implements Screen {
 
     @Override
     public void show() {
-        stage.addAction( Actions.sequence ( Actions.delay( 1.5f ), Actions.run(new Runnable() {
-            public void run() {
-                loadGameAssets();
-            }
-        }),Actions.delay( 1.5f ), Actions.run(new Runnable() {
+        stage.addAction( Actions.sequence (
+/*                Actions.run(new Runnable() {
+                    public void run() {
+                        loadLogoAssets();
+                    }
+                }),*/
+                Actions.run(new Runnable() {
+                    public void run() {
+                        loadGameAssets();
+                    }
+                }),
+                Actions.delay( 1.5f ),
+                Actions.run(new Runnable() {
             public void run () {
                 loadMenuScreen();
             }

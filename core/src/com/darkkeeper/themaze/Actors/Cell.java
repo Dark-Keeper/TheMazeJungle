@@ -1,65 +1,59 @@
 package com.darkkeeper.themaze.Actors;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.darkkeeper.themaze.Basics.Assets;
+import com.darkkeeper.themaze.TheMaze;
 
 /**
  * Created by andreipiatosin on 5/29/15.
  */
 public class Cell extends Actor {
-    public static int SIZE = 60;
-    public boolean north;
-    public boolean east;
-    public boolean south;
-    public boolean west;
+    public static float width;
+    public static float height;
+    public boolean isWall;
+    public int i;
+    public int j;
 
-
-    public Cell ( boolean WEST, boolean NORTH, boolean EAST, boolean SOUTH ) {
-        this.north = NORTH;
-        this.east = EAST;
-        this.south = SOUTH;
-        this.west = WEST;
+    public Cell ( float width, float height, boolean isWall, int i, int j) {
+        this.width = width;
+        this.height = height;
+        this.isWall = isWall;
+        this.i = i;
+        this.j = j;
     }
     
     @Override
     public void draw(Batch batch, float parentAlpha) {
-       // batch.draw(Assets.wall,getX(),getY(),SIZE,SIZE);
-      //  batch.draw(Assets.wall, getX(), getY(), getOriginX(),getOriginY(), getWidth(), getHeight(),getScaleX(),getScaleY(),getRotation());
-        batch.draw( Assets.wall, getX(),             getY(),SIZE/6, SIZE/6 ); //left top
-        batch.draw( Assets.wall, getX() + 5*SIZE/6,  getY(), SIZE/6, SIZE/6 );
-        batch.draw( Assets.wall, getX(),             getY() - 5*SIZE/6, SIZE/6, SIZE/6 );
-        batch.draw( Assets.wall, getX() + 5*SIZE/6,  getY() - 5*SIZE/6, SIZE/6, SIZE/6 );
-        if ( north ){
-            batch.draw( Assets.wall, getX(), getY(), SIZE, SIZE/6 );
-        }
-        if ( south ){
-            batch.draw( Assets.wall, getX(), getY() - 5*SIZE/6, SIZE, SIZE/6 );
-        }
-        if ( east ){
-            batch.draw( Assets.wall, getX() + 5*SIZE/6, getY() + SIZE/6, getOriginX(),getOriginY(), SIZE, SIZE/6, getScaleX(),getScaleY(), 270  );
+        if ( isWall ) {
+            batch.draw(Assets.currentStyleTexture, getX(),getY(), width,height, width/TheMaze.WIDTH*j, ( height/TheMaze.HEIGHT*i )/2, width/TheMaze.WIDTH*(j+1), ( height/TheMaze.HEIGHT*(i+1) )/2 );
+        }   else    {
+            batch.draw( Assets.netTextureRegion,getX(),getY(),width,height);
+            batch.setColor(new Color(1,1,1,0.65f));
+            batch.draw(Assets.currentStyleTexture, getX(),getY(), width,height, width/TheMaze.WIDTH*j, ( height/TheMaze.HEIGHT*i )/2 + 0.5f, width/TheMaze.WIDTH*(j+1), ( height/TheMaze.HEIGHT*(i+1) )/2 + 0.5f );
+            batch.setColor(new Color(1,1,1,1));
         }
 
-        if ( west ){
-            batch.draw( Assets.wall, getX(), getY() + SIZE/6, getOriginX(),getOriginY(), SIZE, SIZE/6, getScaleX(),getScaleY(), 270  );
-        }
+
+/*        if ( isWall ) {
+            batch.draw(Assets.iceBackgroundTexture, getX(),getY(), width,height, width/TheMaze.WIDTH*j, height/TheMaze.HEIGHT*i, width/TheMaze.WIDTH*(j+1), height/TheMaze.HEIGHT*(i+1));
+        }   else    {
+            batch.draw( Assets.netTextureRegion,getX(),getY(),width,height);
+            batch.setColor(new Color(1,1,1,0.8f));
+            batch.draw(Assets.snowBackgroundTexture, getX(),getY(),width,height, width/TheMaze.WIDTH*j, height/TheMaze.HEIGHT*i, width/TheMaze.WIDTH*(j+1), height/TheMaze.HEIGHT*(i+1));
+            batch.setColor(new Color(1,1,1,1));
+        }*/
     }
 
-    public int getOpenDirections (){
-        int wallNumber = 4;
-        if ( north ){
-            wallNumber--;
+/*    public void drawCell (Batch batch){
+        if ( !isWall ) {
+            batch.draw( Assets.netTextureRegion,getX(),getY(),width,height);
+            batch.setColor(new Color(1,1,1,0.8f));
+            batch.draw(Assets.snowBackgroundTexture, getX(),getY(),width,height, width/TheMaze.WIDTH*j, height/TheMaze.HEIGHT*i, width/TheMaze.WIDTH*(j+1), height/TheMaze.HEIGHT*(i+1));
+            batch.setColor(new Color(1,1,1,1));
         }
-        if ( south ){
-            wallNumber--;
-        }
-        if ( east ){
-            wallNumber--;
-        }
-        if ( west ){
-            wallNumber--;
-        }
-        return wallNumber;
-    }
+    }*/
+
 }

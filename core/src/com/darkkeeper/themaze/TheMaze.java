@@ -17,6 +17,8 @@ import com.darkkeeper.themaze.Screens.MainMenuScreen;
 public class TheMaze extends Game implements ApplicationListener, InputProcessor {
     FPSLogger fps;
     public static Game game;
+    public static float WIDTH = 1920;
+    public static float HEIGHT = 1080;
 
 	@Override
 	public void create () {

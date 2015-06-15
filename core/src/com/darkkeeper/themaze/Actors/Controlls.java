@@ -24,25 +24,25 @@ public class Controlls extends Actor {
             setWidth( WIDTH );
             setHeight( HEIGHT );
             setOrigin( getWidth()/2, getHeight()/2 );
-            setPosition( player.getX() - 30,player.getY() - 47 + 5/3*WIDTH );
+            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2,player.getY()+ 5/3*WIDTH - getHeight()/2 + player.getHeight()/2);
         }
         if ( direction.equals("east") ) {
             setWidth( WIDTH );
             setHeight( HEIGHT );
             setOrigin( getWidth()/2, getHeight()/2 );
-            setPosition( player.getX() - 30 + 5/3*WIDTH,player.getY() - 47 );
+            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2 + 5/3*WIDTH,player.getY() - getHeight()/2 + player.getHeight()/2);
         }
         if ( direction.equals("south") ){
             setWidth( WIDTH );
             setHeight( HEIGHT );
             setOrigin( getWidth()/2, getHeight()/2 );
-            setPosition( player.getX() - 30,player.getY() - 47 - 5/3*WIDTH);
+            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2,player.getY() - 5/3*WIDTH - getHeight()/2 + player.getHeight()/2);
         }
         if ( direction.equals("west") ){
             setWidth( WIDTH );
             setHeight( HEIGHT );
             setOrigin( getWidth()/2, getHeight()/2 );
-            setPosition( player.getX() - 30 - 5/3*WIDTH,player.getY() - 47 );
+            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2- 5/3*WIDTH,player.getY() - getHeight()/2 + player.getHeight()/2);
         }
 
 
@@ -52,17 +52,16 @@ public class Controlls extends Actor {
     public void draw( Batch batch, float parentAlpha ) {
 
         if ( direction.equals("north") ){
-            Sprite sprite = new Sprite(Assets.arrow);
-            batch.draw(Assets.arrow,getX(),getY(),getOriginX(),getOriginY(),WIDTH,HEIGHT,getScaleX(),getScaleY(), 90);
+            batch.draw(Assets.arrow,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(), 90);
         }
         if ( direction.equals("east") ) {
-            batch.draw(Assets.arrow,getX(),getY(),getOriginX(),getOriginY(),WIDTH,HEIGHT,getScaleX(),getScaleY(), 0);
+            batch.draw(Assets.arrow,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(), 0);
         }
         if ( direction.equals("south") ){
-            batch.draw(Assets.arrow,getX(),getY(),getOriginX(),getOriginY(),WIDTH,HEIGHT,getScaleX(),getScaleY(), 270);
+            batch.draw(Assets.arrow,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(), 270);
         }
         if ( direction.equals("west") ){
-            batch.draw(Assets.arrow,getX(),getY(),getOriginX(),getOriginY(),WIDTH,HEIGHT,getScaleX(),getScaleY(), 180);
+            batch.draw(Assets.arrow,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(), 180);
         }
     }
 }

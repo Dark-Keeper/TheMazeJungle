@@ -1,0 +1,67 @@
+mainTextureAtlas.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arrow
+  rotate: false
+  xy: 2, 2
+  size: 133, 103
+  orig: 133, 103
+  offset: 0, 0
+  index: -1
+flag
+  rotate: false
+  xy: 137, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+net_square
+  rotate: false
+  xy: 404, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+mainMenuScreen
+  rotate: false
+  xy: 2, 260
+  size: 1920, 1080
+  orig: 1920, 1080
+  offset: 0, 0
+  index: -1
+playButton
+  rotate: false
+  xy: 2, 1342
+  size: 496, 172
+  orig: 496, 172
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 500, 1342
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+rateButton
+  rotate: false
+  xy: 758, 1342
+  size: 496, 172
+  orig: 496, 172
+  offset: 0, 0
+  index: -1
+exitButton
+  rotate: false
+  xy: 1256, 1342
+  size: 496, 172
+  orig: 496, 172
+  offset: 0, 0
+  index: -1
+wall
+  rotate: false
+  xy: 1754, 1342
+  size: 83, 14
+  orig: 83, 14
+  offset: 0, 0
+  index: -1
