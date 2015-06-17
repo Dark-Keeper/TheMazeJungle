@@ -1,6 +1,7 @@
 package com.darkkeeper.themaze.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -52,16 +53,17 @@ public class MainMenuScreen implements Screen {
 
         System.out.println("mainMenuScreen");
         
-        int buttonWidth = 300;
-        int buttonHeight = 100;
+        int buttonWidth = 780;
+        int buttonHeight = 320;
         
-        Button playButton = new Button( Assets.skin, "play" );
+        Button playButton = new Button( Assets.skin, "default" );
         playButton.setOrigin( buttonWidth/2, buttonHeight/2 );
-        playButton.setPosition( TheMaze.WIDTH/2 - buttonWidth/2, 2*TheMaze.HEIGHT/3 );
+        playButton.setPosition( TheMaze.WIDTH/2 - buttonWidth/2 + 25, 565 );
         playButton.setSize( buttonWidth, buttonHeight );
         playButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                
+
+                dispose();
                 TheMaze.game.setScreen( new LevelChooseScreen() );
 
                 return true;
@@ -71,29 +73,14 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        Button rateButton = new Button( Assets.skin, "rate" );
-        rateButton.setOrigin( buttonWidth/2, buttonHeight/2 );
-        rateButton.setPosition( TheMaze.WIDTH/2 - buttonWidth/2, TheMaze.HEIGHT/2 );
-        rateButton.setSize( buttonWidth, buttonHeight );
-        rateButton.addListener( new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-
-                TheMaze.game.setScreen( new LevelChooseScreen() );
-
-                return true;
-            }
-
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-            }
-        });
-
-        Button exitButton = new Button( Assets.skin, "exit" );
+        Button exitButton = new Button( Assets.skin, "default" );
         exitButton.setOrigin( buttonWidth/2, buttonHeight/2 );
-        exitButton.setPosition( TheMaze.WIDTH/2 - buttonWidth/2, TheMaze.HEIGHT/3 );
+        exitButton.setPosition( TheMaze.WIDTH/2 - buttonWidth/2 + 25, 213 );
         exitButton.setSize( buttonWidth, buttonHeight );
         exitButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
+                dispose();
                 TheMaze.game.setScreen( new LevelChooseScreen() );
 
                 return true;
@@ -109,7 +96,7 @@ public class MainMenuScreen implements Screen {
         stage.addActor( rootTable );
 
         stage.addActor( playButton );
-        stage.addActor( rateButton );
+      //  stage.addActor( rateButton );
         stage.addActor( exitButton );
 
 
@@ -146,6 +133,10 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
         stage.act();
         stage.draw();
+
+        if (Gdx.input.isKeyPressed(Input.Keys.BACK)){
+            Gdx.app.exit();
+        }
     }
 
     @Override

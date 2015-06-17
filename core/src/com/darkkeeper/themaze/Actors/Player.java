@@ -98,32 +98,32 @@ public class Player extends Actor {
 
     public void mooveUp (){
         if ( ( isNoWallUp() && unlocked) || isMoovingToNextIntersection ){
-            System.out.println("UP");
-            this.addAction( Actions.sequence( lock() , Actions.moveTo(getX(), getY() + Cell.height, 0.1f), setCell( currentCell.i - 1, currentCell.j ), mooveToNextIntersection( currentCell.i - 1, currentCell.j ) ) );
+     //       System.out.println("UP");
+            this.addAction( Actions.sequence( lock() , Actions.moveTo(getX(), getY() + Cell.height, 0.1f), mooveToNextIntersection( currentCell.i - 1, currentCell.j ) ) );
         }
     }
 
     public void mooveDown() {
         if ( (isNoWallDown() && unlocked) || isMoovingToNextIntersection ) {
-            System.out.println("DOWN");
-            this.addAction( Actions.sequence( lock(), Actions.moveTo(getX(), getY() - Cell.height, 0.1f), setCell( currentCell.i + 1, currentCell.j ), mooveToNextIntersection( currentCell.i + 1, currentCell.j ) ) );
+      //      System.out.println("DOWN");
+            this.addAction( Actions.sequence( lock(), Actions.moveTo(getX(), getY() - Cell.height, 0.1f), mooveToNextIntersection( currentCell.i + 1, currentCell.j ) ) );
         }
     }
 
     public void mooveLeft() {
         if ( ( isNoWallLeft() && unlocked) || isMoovingToNextIntersection ) {
-            System.out.println("LEFT");
-            this.addAction( Actions.sequence( lock(), Actions.moveTo(getX() - Cell.width, getY(), 0.1f), setCell( currentCell.i, currentCell.j - 1), mooveToNextIntersection( currentCell.i, currentCell.j - 1 ) ) );
+      //      System.out.println("LEFT");
+            this.addAction( Actions.sequence( lock(), Actions.moveTo(getX() - Cell.width, getY(), 0.1f), mooveToNextIntersection( currentCell.i, currentCell.j - 1 ) ) );
         }
     }
 
     public void mooveRight() {
         if ( ( isNoWallRight() && unlocked) || isMoovingToNextIntersection ) {
-            System.out.println("RIGHT");
-            this.addAction( Actions.sequence( lock(), Actions.moveTo(getX() + Cell.width, getY(), 0.1f), setCell( currentCell.i, currentCell.j + 1 ), mooveToNextIntersection( currentCell.i, currentCell.j + 1 ) ) );
+        //    System.out.println("RIGHT");
+            this.addAction( Actions.sequence( lock(), Actions.moveTo(getX() + Cell.width, getY(), 0.1f), mooveToNextIntersection( currentCell.i, currentCell.j + 1 ) ) );
         }
     }
-    private Action setCell ( final int newI, final int newJ ) {
+/*    private Action setCell ( final int newI, final int newJ ) {
 
         return Actions.run(new Runnable() {
             public void run() {
@@ -132,7 +132,7 @@ public class Player extends Actor {
             }
         });
 
-    }
+    }*/
 
     private int getOpenDirections (){
         int directions = 4;
@@ -151,11 +151,14 @@ public class Player extends Actor {
         return directions;
     }
 
-    private Action mooveToNextIntersection ( int newI, int newJ){
+    private Action mooveToNextIntersection ( final int newI, final int newJ){
 
         return Actions.run(new Runnable() {
             public void run() {
                 isMoovingToNextIntersection = true;
+
+                prevCell = currentCell;
+                currentCell = cells[newI][newJ];
 
 
                 if ( getOpenDirections() == 1 ){
@@ -165,13 +168,13 @@ public class Player extends Actor {
                 if ( getOpenDirections() == 2 ) {
                     if ( isNoWallUp() && currentCell.i - 1 != prevCell.i ){
                         mooveUp();
-                    }
+                    } else
                     if ( isNoWallRight() && currentCell.j + 1 != prevCell.j ){
                         mooveRight();
-                    }
+                    } else
                     if ( isNoWallDown() && currentCell.i + 1 != prevCell.i ){
                         mooveDown();
-                    }
+                    } else
                     if ( isNoWallLeft() && currentCell.j - 1 != prevCell.j ){
                         mooveLeft();
                     }

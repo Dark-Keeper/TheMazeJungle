@@ -281,7 +281,7 @@ public abstract class MazeGenerator {
      *
      */
 
-    public com.darkkeeper.themaze.Actors.Cell[][] getMaze ( ) {
+    public com.darkkeeper.themaze.Actors.Cell[][] getMaze ( boolean isPreview ) {
 
         boolean[][] cells = new boolean[ 2*height+1 ][ 2*width+1 ];
 
@@ -324,18 +324,38 @@ public abstract class MazeGenerator {
 
         com.darkkeeper.themaze.Actors.Cell[][] cellsForMaze = new com.darkkeeper.themaze.Actors.Cell[cells.length][cells[0].length];
 
-        for ( int i = 0; i < 2*height+1; i++ ){
-            for ( int j = 0; j < 2*width+1; j++ ){
-                cellsForMaze[i][j] = new com.darkkeeper.themaze.Actors.Cell( TheMaze.WIDTH/(2*width+1), TheMaze.HEIGHT/(2*height+1), cells[i][j],i,j );
-/*
-                if ( cells[i][j] ){
+        if ( isPreview ){
+            System.out.println( width + " " + height );
+
+            float areaWidth = 578f;
+            float areaHeight = 1045f;
+
+            for ( int i = 0; i < 2*height+1; i++ ){
+                for ( int j = 0; j < 2*width+1; j++ ){
+                    cellsForMaze[i][j] = new com.darkkeeper.themaze.Actors.Cell( areaWidth/(2*width + 1), areaHeight/(2*height+ 1) , cells[i][j],i,j );
+/*                if ( cells[i][j] ){
                     System.out.print("#");
                 }   else {
                     System.out.print("o");
                 }*/
+                }
+             //    System.out.println();
             }
-           // System.out.println();
+        }   else    {
+            for ( int i = 0; i < 2*height+1; i++ ){
+                for ( int j = 0; j < 2*width+1; j++ ){
+                    cellsForMaze[i][j] = new com.darkkeeper.themaze.Actors.Cell( TheMaze.WIDTH/(2*width+1), TheMaze.HEIGHT/(2*height+1), cells[i][j],i,j );
+/*                if ( cells[i][j] ){
+                    System.out.print("#");
+                }   else {
+                    System.out.print("o");
+                }*/
+                }
+           //      System.out.println();
+            }
         }
+
+
         return cellsForMaze;
 
     }
