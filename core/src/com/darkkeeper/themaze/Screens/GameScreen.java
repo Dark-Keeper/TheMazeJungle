@@ -2,6 +2,8 @@ package com.darkkeeper.themaze.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -62,7 +64,23 @@ public class GameScreen implements Screen {
     public GameScreen (Cell[][] maze) {
         viewPort = new ExtendViewport(TheMaze.WIDTH,TheMaze.HEIGHT);
         stage = new Stage(viewPort);
-        Gdx.input.setInputProcessor( stage );
+
+        InputProcessor backProcessor = new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+
+                if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
+                    dispose();
+                    TheMaze.game.setScreen(new LevelChooseScreen());
+                 }
+
+                return false;
+            }
+        };
+
+        InputMultiplexer multiplexer = new InputMultiplexer( stage, backProcessor );
+        Gdx.input.setInputProcessor(multiplexer);
+
         Gdx.input.setCatchBackKey(true);
 
         this.maze = maze;
@@ -101,11 +119,6 @@ public class GameScreen implements Screen {
 
         stage.act( delta );
         stage.draw();
-
-        if (Gdx.input.isKeyPressed(Input.Keys.BACK)){
-            this.dispose();
-            TheMaze.game.setScreen( new LevelChooseScreen() );
-        }
 
         if ( (int) player.getX() == (int) flag.getX() && (int) player.getY() == (int) flag.getY() ){
             TheMaze.game.setScreen( new LevelChooseScreen() );

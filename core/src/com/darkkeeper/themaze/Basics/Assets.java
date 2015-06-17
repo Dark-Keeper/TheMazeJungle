@@ -26,7 +26,7 @@ public class Assets {
     public static Skin skin;
     public static TextButton.TextButtonStyle textButtonStyle;
     public static Button.ButtonStyle menuButtonStyle;
-    public static Sprite character;
+    public static TextureRegion character;
     public static Sprite flag;
     public static Sprite arrow;
    // public static TextureRegionDrawable arrowDirection;
@@ -74,7 +74,7 @@ public class Assets {
 
    //     netTextureRegion = new TextureRegion( textureAtlas.findRegion( "net_square" ) );
 
-        character = new Sprite( textureAtlas.findRegion( "player" ) );
+        character = new TextureRegion( textureAtlas.findRegion( "player" ) );
         flag = new Sprite( textureAtlas.findRegion( "flag" ) );
         arrow = new Sprite( textureAtlas.findRegion( "arrow" ) );
     }

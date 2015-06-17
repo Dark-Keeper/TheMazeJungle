@@ -80,8 +80,7 @@ public class MainMenuScreen implements Screen {
         exitButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
-                dispose();
-                TheMaze.game.setScreen( new LevelChooseScreen() );
+                Gdx.app.exit();
 
                 return true;
             }
@@ -133,10 +132,6 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
         stage.act();
         stage.draw();
-
-        if (Gdx.input.isKeyPressed(Input.Keys.BACK)){
-            Gdx.app.exit();
-        }
     }
 
     @Override
