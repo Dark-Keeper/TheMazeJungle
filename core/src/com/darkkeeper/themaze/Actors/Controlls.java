@@ -9,8 +9,8 @@ import com.darkkeeper.themaze.Basics.Assets;
  * Created by andreipiatosin on 6/1/15.
  */
 public class Controlls extends Actor {
-    private int WIDTH = 120;
-    private int HEIGHT = 55;
+    private int WIDTH = 150;
+    private int HEIGHT = 65;
 
     private Player player;
     private String direction;
