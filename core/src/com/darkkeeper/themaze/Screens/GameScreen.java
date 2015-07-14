@@ -6,27 +6,20 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.darkkeeper.themaze.Actors.Cell;
 import com.darkkeeper.themaze.Actors.Controlls;
 import com.darkkeeper.themaze.Actors.Flag;
 import com.darkkeeper.themaze.Actors.Player;
-import com.darkkeeper.themaze.Basics.Assets;
 import com.darkkeeper.themaze.TheMaze;
 
 /**
@@ -71,6 +64,7 @@ public class GameScreen implements Screen {
 
                 if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
                     dispose();
+                    TheMaze.interestialAddInterface.show();
                     TheMaze.game.setScreen(new LevelChooseScreen());
                  }
 
@@ -121,6 +115,7 @@ public class GameScreen implements Screen {
         stage.draw();
 
         if ( (int) player.getX() == (int) flag.getX() && (int) player.getY() == (int) flag.getY() ){
+            TheMaze.interestialAddInterface.show();
             TheMaze.game.setScreen( new LevelChooseScreen() );
         }
 

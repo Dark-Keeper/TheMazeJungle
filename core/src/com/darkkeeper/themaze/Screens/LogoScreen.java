@@ -2,18 +2,14 @@ package com.darkkeeper.themaze.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.darkkeeper.themaze.Basics.Assets;
 import com.darkkeeper.themaze.Basics.Settings;
-import com.darkkeeper.themaze.Basics.StageSettings;
 import com.darkkeeper.themaze.TheMaze;
 
 /**

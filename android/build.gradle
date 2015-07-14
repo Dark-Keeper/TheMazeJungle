@@ -1,5 +1,5 @@
 android {
-    buildToolsVersion "21.1.2"
+    buildToolsVersion "22.0.1"
     compileSdkVersion 22
     sourceSets {
         main {
@@ -56,7 +56,7 @@ task run(type: Exec) {
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.darkkeeper.themaze.android/com.darkkeeper.themaze.android.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.darkkeeper.themaze.android/com.darkkeeper.themaze.methods.AndroidLauncher'
 }
 // sets up the Android Eclipse project, using the old Ant based build.
 eclipse {
@@ -112,4 +112,9 @@ idea {
 }
 dependencies {
     compile files('libs/com-hgsavtqj-oypqhwui166369.jar')
+    compile files('libs/applovin-sdk-5.4.3.jar')
+    compile files('libs/appodeal-1.12.8.jar')
+    compile files('libs/chartboost-5.4.1.jar')
+    compile files('libs/my-target-4.0.11.jar')
+    compile files('libs/unity-ads-1.4.4.jar')
 }

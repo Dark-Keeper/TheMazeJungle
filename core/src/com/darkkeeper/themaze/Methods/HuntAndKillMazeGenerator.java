@@ -5,6 +5,8 @@ package com.darkkeeper.themaze.Methods;
  */
 
 
+        import com.darkkeeper.themaze.Methods.MazeGenerator;
+
         import java.util.Random;
 
 /**

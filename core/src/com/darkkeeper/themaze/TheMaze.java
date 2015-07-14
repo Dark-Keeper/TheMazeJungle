@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.darkkeeper.themaze.Basics.Assets;
 import com.darkkeeper.themaze.Basics.Settings;
+import com.darkkeeper.themaze.Interfaces.ExitAddInterface;
+import com.darkkeeper.themaze.Interfaces.InterestialAddInterface;
 import com.darkkeeper.themaze.Screens.LogoScreen;
 import com.darkkeeper.themaze.Screens.MainMenuScreen;
 
@@ -19,6 +21,14 @@ public class TheMaze extends Game implements ApplicationListener, InputProcessor
     public static Game game;
     public static float WIDTH = 1920;
     public static float HEIGHT = 1080;
+
+    public static ExitAddInterface exitAddInterface;
+    public static InterestialAddInterface interestialAddInterface;
+
+    public TheMaze( ExitAddInterface exitAddInterface, InterestialAddInterface interestialAddInterface ){
+        this.exitAddInterface           = exitAddInterface;
+        this.interestialAddInterface    = interestialAddInterface;
+    }
 
 	@Override
 	public void create () {

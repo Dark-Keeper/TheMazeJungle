@@ -4,7 +4,6 @@ package com.darkkeeper.themaze.Methods;
  * Created by andreipiatosin on 6/9/15.
  */
 
-        import com.darkkeeper.themaze.Actors.Cell;
         import com.darkkeeper.themaze.TheMaze;
 
         import java.util.Arrays;
