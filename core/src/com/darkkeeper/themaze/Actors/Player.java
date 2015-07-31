@@ -5,6 +5,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -35,7 +40,7 @@ public class Player extends Actor {
     private Cell[][] cells;
 
     private Texture playerTexture;
-    private static int FRAME_COLS = 4;
+    private static int FRAME_COLS = 6;
     private static int FRAME_ROWS = 4;
 
     TextureRegion[] walkDown;
@@ -53,9 +58,13 @@ public class Player extends Actor {
 
     float stateTime;
 
+    private static final float RADIUS = 3.0f;
+
+    private Body body;
 
 
-    public Player ( float x, float y , Cell[][] cells ) {
+
+    public Player ( World world, float x, float y , Cell[][] cells ) {
         this.cells = cells;
         this.charX = x;
         this.charY = y;
@@ -65,24 +74,61 @@ public class Player extends Actor {
         unlocked = true;
         currentCell = cells[1][1];
 
-        playerTexture = new Texture(Gdx.files.internal("game/player.png"));
+        playerTexture = new Texture(Gdx.files.internal("game/player2.png"));
         TextureRegion[][] tmp = TextureRegion.split(playerTexture, playerTexture.getWidth()/FRAME_COLS, playerTexture.getHeight()/FRAME_ROWS);              // #10
         walkDown = new TextureRegion[FRAME_COLS];
         walkLeft = new TextureRegion[FRAME_COLS];
         walkRight = new TextureRegion[FRAME_COLS];
         walkUp = new TextureRegion[FRAME_COLS];
-        for (int i = 0; i < FRAME_ROWS; i++) {
+        for (int i = 0; i < FRAME_COLS; i++) {
                 walkDown[i] = tmp[0][i];
                 walkLeft[i] = tmp[1][i];
-                walkRight[i] = tmp[2][i];
-                walkUp[i] = tmp[3][i];
+                walkRight[i] = tmp[3][i];
+                walkUp[i] = tmp[2][i];
         }
-        walkDownAnimation = new Animation(0.25f, walkDown);
-        walkLeftAnimation = new Animation(0.25f, walkLeft);
-        walkRightAnimation = new Animation(0.25f, walkRight);
-        walkUpAnimation = new Animation(0.25f, walkUp);
+        walkDownAnimation = new Animation(0.15f, walkDown);
+        walkLeftAnimation = new Animation(0.15f, walkLeft);
+        walkRightAnimation = new Animation(0.15f, walkRight);
+        walkUpAnimation = new Animation(0.15f, walkUp);
         currentAnimation = walkDownAnimation;
         stateTime = 0f;
+
+
+
+
+/*
+        CircleShape circle = new CircleShape();
+        circle.setRadius(RADIUS);
+
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.x = 2f;
+        bodyDef.position.y = 2f;
+        bodyDef.linearDamping = 0.1f;
+        bodyDef.angularDamping = 0.5f;
+
+        this.body = world.createBody(bodyDef);
+        //this.body.setUserData(ElementType.BOB);
+
+        Fixture fix = body.createFixture(circle, 50);
+        fix.setDensity(1);
+        fix.setFriction(1f);
+        fix.setRestitution(0.8f);
+        //fix.setFilterData(filter);
+
+        circle.dispose();*/
+
+/*        // generate bob's actor
+        this.setPosition(body.getPosition().x-RADIUS, body.getPosition().y-RADIUS); // set the actor position at the box2d body position
+        this.setSize(RADIUS*2, RADIUS*2); // scale actor to body's size
+        this.setScaling(Scaling.stretch); // stretch the texture
+        this.setAlign(Align.center);*/
+
+
+
+
+
+
     }
 
     @Override
@@ -104,6 +150,9 @@ public class Player extends Actor {
     public void act ( float delta ) {
         super.act(delta);
         //checkCell();
+
+
+
         updateState();
     }
 

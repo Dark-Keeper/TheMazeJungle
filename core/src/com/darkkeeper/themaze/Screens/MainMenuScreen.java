@@ -2,9 +2,7 @@ package com.darkkeeper.themaze.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,17 +20,13 @@ import com.darkkeeper.themaze.TheMaze;
  */
 public class MainMenuScreen implements Screen {
 
-
-    private Camera camera;
     private Viewport viewPort;
     private Stage stage;
 
     private Table rootTable;
 
-    //Touch areas
-    private Rectangle playGame;
-
-
+    private static int buttonWidth = 780;
+    private static int buttonHeight = 150;
 
 
     public MainMenuScreen () {
@@ -41,20 +35,12 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(viewPort);
         Gdx.input.setInputProcessor(stage);
 
-        System.out.println("mainMenuScreen");
-        
-        int buttonWidth = 780;
-        int buttonHeight = 320;
-        
-        Button playButton = new Button( Assets.skin, "default" );
-        playButton.setOrigin( buttonWidth/2, buttonHeight/2 );
-        playButton.setPosition( TheMaze.WIDTH/2 - buttonWidth/2 + 25, 565 );
-        playButton.setSize( buttonWidth, buttonHeight );
-        playButton.addListener( new InputListener() {
+        Button playCampaignButton = new Button( Assets.skin, "default" );
+        playCampaignButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
                 dispose();
-                TheMaze.game.setScreen( new LevelChooseScreen() );
+                TheMaze.game.setScreen( new CampaignScreen () );
 
                 return true;
             }
@@ -63,10 +49,34 @@ public class MainMenuScreen implements Screen {
             }
         });
 
+        Button playCustomLevelButton = new Button( Assets.skin, "default" );
+        playCustomLevelButton.addListener( new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+
+                dispose();
+                TheMaze.game.setScreen( new CustomLevelScreen() );
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            }
+        });
+
+        Button optionsButton = new Button( Assets.skin, "default" );
+        optionsButton.addListener( new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+
+                dispose();
+
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            }
+        });
+
+
         Button exitButton = new Button( Assets.skin, "default" );
-        exitButton.setOrigin( buttonWidth/2, buttonHeight/2 );
-        exitButton.setPosition( TheMaze.WIDTH/2 - buttonWidth/2 + 25, 213 );
-        exitButton.setSize( buttonWidth, buttonHeight );
         exitButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
@@ -80,35 +90,25 @@ public class MainMenuScreen implements Screen {
             }
         });
 
+
+
         rootTable = new Table();
         rootTable.background( Assets.menuBackground );
         rootTable.setFillParent( true );
         stage.addActor( rootTable );
 
-        stage.addActor( playButton );
-      //  stage.addActor( rateButton );
-        stage.addActor( exitButton );
+        addButton( playCampaignButton, 1150, 760 );
+        addButton( playCustomLevelButton, 1150, 585 );
+        addButton( optionsButton, 1150, 410 );
+        addButton( exitButton, 1150, 235 );
 
+    }
 
-
-/*        TextButton playButton = new TextButton( "Play", Assets.textButtonStyle );
-
-        playButton.addListener( new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                TheMaze.game.setScreen( new LevelChooseScreen() );
-            }
-        });
-
-        rootTable = new Table();
-        rootTable.background( Assets.menuBackground );
-        rootTable.setFillParent( true );
-        stage.addActor( rootTable );
-        rootTable.setDebug( true );
-        stage.setDebugAll( true );
-
-        rootTable.add( playButton ).expand().center();*/
-
+    private void addButton ( Button button, float x, float y ){
+        button.setOrigin( buttonWidth/2, buttonHeight/2 );
+        button.setPosition( x, y );
+        button.setSize( buttonWidth, buttonHeight );
+        stage.addActor( button );
     }
 
     @Override
@@ -132,7 +132,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void pause() {
-        Settings.save ();
+
     }
 
     @Override

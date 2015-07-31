@@ -6,15 +6,9 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.darkkeeper.themaze.Basics.Assets;
-import com.darkkeeper.themaze.Basics.Settings;
 import com.darkkeeper.themaze.Interfaces.ExitAddInterface;
 import com.darkkeeper.themaze.Interfaces.InterestialAddInterface;
 import com.darkkeeper.themaze.Screens.LogoScreen;
-import com.darkkeeper.themaze.Screens.MainMenuScreen;
 
 public class TheMaze extends Game implements ApplicationListener, InputProcessor {
     FPSLogger fps;

@@ -2,7 +2,6 @@ package com.darkkeeper.themaze.Actors;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.darkkeeper.themaze.Actors.Cell;
 import com.darkkeeper.themaze.Basics.Assets;
 
 /**
@@ -22,7 +21,7 @@ public class Flag extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(Assets.flag,getX(),getY(),getOriginX(),getOriginY(),Cell.width,Cell.height,getScaleX(),getScaleY(), 0);
+        batch.draw(Assets.door,getX(),getY(),getOriginX(),getOriginY(),Cell.width,Cell.height,getScaleX(),getScaleY(), 0);
     }
 
 }

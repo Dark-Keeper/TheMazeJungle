@@ -51,16 +51,16 @@ public class Controlls extends Actor {
     public void draw( Batch batch, float parentAlpha ) {
 
         if ( direction.equals("north") ){
-            batch.draw(Assets.arrow,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(), 90);
+            batch.draw(Assets.arrowDirection,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(), 90);
         }
         if ( direction.equals("east") ) {
-            batch.draw(Assets.arrow,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(), 0);
+            batch.draw(Assets.arrowDirection,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(), 0);
         }
         if ( direction.equals("south") ){
-            batch.draw(Assets.arrow,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(), 270);
+            batch.draw(Assets.arrowDirection,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(), 270);
         }
         if ( direction.equals("west") ){
-            batch.draw(Assets.arrow,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(), 180);
+            batch.draw(Assets.arrowDirection,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(), 180);
         }
     }
 }

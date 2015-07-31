@@ -36,7 +36,7 @@ public class LogoScreen implements Screen {
 
 
     private void loadGameAssets () {
-        Settings.load();
+        Settings.loadSettings();
         Assets.loadMenu();
         Assets.loadGame();
         Assets.loadFonts();
@@ -49,11 +49,6 @@ public class LogoScreen implements Screen {
     @Override
     public void show() {
         stage.addAction( Actions.sequence (
-/*                Actions.run(new Runnable() {
-                    public void run() {
-                        loadLogoAssets();
-                    }
-                }),*/
                 Actions.run(new Runnable() {
                     public void run() {
                         loadGameAssets();
@@ -65,7 +60,6 @@ public class LogoScreen implements Screen {
                 loadMenuScreen();
             }
         }) ));
-
     }
 
     @Override

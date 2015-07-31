@@ -4,7 +4,12 @@ package com.darkkeeper.themaze.Methods;
  * Created by andreipiatosin on 6/9/15.
  */
 
+        import com.badlogic.gdx.math.Vector2;
+        import com.badlogic.gdx.physics.box2d.World;
+        import com.darkkeeper.themaze.Basics.Assets;
+        import com.darkkeeper.themaze.Basics.Settings;
         import com.darkkeeper.themaze.TheMaze;
+        import com.darkkeeper.themaze.Utils.Constants;
 
         import java.util.Arrays;
         import java.io.PrintStream;
@@ -280,20 +285,20 @@ public abstract class MazeGenerator {
      *
      */
 
-    public com.darkkeeper.themaze.Actors.Cell[][] getMaze ( boolean isPreview ) {
+    public com.darkkeeper.themaze.Actors.Cell[][] getMaze ( World world ) {
 
-        boolean[][] cells = new boolean[ 2*height+1 ][ 2*width+1 ];
+        Constants.cells = new boolean[ 2*height+1 ][ 2*width+1 ];
 
         for (int y = 0; y < height; y++) {
             // Print a row of horizontal walls
 
             int rowBase = y * width;
             for (int x = 0; x < width; x++) {
-                cells[2*y][2*x] = true;
+                Constants.cells[2*y][2*x] = true;
                 if (horizWalls[ rowBase + x ]){
-                    cells[2*y][2*x+1] = true;
+                    Constants.cells[2*y][2*x+1] = true;
                 }   else    {
-                    cells[2*y][2*x+1] = false;
+                    Constants.cells[2*y][2*x+1] = false;
                 }
             }
 
@@ -301,29 +306,43 @@ public abstract class MazeGenerator {
 
             rowBase = y*(width + 1);
             for (int x = 0; x < width; x++) {
-                cells[2*y+1][2*x+1] = false;
+                Constants.cells[2*y+1][2*x+1] = false;
                 if (vertWalls[ rowBase + x ]){
-                    cells[2*y+1][2*x] = true;
+                    Constants.cells[2*y+1][2*x] = true;
                 }   else    {
-                    cells[2*y+1][2*x] = false;
+                    Constants.cells[2*y+1][2*x] = false;
                 }
 /*                out.print(vertWalls[rowBase + x] ? '|' : "  ");
                 out.print(' ');*/
             }
-            cells[ 2*y ][ 2*width ] = true;
-            cells[ 2*y+1 ][ 2*width ] = true;
+            Constants.cells[ 2*y ][ 2*width ] = true;
+            Constants.cells[ 2*y+1 ][ 2*width ] = true;
 
 
 
         }
         //print last row
         for ( int i = 0; i < 2*width+1; i++ ){
-            cells[ 2*height ][ i ] = true;
+            Constants.cells[ 2*height ][ i ] = true;
         }
 
-        com.darkkeeper.themaze.Actors.Cell[][] cellsForMaze = new com.darkkeeper.themaze.Actors.Cell[cells.length][cells[0].length];
+        com.darkkeeper.themaze.Actors.Cell[][] cellsForMaze = new com.darkkeeper.themaze.Actors.Cell[Constants.cells.length][Constants.cells[0].length];
 
-        if ( isPreview ){
+
+        for ( int i = 0; i < 2*height+1; i++ ){
+            for ( int j = 0; j < 2*width+1; j++ ){
+                cellsForMaze[i][j] = new com.darkkeeper.themaze.Actors.Cell( world, TheMaze.WIDTH/(2*width+1), TheMaze.HEIGHT/(2*height+1), i,j );
+/*                if ( cells[i][j] ){
+                    System.out.print("#");
+                }   else {
+                    System.out.print("o");
+                }*/
+            }
+            //      System.out.println();
+        }
+
+
+       /* if ( isPreview ){
             System.out.println( width + " " + height );
 
             float areaWidth = 578f;
@@ -331,28 +350,28 @@ public abstract class MazeGenerator {
 
             for ( int i = 0; i < 2*height+1; i++ ){
                 for ( int j = 0; j < 2*width+1; j++ ){
-                    cellsForMaze[i][j] = new com.darkkeeper.themaze.Actors.Cell( areaWidth/(2*width + 1), areaHeight/(2*height+ 1) , cells[i][j],i,j );
-/*                if ( cells[i][j] ){
+                    cellsForMaze[i][j] = new com.darkkeeper.themaze.Actors.Cell( world, areaWidth/(2*width + 1), areaHeight/(2*height+ 1) , cells[i][j],i,j );
+*//*                if ( cells[i][j] ){
                     System.out.print("#");
                 }   else {
                     System.out.print("o");
-                }*/
+                }*//*
                 }
              //    System.out.println();
             }
         }   else    {
             for ( int i = 0; i < 2*height+1; i++ ){
                 for ( int j = 0; j < 2*width+1; j++ ){
-                    cellsForMaze[i][j] = new com.darkkeeper.themaze.Actors.Cell( TheMaze.WIDTH/(2*width+1), TheMaze.HEIGHT/(2*height+1), cells[i][j],i,j );
-/*                if ( cells[i][j] ){
+                    cellsForMaze[i][j] = new com.darkkeeper.themaze.Actors.Cell( world, TheMaze.WIDTH/(2*width+1), TheMaze.HEIGHT/(2*height+1), cells[i][j],i,j );
+*//*                if ( cells[i][j] ){
                     System.out.print("#");
                 }   else {
                     System.out.print("o");
-                }*/
+                }*//*
                 }
            //      System.out.println();
             }
-        }
+        }*/
 
 
         return cellsForMaze;
@@ -387,5 +406,54 @@ public abstract class MazeGenerator {
             out.print(horizWalls[rowBase + x] ? "--" : "  ");
         }
         out.println('*'/*'.'*/);
+    }
+
+
+    public static MazeGenerator generateNewMaze () {
+        MazeGenerator maze;
+
+        int mazeHeight = 4 + (int)(Settings.currentLevel/1.77);
+        int mazeWidth = 7 + Settings.currentLevel;
+
+        double rand;
+        rand = Math.random();
+        if ( Settings.currentLevel < 10 ){
+            if ( rand*100 < 60 ){
+                maze = new RecursiveBacktrackerMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else if ( rand*100 < 85 ){
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else    {
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }
+        }   else if ( Settings.currentLevel < 20 ){
+            if ( rand*100 < 40 ){
+                maze = new RecursiveBacktrackerMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else if ( rand*100 < 80 ){
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else    {
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }
+        }   else if ( Settings.currentLevel < 30 ){
+            if ( rand*100 < 20 ){
+                maze = new RecursiveBacktrackerMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else if ( rand*100 < 70 ){
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else    {
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }
+        }   else {
+            if ( rand*100 < 10 ){
+                maze = new RecursiveBacktrackerMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else if ( rand*100 < 50 ){
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else    {
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }
+        }
+        maze.generate();
+
+        Assets.currentStyleTexture = Assets.gameTexture1;
+
+        return maze;
     }
 }

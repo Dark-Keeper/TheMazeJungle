@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -24,11 +25,20 @@ import javax.xml.soap.Text;
  */
 public class Assets {
     public static Skin skin;
-    public static TextButton.TextButtonStyle textButtonStyle;
     public static Button.ButtonStyle menuButtonStyle;
-    public static TextureRegion character;
-    public static Sprite flag;
-    public static Sprite arrow;
+    public static Button.ButtonStyle arrowButtonStyle;
+
+    public static Slider.SliderStyle sliderStyle;
+    public static TextureRegionDrawable sliderKnob;
+    public static TextureRegionDrawable sliderBackground;
+
+    public static TextureAtlas digitsTextureAtlas;
+    public static TextureRegionDrawable digitTextureRegionDrawable;
+
+    public static TextureRegionDrawable checker;
+
+    public static Sprite door;
+    public static Sprite arrowDirection;
    // public static TextureRegionDrawable arrowDirection;
 
     public static TextureAtlas textureAtlas;
@@ -36,14 +46,18 @@ public class Assets {
     public static TextureRegion logo;
 
     //Background Textures
+    public static Texture gameTexture1;
+
+/*
     public static Texture winterStyleTexture;
     public static Texture hellStyleTexture;
     public static Texture classicStyleTexture;
+*/
+
 
     public static Texture currentStyleTexture;
 
-    //net Texture
-//    public static TextureRegion netTextureRegion;
+
 
     //Logo Textures
     public static TextureAtlas logoTextureAtlas;
@@ -51,41 +65,63 @@ public class Assets {
 
     //Menu Texures
     public static TextureAtlas menuTextureAtlas;
+    public static TextureAtlas menu2TextureAtlas;
 
 
     public static TextureRegionDrawable defaultButtonPressed;
     public static TextureRegionDrawable defaultButton;
+
+    public static TextureRegionDrawable arrowButtonPressed;
+    public static TextureRegionDrawable arrowButton;
+    public static TextureRegionDrawable arrowButtonImpossible;
+
     public static TextureRegionDrawable menuBackground;
+    public static TextureRegionDrawable customLevelBackground;
     public static TextureRegionDrawable levelChooseBackground;
-/*    public static TextureRegionDrawable playButton;
-    public static TextureRegionDrawable rateButton;
-    public static TextureRegionDrawable exitButton;*/
+    public static TextureRegionDrawable gameOverBackground;
+
 
     public static Texture loadTexture ( String file ){
         return new Texture(Gdx.files.internal( file ) );
     }
 
     public static void loadGame () {
-        winterStyleTexture = new Texture( "game/winter_texture.jpg" );
-        hellStyleTexture = new Texture ( "game/hell_texture.jpg" );
-        classicStyleTexture = new Texture ( "game/classic_texture.jpg" );
+        gameTexture1 = new Texture( "game/gameTexture3.jpg" );
 
-        textureAtlas = new TextureAtlas( "menu/gameTextureAtlas.txt");
+        textureAtlas = new TextureAtlas( "game/gameTextureAtlas.txt");
 
    //     netTextureRegion = new TextureRegion( textureAtlas.findRegion( "net_square" ) );
 
-        character = new TextureRegion( textureAtlas.findRegion( "player" ) );
-        flag = new Sprite( textureAtlas.findRegion( "flag" ) );
-        arrow = new Sprite( textureAtlas.findRegion( "arrow" ) );
+        door = new Sprite( textureAtlas.findRegion( "door" ) );
+        arrowDirection = new Sprite( textureAtlas.findRegion( "arrow" ) );
     }
 
 
     public static void loadMenu () {
-        menuTextureAtlas = new TextureAtlas( "menu/gameTextureAtlas.txt" );
-        menuBackground = new TextureRegionDrawable( menuTextureAtlas.findRegion( "mainMenuScreen" ) );
-        levelChooseBackground = new TextureRegionDrawable( menuTextureAtlas.findRegion( "levelChooseScreen" ) );
-        defaultButtonPressed = new TextureRegionDrawable( menuTextureAtlas.findRegion( "buttonPressed" ) );
-        defaultButton = new TextureRegionDrawable( menuTextureAtlas.findRegion( "button" ) );
+        menuTextureAtlas = new TextureAtlas( "menu/menuTextureAtlas.txt" );
+        menuBackground = new TextureRegionDrawable( menuTextureAtlas.findRegion( "mainScreen" ) );
+        customLevelBackground = new TextureRegionDrawable( menuTextureAtlas.findRegion( "customScreen" ) );
+        defaultButtonPressed = new TextureRegionDrawable( menuTextureAtlas.findRegion( "sliderKnob" ) );
+        defaultButton = new TextureRegionDrawable( menuTextureAtlas.findRegion( "sliderKnob" ) );
+        sliderKnob = new TextureRegionDrawable( menuTextureAtlas.findRegion( "sliderKnob" ) );
+        sliderBackground = new TextureRegionDrawable( menuTextureAtlas.findRegion( "sliderKnob" ) );
+        checker = new TextureRegionDrawable( menuTextureAtlas.findRegion( "checker" ) );
+
+        menu2TextureAtlas = new TextureAtlas( "menu/menu2TextureAtlas.txt" );
+        levelChooseBackground = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "levelChooserScreen" ) );
+        gameOverBackground = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "gameOverScreen" ) );
+
+        arrowDirection = new Sprite( menu2TextureAtlas.findRegion( "levelArrow" ) );
+        
+        arrowButton = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "levelArrow" ) );
+        arrowButtonPressed = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "levelArrowPressed" ) );
+        arrowButtonImpossible = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "levelArrowImpossible" ) );
+    }
+
+    public static void loadDigit ( int i ) {
+        digitsTextureAtlas = new TextureAtlas( "menu/digitsTextureAtlas.txt" );
+        digitTextureRegionDrawable = new TextureRegionDrawable( digitsTextureAtlas.findRegion( "" + i ) );
+
     }
 
     public static void loadLogo() {
@@ -125,11 +161,24 @@ public class Assets {
         skin.add( "default", textButtonStyle );*/
 
         menuButtonStyle = new Button.ButtonStyle();
-        menuButtonStyle.up = skin.newDrawable(Assets.defaultButton);
-        menuButtonStyle.down = skin.newDrawable(Assets.defaultButtonPressed);
-        menuButtonStyle.checked = skin.newDrawable(Assets.defaultButtonPressed);
-        menuButtonStyle.over = skin.newDrawable(Assets.defaultButtonPressed);
+        menuButtonStyle.up = skin.newDrawable(Assets.defaultButton,1f,1f,1f,0f);
+        menuButtonStyle.down = skin.newDrawable(Assets.defaultButtonPressed,1f,1f,1f,0f);
+        menuButtonStyle.checked = skin.newDrawable(Assets.defaultButtonPressed,1f,1f,1f,0f);
+        menuButtonStyle.over = skin.newDrawable(Assets.defaultButtonPressed,1f,1f,1f,0f);
         skin.add( "default", menuButtonStyle );
+
+
+        arrowButtonStyle = new Button.ButtonStyle();
+        arrowButtonStyle.up = skin.newDrawable(Assets.arrowButton);
+        arrowButtonStyle.down = skin.newDrawable(Assets.arrowButtonPressed);
+        arrowButtonStyle.checked = skin.newDrawable(Assets.arrowButtonImpossible);
+        arrowButtonStyle.over = skin.newDrawable(Assets.arrowButton);
+        skin.add( "arrow", arrowButtonStyle );
+
+        sliderStyle = new Slider.SliderStyle();
+        sliderStyle.knob = skin.newDrawable( Assets.sliderKnob );
+        sliderStyle.background = skin.newDrawable( Assets.sliderBackground, 1f,1f,1f,0f );
+        skin.add( "default", sliderStyle );
 
 /*
         menuButtonStyle = new Button.ButtonStyle();

@@ -1,0 +1,25 @@
+gameTextureAtlas.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arrow
+  rotate: false
+  xy: 2, 2
+  size: 145, 133
+  orig: 151, 143
+  offset: 1, 4
+  index: -1
+door
+  rotate: false
+  xy: 149, 2
+  size: 150, 185
+  orig: 200, 200
+  offset: 25, 13
+  index: -1
+player
+  rotate: false
+  xy: 301, 2
+  size: 379, 383
+  orig: 400, 400
+  offset: 9, 13
+  index: -1

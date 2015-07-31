@@ -6,10 +6,13 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,18 +23,19 @@ import com.darkkeeper.themaze.Actors.Cell;
 import com.darkkeeper.themaze.Actors.Controlls;
 import com.darkkeeper.themaze.Actors.Flag;
 import com.darkkeeper.themaze.Actors.Player;
+import com.darkkeeper.themaze.Basics.Settings;
+import com.darkkeeper.themaze.Methods.MazeGenerator;
 import com.darkkeeper.themaze.TheMaze;
+
+import box2dLight.DirectionalLight;
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 /**
  * Created by andreipiatosin on 5/15/15.
  */
 public class GameScreen implements Screen {
     private Viewport viewPort;
-    private Stage stage;
-    private OrthographicCamera camera;
-    private SpriteBatch myBatch;
-    private ShapeRenderer shapeRenderer;
-    private boolean mazeIsNotDisplayed = true;
 
     Player player;
     Flag flag;
@@ -47,16 +51,28 @@ public class GameScreen implements Screen {
 
     private boolean isShowingControlls = false;
 
+    private boolean isNight = false;
 
-
-
-    private Table mazeTable;
     private Cell[][] maze;
 
 
-    public GameScreen (Cell[][] maze) {
+    private World world; // contains the game world's bodies and actors.
+   // private GameRenderer renderer; // our custom game renderer.
+    private Stage stage; // stage that holds the GUI. Pixel-exact size.
+    private OrthographicCamera guiCam; // camera for the GUI. It's the stage default camera.
+
+
+    public static final Vector2 GRAVITY = new Vector2(0, 0);
+    private RayHandler rayHandler;
+    private PointLight pointLight;
+
+    public GameScreen (MazeGenerator mazeGenerator) {
         viewPort = new ExtendViewport(TheMaze.WIDTH,TheMaze.HEIGHT);
         stage = new Stage(viewPort);
+
+
+        world = new World( GRAVITY, true );
+
 
         InputProcessor backProcessor = new InputAdapter() {
             @Override
@@ -65,7 +81,7 @@ public class GameScreen implements Screen {
                 if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
                     dispose();
                     TheMaze.interestialAddInterface.show();
-                    TheMaze.game.setScreen(new LevelChooseScreen());
+                    TheMaze.game.setScreen(new CustomLevelScreen());
                  }
 
                 return false;
@@ -77,24 +93,36 @@ public class GameScreen implements Screen {
 
         Gdx.input.setCatchBackKey(true);
 
-        this.maze = maze;
+
+        this.maze = mazeGenerator.getMaze( world );
 
         START_Y = 1080;
         START_Y -= maze[0][0].height;
         displayMaze();
 
 
-        player = new Player( maze[1][1].getX(), maze[1][1].getY(), maze );
+        player = new Player( world, maze[1][1].getX(), maze[1][1].getY(), maze );
         stage.addActor( player );
 
         flag = new Flag(  maze [ maze.length - 2 ][ maze[ 0 ].length - 2 ].getX(),  maze[ maze.length-2 ] [ maze[0].length-2 ].getY() );
         stage.addActor( flag );
+
+       // isNight = true;
+
+        if ( isNight ) {
+            rayHandler = new RayHandler(world);
+            rayHandler.setCombinedMatrix(stage.getCamera().combined);
+            new PointLight( rayHandler, 4, new Color ( 1,1,1,1), 200 , flag.getX() + flag.getWidth()/2, flag.getY()+ flag.getHeight()/2 );
+            pointLight = new PointLight(rayHandler, 6, new Color(1, 1, 1, 1), 360, TheMaze.WIDTH / 2, TheMaze.HEIGHT / 2);
+           // pointLight.setSoftnessLength(0);
+        }
     }
 
     private void displayMaze () {
         for ( int i = 0; i < maze.length; i ++ ){
             for ( int j = 0; j < maze[0].length; j ++ ){
                 maze[i][j].setPosition( START_X + Cell.width * j, START_Y - Cell.height * i );
+             //   maze[i][j].setBody( START_X + Cell.width * j, START_Y - Cell.height * i );
                 stage.addActor( maze[i][j] );
             }
         }
@@ -106,26 +134,7 @@ public class GameScreen implements Screen {
 
     }
 
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.act( delta );
-        stage.draw();
-
-        if ( (int) player.getX() == (int) flag.getX() && (int) player.getY() == (int) flag.getY() ){
-            TheMaze.interestialAddInterface.show();
-            TheMaze.game.setScreen( new LevelChooseScreen() );
-        }
-
-        if ( !player.isMoovingToNextIntersection && !isShowingControlls){
-            showControlls();
-        }   else if ( player.isMoovingToNextIntersection && isShowingControlls )   {
-            hideControlls();
-        }
-
-    }
 
     public void showControlls () {
         isShowingControlls = true;
@@ -212,6 +221,43 @@ public class GameScreen implements Screen {
     }
 
 
+
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
+
+        stage.act(delta);
+        stage.draw();
+
+        if ( isNight ) {
+            pointLight.setPosition(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2);
+            rayHandler.updateAndRender();
+            world.step(1 / 60f, 6, 2);
+        }
+
+
+
+
+        if ( (int) player.getX() == (int) flag.getX() && (int) player.getY() == (int) flag.getY() ){
+            TheMaze.interestialAddInterface.show();
+            Settings.levelsDone +=1;
+            System.out.println( " ----------------- " + Settings.levelsDone );
+            Settings.saveResults();
+            TheMaze.game.setScreen( new GameOverScreen() );
+        }
+
+        if ( !player.isMoovingToNextIntersection && !isShowingControlls){
+            showControlls();
+        }   else if ( player.isMoovingToNextIntersection && isShowingControlls )   {
+            hideControlls();
+        }
+
+    }
+
+
     @Override
     public void resize(int width, int height) {
 
@@ -234,6 +280,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        if (isNight) {
+            rayHandler.dispose();
+        }
         stage.dispose();
     }
 }

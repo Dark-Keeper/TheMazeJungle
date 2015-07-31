@@ -1,6 +1,8 @@
 package com.darkkeeper.themaze.Basics;
 
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -10,14 +12,35 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * Created by andreipiatosin on 5/15/15.
  */
 public class Settings {
-    private static Viewport viewPort;
-    private static int WIDTH = 1920;
-    private static int HEIGHT = 1080;
 
-    public static void load (){
+    public static Preferences prefs;
 
+    public static boolean isSoundEnabled;
+    public static boolean isNigthLevelsAvailable;
+    public static int levelsDone;
+    public static int currentLevel;
+
+    public static void loadSettings (){
+        prefs = Gdx.app.getPreferences( "prefs" );
+
+        isSoundEnabled              = prefs.getBoolean( "sound", true );
+        isNigthLevelsAvailable      = prefs.getBoolean( "nightEndabled", true );
     }
-    public static void save () {
 
+    public static void saveSettings () {
+        prefs.putBoolean( "sound", isSoundEnabled );
+        prefs.putBoolean( "nightEnabled", isNigthLevelsAvailable );
+        prefs.flush();
+    }
+
+    public static void loadResults () {
+        levelsDone    = prefs.getInteger( "levelsDone", 0 );
+        currentLevel  = prefs.getInteger( "currentLevel", 1 );
+    }
+
+    public static void saveResults () {
+        prefs.putInteger( "levelsDone", levelsDone );
+        prefs.putInteger( "currentLevel", currentLevel );
+        prefs.flush();
     }
 }
