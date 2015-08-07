@@ -23,3 +23,19 @@ player
   orig: 400, 400
   offset: 9, 13
   index: -1
+key
+  rotate: false
+  xy: 690, 2
+  size: 151, 121
+  orig: 200, 200
+  offset: 25, 13
+  index: -1
+keyTip
+  rotate: false
+  xy: 2, 438
+  size: 422, 583
+  orig: 500, 600
+  offset: 25, 13
+  index: -1
+
+

@@ -13,8 +13,6 @@ import com.darkkeeper.themaze.Screens.LogoScreen;
 public class TheMaze extends Game implements ApplicationListener, InputProcessor {
     FPSLogger fps;
     public static Game game;
-    public static float WIDTH = 1920;
-    public static float HEIGHT = 1080;
 
     public static ExitAddInterface exitAddInterface;
     public static InterestialAddInterface interestialAddInterface;

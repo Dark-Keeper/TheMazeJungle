@@ -62,6 +62,8 @@ public class Player extends Actor {
 
     private Body body;
 
+    public boolean isTouchingDoor = false;
+
 
 
     public Player ( World world, float x, float y , Cell[][] cells ) {
@@ -123,11 +125,6 @@ public class Player extends Actor {
         this.setSize(RADIUS*2, RADIUS*2); // scale actor to body's size
         this.setScaling(Scaling.stretch); // stretch the texture
         this.setAlign(Align.center);*/
-
-
-
-
-
 
     }
 
@@ -254,7 +251,7 @@ public class Player extends Actor {
                     prevCell = cells[0][0];
                 }
 
-                if ( getOpenDirections() == 2 ) {
+                if ( getOpenDirections() == 2 && !isTouchingDoor ) {
                     if ( isNoWallUp() && currentCell.i - 1 != prevCell.i ){
                         mooveUp();
                     } else

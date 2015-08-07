@@ -331,7 +331,7 @@ public abstract class MazeGenerator {
 
         for ( int i = 0; i < 2*height+1; i++ ){
             for ( int j = 0; j < 2*width+1; j++ ){
-                cellsForMaze[i][j] = new com.darkkeeper.themaze.Actors.Cell( world, TheMaze.WIDTH/(2*width+1), TheMaze.HEIGHT/(2*height+1), i,j );
+                cellsForMaze[i][j] = new com.darkkeeper.themaze.Actors.Cell( world, Constants.APP_WIDTH/(2*width+1), ( Constants.APP_HEIGHT - Constants.BOTTOM_BAR_HEIGHT )/(2*height+1), i,j );
 /*                if ( cells[i][j] ){
                     System.out.print("#");
                 }   else {
@@ -410,6 +410,54 @@ public abstract class MazeGenerator {
 
 
     public static MazeGenerator generateNewMaze () {
+        MazeGenerator maze;
+
+        int mazeHeight = 4 + (int)(Settings.currentLevel/1.77);
+        int mazeWidth = 7 + Settings.currentLevel;
+
+        double rand;
+        rand = Math.random();
+        if ( Settings.currentLevel < 10 ){
+            if ( rand*100 < 60 ){
+                maze = new RecursiveBacktrackerMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else if ( rand*100 < 85 ){
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else    {
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }
+        }   else if ( Settings.currentLevel < 20 ){
+            if ( rand*100 < 40 ){
+                maze = new RecursiveBacktrackerMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else if ( rand*100 < 80 ){
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else    {
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }
+        }   else if ( Settings.currentLevel < 30 ){
+            if ( rand*100 < 20 ){
+                maze = new RecursiveBacktrackerMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else if ( rand*100 < 70 ){
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else    {
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }
+        }   else {
+            if ( rand*100 < 10 ){
+                maze = new RecursiveBacktrackerMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else if ( rand*100 < 50 ){
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }   else    {
+                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            }
+        }
+        maze.generate();
+
+        Assets.currentStyleTexture = Assets.gameTexture1;
+
+        return maze;
+    }
+
+    public static MazeGenerator generateNewMaze ( int a ) {
         MazeGenerator maze;
 
         int mazeHeight = 4 + (int)(Settings.currentLevel/1.77);

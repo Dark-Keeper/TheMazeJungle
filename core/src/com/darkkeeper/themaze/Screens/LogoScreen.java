@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.darkkeeper.themaze.Basics.Assets;
 import com.darkkeeper.themaze.Basics.Settings;
 import com.darkkeeper.themaze.TheMaze;
+import com.darkkeeper.themaze.Utils.Constants;
 
 /**
  * Created by andreipiatosin on 5/20/15.
@@ -20,7 +21,7 @@ public class LogoScreen implements Screen {
     private Viewport viewPort;
 
     public LogoScreen (){
-        viewPort = new ExtendViewport(TheMaze.WIDTH,TheMaze.HEIGHT);
+        viewPort = new ExtendViewport(Constants.APP_WIDTH,Constants.APP_HEIGHT);
         stage = new Stage(viewPort);
         Gdx.input.setInputProcessor(stage);
 

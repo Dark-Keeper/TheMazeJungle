@@ -27,6 +27,7 @@ import com.darkkeeper.themaze.Methods.MazeGenerator;
 import com.darkkeeper.themaze.Methods.PrimMazeGenerator;
 import com.darkkeeper.themaze.Methods.RecursiveBacktrackerMazeGenerator;
 import com.darkkeeper.themaze.TheMaze;
+import com.darkkeeper.themaze.Utils.Constants;
 
 import java.util.Set;
 
@@ -53,12 +54,8 @@ public class CampaignScreen implements Screen {
     private Button nextLvlButton;
     private Button prevLvlButton;
 
-    private Mesh mesh;
-    private ShaderProgram shader;
-    private Texture texture;
-
     public CampaignScreen() {
-        viewPort = new ExtendViewport(TheMaze.WIDTH,TheMaze.HEIGHT);
+        viewPort = new ExtendViewport( Constants.APP_WIDTH, Constants.APP_HEIGHT );
         stage = new Stage(viewPort);
         Gdx.input.setInputProcessor(stage);
 

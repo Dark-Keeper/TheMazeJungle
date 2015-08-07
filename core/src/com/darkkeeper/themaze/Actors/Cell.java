@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.darkkeeper.themaze.Basics.Assets;
+import com.darkkeeper.themaze.Basics.Settings;
 import com.darkkeeper.themaze.TheMaze;
 import com.darkkeeper.themaze.Utils.Constants;
 
@@ -70,22 +71,20 @@ public class Cell extends Actor {
             }   else    {
                 isWallDown = 0.0f;
             }
-    }   catch (ArrayIndexOutOfBoundsException exception){
-            isWallDown = 0.0f;
-    }
+        }   catch (ArrayIndexOutOfBoundsException exception){
+                isWallDown = 0.0f;
+        }
         try {
             if (Constants.cells[i][j-1] == true) {
                 isWallLeft = 1.0f;
             }   else    {
                 isWallLeft = 0.0f;
             }
-}   catch (ArrayIndexOutOfBoundsException exception){
-            isWallLeft = 0.0f;
+        }   catch (ArrayIndexOutOfBoundsException exception){
+                isWallLeft = 0.0f;
         }
 
-
-
-
+/*
         String vertexShader =
                 "attribute vec4 a_position;\n" +
                         "attribute vec4 a_color;\n" +
@@ -104,10 +103,7 @@ public class Cell extends Actor {
                         "    v_position = a_position;\n" +
                         "}";
 
-
-
-        String fragmentShader =
-
+        String wallFragmentShader =
                 "#ifdef GL_ES\n" +
                         "    precision mediump float;\n" +
                         "#endif\n" +
@@ -124,18 +120,38 @@ public class Cell extends Actor {
                         "void main() {\n" +
                         "    vec4 color = v_color * texture2D(u_texture, v_texCoord);\n" +
                         "\n" +
-                        "    if ( v_position.x < u_pos.x + 0.2 * u_size.x && u_directions.a != 1.0 ){\n" +
-                        "        color.rgb = mix((color.rgb + 0.4),color.rgb, (v_position.x-u_pos.x)/(0.2*u_size.x) );\n" +
-                        "    }   " +
-                        "    if ( v_position.x > u_pos.x + 0.8 * u_size.x  && u_directions.y != 1.0 )   {\n" +
-                        "        color.rgb = mix( (color.rgb - 0.4),color.rgb, (u_pos.x + u_size.x - v_position.x)/(0.2 * u_size.x));\n" +
-                        "    }   " +
-                        "    if ( v_position.y < u_pos.y + 0.2 * u_size.y  && u_directions.z != 1.0 )   {\n" +
-                        "        color.rgb = mix((color.rgb - 0.4),color.rgb, (v_position.y-u_pos.y)/(0.2*u_size.y) );\n" +
-                        "    }   " +
-                        "    if ( v_position.y > u_pos.y + 0.8 * u_size.y  && u_directions.x != 1.0 )   {\n" +
-                        "        color.rgb = mix((color.rgb + 0.4),color.rgb, (u_pos.y + u_size.y - v_position.y)/(0.2 * u_size.y) );\n" +
-                        "    }\n" +
+*//*                        " float var1 = ( ( ( (v_position.x - u_pos.x) / u_size.x ) * 2.0 - 1.0) * ((u_directions.y) * (u_directions.a) + 1.0) - (u_directions.a) + (u_directions.y) ) / 2.0 ;"+
+                        " float var2 = ( ( ( (v_position.y - u_pos.y) / u_size.y ) * 2.0 - 1.0) * ((u_directions.x) * (u_directions.z) + 1.0) - (u_directions.z) + (u_directions.x) ) / 2.0 ;"+*//*
+                        " float var1 = ( ( ( (v_position.x - u_pos.x) / u_size.x ) * 2.0 - 1.0) * (u_directions.y * u_directions.a - 2.0 * (u_directions.y + u_directions.a - 2.0)) - 2.0 * (u_directions.y - u_directions.a) ) / 4.0 ;"+
+                        " float var2 = ( ( ( (v_position.y - u_pos.y) / u_size.y ) * 2.0 - 1.0) * (u_directions.z * u_directions.x - 2.0 * (u_directions.z + u_directions.x - 2.0)) - 2.0 * (u_directions.x - u_directions.z) ) / 4.0 ;"+
+
+                        "        color.rgb = mix( (color.rgb), (color.rgb + 0.4 ), ( -1.0 ) * var1 * var1 * var1 );\n" +
+                        "        color.rgb = mix( (color.rgb), (color.rgb + 0.4 ), var2 * var2 * var2 );\n" +
+                        "\n" +
+                        "    gl_FragColor = color;\n" +
+                        "}";
+
+        String groundFragmentShader =
+                "#ifdef GL_ES\n" +
+                        "    precision mediump float;\n" +
+                        "#endif\n" +
+                        "\n" +
+                        "varying vec4 v_color;\n" +
+                        "varying vec2 v_texCoord;\n" +
+                        "varying vec4 v_position;\n" +
+                        "\n" +
+                        "uniform sampler2D u_texture;\n" +
+                        "uniform vec2 u_pos;\n" +
+                        "uniform vec2 u_size;\n" +
+                        "uniform vec4 u_directions;\n" +
+                        "\n" +
+                        "void main() {\n" +
+                        "    vec4 color = v_color * texture2D(u_texture, v_texCoord);\n" +
+                        "\n" +
+                        " float var1 = ( (v_position.x - u_pos.x) / u_size.x - 1.0 ) * ( 1.0 + 3.0 * u_directions.a ) / 4.0 ;"+
+                        " float var2 = ( (v_position.y - u_pos.y) / u_size.y ) * ( 1.0 + 3.0 * u_directions.x ) / 4.0 ;"+
+                        "        color.rgb = mix( (color.rgb), (color.rgb - 0.4 ), var1 * var1 );\n" +
+                        "        color.rgb = mix( (color.rgb), (color.rgb - 0.4 ), var2 * var2 );\n" +
                         "\n" +
                         "    gl_FragColor = color;\n" +
                         "}";
@@ -173,38 +189,61 @@ public class Cell extends Actor {
                         "}";
 
 
-        shader = new ShaderProgram(vertexShader, fragmentShader);
-        shaderGround = new ShaderProgram( vertexShader, fragmentShader2 );
+        shader = new ShaderProgram(vertexShader, wallFragmentShader );
+        shaderGround = new ShaderProgram( vertexShader, groundFragmentShader );
 
-        if (!shader.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
+        if (!shader.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());*/
     }
     
     @Override
     public void draw(Batch batch, float parentAlpha) {
 
-        Texture texture = Assets.currentStyleTexture;
 
         if ( isWall ) {
-            shader.begin();
+/*            shader.begin();
             shader.setUniformf( "u_pos", getX(), getY() );
             shader.setUniformf( "u_size", width, height );
             shader.setUniformf( "u_directions", isWallUp, isWallRight, isWallDown, isWallLeft );
             shader.end();
 
-            batch.setShader( shader );
-            batch.draw(texture, getX(),getY(), width,height, width/TheMaze.WIDTH*j, ( height/TheMaze.HEIGHT*i )/2, width/TheMaze.WIDTH*(j+1), ( height/TheMaze.HEIGHT*(i+1) )/2 );
+            batch.setShader( shader );*/
+            batch.draw(Assets.currentStyleTexture, getX(),getY(), width, height, width/Constants.APP_WIDTH*j, ( height/(Constants.APP_HEIGHT + 10)*i )/2, width/Constants.APP_WIDTH*(j+1), ( height/(Constants.APP_HEIGHT + 10)*(i+1) )/2 );
+            if ( isWallUp == 0.0f ){
+                batch.draw( Assets.currentStyleTexture, getX(), getY() + 3*height/4f, width, height/4f, 23f/2048f, 2028f/2048f, 24f/2048f, 1f );
+            }
+            if ( isWallLeft == 0.0f ){
+                batch.draw( Assets.currentStyleTexture, getX(), getY(), width/4f, height, 0, 2028f/2048f, 20f/2048f, 1f );
+            }
+            if ( isWallDown == 0.0f ){
+                batch.draw( Assets.currentStyleTexture, getX(), getY(), width, height/4f, 20f/2048f, 2028f/2048f, 21f/2048f, 1f );
+            }
+            if ( isWallRight == 0.0f ) {
+                batch.draw( Assets.currentStyleTexture, getX() + 3*width/4f, getY(), width/4f, height, 24f/2048f, 2028f/2048f, 44f/2048f, 1f );
+            }
         }   else    {
 
-            shaderGround.begin();
-            shaderGround.setUniformf("u_pos", getX(), getY());
-            shaderGround.setUniformf( "u_size", width, height );
-            shaderGround.setUniformf( "u_directions", isWallUp, isWallRight, isWallDown, isWallLeft );
-            shaderGround.end();
+/*
+            if ( Settings.isShadowsEnabled ) {
+                shaderGround.begin();
+                shaderGround.setUniformf("u_pos", getX(), getY());
+                shaderGround.setUniformf("u_size", width, height);
+                shaderGround.setUniformf("u_directions", isWallUp, isWallRight, isWallDown, isWallLeft);
+                shaderGround.end();
+                batch.setShader(shaderGround);
+            }
+*/
 
-            batch.setShader( shaderGround );
-            batch.draw(texture, getX(),getY(), width,height, width/TheMaze.WIDTH*j, ( height/TheMaze.HEIGHT*i )/2 + 0.5f, width/TheMaze.WIDTH*(j+1), ( height/TheMaze.HEIGHT*(i+1) )/2 + 0.5f );
+
+            batch.draw(Assets.currentStyleTexture, getX(), getY(), width, height, width / Constants.APP_WIDTH * j, (height / Constants.APP_HEIGHT * i) / 2 + 0.5f, width / Constants.APP_WIDTH * (j + 1), (height / Constants.APP_HEIGHT * (i + 1)) / 2 + 0.5f);
+
+            if ( isWallUp == 1.0f ){
+                batch.draw( Assets.currentStyleTexture, getX(), getY() + 3*height/4f, width, height/4f, 22f/2048f, 2028f/2048f, 23f/2048f, 1f );
+            }
+            if ( isWallLeft == 1.0f ){
+                batch.draw( Assets.currentStyleTexture, getX(), getY(), width/4f, height, 44f/2048f, 2028f/2048f, 64f/2048f, 1f );
+            }
         }
 
-        batch.setShader( null );
+       // batch.setShader( null );
     }
 }

@@ -9,25 +9,29 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.darkkeeper.themaze.Actors.Cell;
 import com.darkkeeper.themaze.Actors.Controlls;
 import com.darkkeeper.themaze.Actors.Flag;
+import com.darkkeeper.themaze.Actors.Key;
 import com.darkkeeper.themaze.Actors.Player;
+import com.darkkeeper.themaze.Basics.Assets;
 import com.darkkeeper.themaze.Basics.Settings;
 import com.darkkeeper.themaze.Methods.MazeGenerator;
 import com.darkkeeper.themaze.TheMaze;
+import com.darkkeeper.themaze.Utils.Constants;
 
-import box2dLight.DirectionalLight;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
@@ -37,8 +41,11 @@ import box2dLight.RayHandler;
 public class GameScreen implements Screen {
     private Viewport viewPort;
 
-    Player player;
-    Flag flag;
+    private Player player;
+    private Flag flag;
+    private Key key;
+
+    private boolean isPlayerWithKey = false;
 
     private static float START_X = 0;
     private static float START_Y = 1080;
@@ -50,6 +57,9 @@ public class GameScreen implements Screen {
     private Controlls controllRight;
 
     private boolean isShowingControlls = false;
+    private boolean isShowingKeyTip = false;
+    private boolean keyTipWasShown = false;
+    private Button keyTipButton;
 
     private boolean isNight = false;
 
@@ -66,9 +76,14 @@ public class GameScreen implements Screen {
     private RayHandler rayHandler;
     private PointLight pointLight;
 
-    public GameScreen (MazeGenerator mazeGenerator) {
-        viewPort = new ExtendViewport(TheMaze.WIDTH,TheMaze.HEIGHT);
+    public GameScreen (MazeGenerator mazeGenerator ) {
+        viewPort = new ExtendViewport(Constants.APP_WIDTH, Constants.APP_HEIGHT);
         stage = new Stage(viewPort);
+
+
+        //BETTA_OPTIONS
+        Settings.isLvlWithKey = true;
+
 
 
         world = new World( GRAVITY, true );
@@ -80,8 +95,8 @@ public class GameScreen implements Screen {
 
                 if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
                     dispose();
-                    TheMaze.interestialAddInterface.show();
-                    TheMaze.game.setScreen(new CustomLevelScreen());
+//                    TheMaze.interestialAddInterface.show();
+                    TheMaze.game.setScreen( new MainMenuScreen() );
                  }
 
                 return false;
@@ -107,13 +122,30 @@ public class GameScreen implements Screen {
         flag = new Flag(  maze [ maze.length - 2 ][ maze[ 0 ].length - 2 ].getX(),  maze[ maze.length-2 ] [ maze[0].length-2 ].getY() );
         stage.addActor( flag );
 
+        if ( Settings.isLvlWithKey ){
+
+            int i = 0;
+            int j = 0;
+            while ( maze [i][j].isWall || maze [i][j] == maze [ maze.length - 2 ][ maze[0].length - 2 ] ){
+                i = (int)(Math.random() * ( maze.length - 1 ) / 2 + maze.length/2);
+                j = (int)(Math.random() * ( maze[0].length - 1 ) / 2  + maze[0].length/2);
+            }
+
+            key = new Key(  maze [ i ][ j ].getX(),  maze[ i ][ j ].getY() );
+            stage.addActor( key );
+        }   else {
+            key = null;
+        }
+
+        System.out.println (" ------------------- key = " + key );
+
        // isNight = true;
 
         if ( isNight ) {
             rayHandler = new RayHandler(world);
             rayHandler.setCombinedMatrix(stage.getCamera().combined);
             new PointLight( rayHandler, 4, new Color ( 1,1,1,1), 200 , flag.getX() + flag.getWidth()/2, flag.getY()+ flag.getHeight()/2 );
-            pointLight = new PointLight(rayHandler, 6, new Color(1, 1, 1, 1), 360, TheMaze.WIDTH / 2, TheMaze.HEIGHT / 2);
+            pointLight = new PointLight(rayHandler, 6, new Color(1, 1, 1, 1), 360, Constants.APP_WIDTH / 2, Constants.APP_HEIGHT / 2);
            // pointLight.setSoftnessLength(0);
         }
     }
@@ -128,9 +160,43 @@ public class GameScreen implements Screen {
         }
     }
 
+    public void setGameScreenUI () {
+        int backgroundPartsAmount = 7;
 
-    @Override
-    public void show() {
+        for ( int i = 0; i < backgroundPartsAmount; i ++ ){
+            Image bottomBarBackground  = new Image( Assets.bottomBarBackground );
+            bottomBarBackground.setSize( Constants.APP_WIDTH/backgroundPartsAmount, Constants.BOTTOM_BAR_HEIGHT + Cell.height/4 );
+            bottomBarBackground.setPosition( i * bottomBarBackground.getWidth(), 0 );
+            stage.addActor( bottomBarBackground );
+        }
+
+        Button exitButton = new Button( Assets.skin, "bbexitButton" );
+        exitButton.addListener( new InputListener(){
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                TheMaze.game.setScreen( new MainMenuScreen() );
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            }
+        } );
+        exitButton.setSize( Constants.BOTTOM_BAR_ICON_SIZE, Constants.BOTTOM_BAR_ICON_SIZE );
+        exitButton.setPosition( Constants.APP_WIDTH - ( Constants.BOTTOM_BAR_ICON_SIZE + Constants.BOTTOM_BAR_ICON_PADDING_LEFT ), 0 );
+        stage.addActor( exitButton );
+
+        Button zoomButton = new Button( Assets.skin, "bbzoomButton" );
+        zoomButton.addListener( new InputListener(){
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                TheMaze.game.setScreen( new MainMenuScreen() );
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            }
+        } );
+        zoomButton.setSize( Constants.BOTTOM_BAR_ICON_SIZE, Constants.BOTTOM_BAR_ICON_SIZE );
+        zoomButton.setPosition( Constants.APP_WIDTH - 2 * ( Constants.BOTTOM_BAR_ICON_SIZE + Constants.BOTTOM_BAR_ICON_PADDING_LEFT ), 0 );
+        stage.addActor( zoomButton );
 
     }
 
@@ -138,6 +204,7 @@ public class GameScreen implements Screen {
 
     public void showControlls () {
         isShowingControlls = true;
+        player.isTouchingDoor = false;
 
         if ( player.isNoWallUp() ){
             controllUp = new Controlls( player, "north" );
@@ -220,6 +287,30 @@ public class GameScreen implements Screen {
         isShowingControlls = false;
     }
 
+    private void showKeyTip () {
+        isShowingKeyTip = true;
+        keyTipButton = new Button( Assets.skin, "keyTip" );
+        keyTipButton.addListener( new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                keyTipButton.remove();
+                isShowingKeyTip = false;
+                keyTipWasShown = true;
+            }
+        } );
+        keyTipButton.setSize( 600, 800 );
+        keyTipButton.setPosition( Constants.APP_WIDTH/2 - keyTipButton.getWidth()/2, Constants.APP_HEIGHT/2 - keyTipButton.getHeight()/2 );
+        stage.addActor( keyTipButton );
+    }
+
+
+    @Override
+    public void show() {
+
+    }
 
 
     @Override
@@ -239,14 +330,31 @@ public class GameScreen implements Screen {
         }
 
 
+        if ( key != null ) {
+            if ((int) player.getX() == (int) key.getX() && (int) player.getY() == (int) key.getY()) {
+                key.remove();
+                isPlayerWithKey = true;
+            }
+        }
 
 
         if ( (int) player.getX() == (int) flag.getX() && (int) player.getY() == (int) flag.getY() ){
-            TheMaze.interestialAddInterface.show();
-            Settings.levelsDone +=1;
-            System.out.println( " ----------------- " + Settings.levelsDone );
-            Settings.saveResults();
-            TheMaze.game.setScreen( new GameOverScreen() );
+            if ( key != null ) {
+                if ( isPlayerWithKey ) {
+                    TheMaze.interestialAddInterface.show();
+                    Settings.levelsDone += 1;
+                    Settings.saveResults();
+                    TheMaze.game.setScreen(new GameOverScreen());
+                }   else if ( !isShowingKeyTip && !keyTipWasShown ) {
+                        player.isTouchingDoor = true;
+                        showKeyTip ();
+                }
+            }   else {
+                TheMaze.interestialAddInterface.show();
+                Settings.levelsDone += 1;
+                Settings.saveResults();
+                TheMaze.game.setScreen(new GameOverScreen());
+            }
         }
 
         if ( !player.isMoovingToNextIntersection && !isShowingControlls){
@@ -286,3 +394,5 @@ public class GameScreen implements Screen {
         stage.dispose();
     }
 }
+
+

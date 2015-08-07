@@ -29,3 +29,59 @@ void main() {
 
     gl_FragColor = color;
 }
+
+
+
+                        "void main() {\n" +
+                        "    vec4 color = v_color * texture2D(u_texture, v_texCoord);\n" +
+                        "\n" +
+                        "    if ( v_position.x < u_pos.x + 0.2 * u_size.x && u_directions.a != 1.0 ){\n" +
+                        "        color.rgb = mix((color.rgb + 0.4),color.rgb, (v_position.x-u_pos.x)/(0.2 * u_size.x) );\n" +
+                        "    }   " +
+                        "    if ( v_position.x > u_pos.x + 0.8 * u_size.x  && u_directions.y != 1.0 )   {\n" +
+                        "        color.rgb = mix( (color.rgb - 0.4),color.rgb, (u_pos.x + u_size.x - v_position.x)/(0.2 * u_size.x));\n" +
+                        "    }   " +
+                        "    if ( v_position.y < u_pos.y + 0.2 * u_size.y  && u_directions.z != 1.0 )   {\n" +
+                        "        color.rgb = mix((color.rgb - 0.4),color.rgb, (v_position.y-u_pos.y)/(0.2*u_size.y) );\n" +
+                        "    }   " +
+                        "    if ( v_position.y > u_pos.y + 0.8 * u_size.y  && u_directions.x != 1.0 )   {\n" +
+                        "        color.rgb = mix((color.rgb + 0.4),color.rgb, (u_pos.y + u_size.y - v_position.y)/(0.2 * u_size.y) );\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    gl_FragColor = color;\n" +
+                        "}";
+
+
+
+
+
+                        if ( ( v_position.x < u_pos.x + 0.2 * u_size.x ) || ( v_position.x > u_pos.x + 0.8 * u_size.x ) || ( v_position.y < u_pos.y + 0.2 * u_size.y ) ||  ( v_position.y > u_pos.y + 0.8 * u_size.y ) ){
+                            if ( u_directions.a != 1.0 ){
+                                color.rgb = mix((color.rgb + 0.4),color.rgb, (v_position.x-u_pos.x)/(0.2 * u_size.x) );
+                            }
+                            if ( u_directions.y != 1.0 ){
+                                color.rgb = mix( (color.rgb - 0.4),color.rgb, (u_pos.x + u_size.x - v_position.x)/(0.2 * u_size.x));
+                            }
+                            if ( u_directions.z != 1.0 ){
+                                color.rgb = mix((color.rgb - 0.4),color.rgb, (v_position.y-u_pos.y)/(0.2*u_size.y) );
+                            }
+                            if ( u_directions.x != 1.0 ){
+                                color.rgb = mix((color.rgb + 0.4),color.rgb, (u_pos.y + u_size.y - v_position.y)/(0.2 * u_size.y) );
+                            }
+                        }
+
+
+
+
+
+
+
+                        if ( v_position.xy < u_pos.xy + 0.2 * u_size.xy && ( u_directions.a != 1.0 || u_directions.z != 1.0 ){
+                            color.rgb = mix( (color.rgb + 0.4 * ( 1.0 - u_directions.a ) ), color.rgb, ( v_position.xy - u_pos.xy ) / ( 0.2 * u_size.xy ) );
+                        }
+
+                        if ( v_position.xy > u_pos.xy + 0.8 * u_size.xy && ( u_directions.x != 1.0 || u_directions.y != 1.0 ){
+                            color.rgb = mix( (color.rgb + 0.4 * ( 1.0 - u_directions.y ) ), color.rgb, ( v_position.xy - u_pos.xy ) / ( 0.2 * u_size.xy ) );
+                        }   else {
+                            color.rgb = mix( (color.rgb - 0.4 * ( 1.0 - u_directions.z ) , color.rgb, ( v_position.xy - u_pos.xy ) / ( 0.2 * u_size.xy ) );
+                        }

@@ -12,8 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.darkkeeper.themaze.Actors.Cell;
@@ -24,6 +27,8 @@ import com.darkkeeper.themaze.Methods.MazeGenerator;
 import com.darkkeeper.themaze.Methods.PrimMazeGenerator;
 import com.darkkeeper.themaze.Methods.RecursiveBacktrackerMazeGenerator;
 import com.darkkeeper.themaze.TheMaze;
+import com.darkkeeper.themaze.UI.MySlider;
+import com.darkkeeper.themaze.Utils.Constants;
 
 /**
  * Created by andreipiatosin on 5/19/15.
@@ -31,8 +36,8 @@ import com.darkkeeper.themaze.TheMaze;
 
 public class CustomLevelScreen implements Screen {
 
-    private static int METHOD_BUTTON_WIDTH       =   120;
-    private static int METHOD_BUTTON_HEIGHT      =   120;
+    private static int METHOD_BUTTON_WIDTH       =   130;
+    private static int METHOD_BUTTON_HEIGHT      =   100;
 
     private Viewport viewPort;
     private Stage stage;
@@ -44,32 +49,14 @@ public class CustomLevelScreen implements Screen {
     private Button huntAndKillMethodButton;
     private Button primsMethodButton;
 
-    private Button smallMazeSizeButton;
-    private Button medMazeSizeButton;
-    private Button largeMazeSizeButton;
-
-    private Button classicSkinSelectButton;
-    private Button glanceSkinSelectButton;
-    private Button hellSkinSelectButton;
-
     private int mazeWidth;
     private int mazeHeight;
-    
-/*    private static int skin;
-    private static int CLASSIC_MAZE_SKIN    = 0;
-    private static int GLANCE_MAZE_SKIN     = 1;
-    private static int HELL_MAZE_SKIN       = 2;*/
 
-    private Cell[][] cells;
-
-    private static float START_X = 1273;
-    private static float START_Y = 1040;
-
-    private Slider widthSlider;
-    private Slider heightSlider;
+    private MySlider widthSlider;
+    private MySlider heightSlider;
 
     public CustomLevelScreen() {
-        viewPort = new ExtendViewport( TheMaze.WIDTH, TheMaze.HEIGHT );
+        viewPort = new ExtendViewport( Constants.APP_WIDTH, Constants.APP_HEIGHT );
         stage = new Stage(viewPort);
 
         InputProcessor backProcessor = new InputAdapter() {
@@ -98,10 +85,10 @@ public class CustomLevelScreen implements Screen {
 
         addMethodButtons();
 
-        widthSlider = new Slider( 4, 50, 1, false, Assets.skin, "default" );
-        heightSlider = new Slider( 4, 50, 1, false, Assets.skin, "default" );
-        initializeSlider(widthSlider, 1000, 800);
-        initializeSlider(heightSlider, 1000, 400);
+        widthSlider = new MySlider( 4, 50, 1, false, Assets.skin, "default" );
+        heightSlider = new MySlider( 4, 50, 1, false, Assets.skin, "default" );
+        initializeSlider(widthSlider, 960, 634 );
+        initializeSlider(heightSlider, 960, 417 );
 
 /*        addMazeSizeButtons();
         addSkinSelectButtons();*/
@@ -110,66 +97,83 @@ public class CustomLevelScreen implements Screen {
 
     }
 
-    private void initializeSlider ( Slider slider, float xPos, float yPos ){
-        slider.setWidth( 400 );
+
+    private void changeSliderText ( MySlider slider ){
+
+        if ( slider.currentImage!=null ){
+            slider.currentImage.remove();
+        }
+        if ( slider.currentImage2!=null ){
+            slider.currentImage2.remove();
+        }
+        if ( slider.getValue() > 0 && slider.getValue() < 10 ) {
+            Assets.loadDigit( (int)slider.getValue() );
+            slider.currentImage = new Image( Assets.digitTextureRegionDrawable );
+            slider.currentImage.setSize(40, 60);
+            slider.currentImage.setPosition( slider.getX() + slider.getWidth()/2, slider.getY() + 90 );
+            stage.addActor(slider.currentImage);
+        }   else if ( slider.getValue() > 9 && slider.getValue() < 100 ){
+            Assets.loadDigit( (int)slider.getValue() / 10);
+            slider.currentImage = new Image( Assets.digitTextureRegionDrawable );
+            slider.currentImage.setSize(40, 60);
+            slider.currentImage.setPosition( slider.getX() + slider.getWidth()/2 - 20, slider.getY() + 90 );
+            stage.addActor(slider.currentImage);
+
+            Assets.loadDigit( (int)slider.getValue() % 10 );
+            slider.currentImage2 = new Image( Assets.digitTextureRegionDrawable );
+            slider.currentImage2.setSize(40, 60);
+            slider.currentImage2.setPosition( slider.getX() + slider.getWidth()/2 + 20, slider.getY() + 90 );
+            stage.addActor(slider.currentImage2);
+        }
+    }
+
+    private void initializeSlider ( final MySlider slider, float xPos, float yPos ){
+        slider.addListener( new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                changeSliderText( slider );
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                changeSliderText( slider );
+            }
+
+            public void touchDragged (InputEvent event, float x, float y, int pointer) {
+             //   changeSliderText( slider );
+            }
+        });       
+        slider.setWidth( 880 );
         slider.setHeight( 100 );
         slider.setValue( 10 );
         slider.setPosition( xPos, yPos );
+        stage.addActor( slider );
+        changeSliderText( slider );
     }
 
 
 
 
-    private void displayMaze ( boolean isSettingGameScreen ) {
-
+    private void displayMaze () {
 
         mazeWidth = (int)widthSlider.getValue();
-        mazeHeight = (int)heightSlider.getValue();
+       // mazeHeight = (int)heightSlider.getValue();
+        mazeHeight = (int)(mazeWidth/1.77);
 
         MazeGenerator maze;
-        if ( !isSettingGameScreen ) {
-            if (recbackMethodButton.isChecked()) {
-                maze = new RecursiveBacktrackerMazeGenerator(mazeHeight, mazeWidth, 0, 1);
-            } else if (primsMethodButton.isChecked()) {
-                maze = new PrimMazeGenerator(mazeHeight, mazeWidth, 0, 1);
-            } else {
-                maze = new HuntAndKillMazeGenerator(mazeHeight, mazeWidth, 0, 1);
-            }
-        }   else    {
-            if (recbackMethodButton.isChecked()) {
-                maze = new RecursiveBacktrackerMazeGenerator(mazeWidth, mazeHeight, 0, 1);
-            } else if (primsMethodButton.isChecked()) {
-                maze = new PrimMazeGenerator(mazeWidth, mazeHeight, 0, 1);
-            } else {
-                maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
-            }
+
+        if (recbackMethodButton.isChecked()) {
+            maze = new RecursiveBacktrackerMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+        } else if (primsMethodButton.isChecked()) {
+            maze = new PrimMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+        } else {
+            maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
         }
+
         maze.generate();
-       // maze.print(System.out);
+        Assets.currentStyleTexture = Assets.gameTexture1;
 
-/*        if ( isSettingGameScreen ){
-            cells = new Cell[mazeWidth][mazeHeight];
+        TheMaze.game.setScreen( new GameScreen( maze ) );
 
-            cells = maze.getMaze( false );
-            dispose();
-            TheMaze.game.setScreen( new GameScreen( cells ) );
-        }   else    {
-            cells = new Cell[mazeHeight][mazeWidth];
-
-            cells = maze.getMaze( true );
-         //   START_X = 1273;
-            START_Y = 1062;
-            START_Y -= cells[0][0].height;
-        //    START_X += cells[0][0].width;
-
-            for ( int i = 0; i < cells.length; i ++ ){
-                for ( int j = 0; j < cells[0].length; j ++ ){
-                    cells[i][j].setOrigin( Cell.width/2, Cell.height/2 );
-                    cells[i][j].setPosition( START_X + Cell.width * j, START_Y - Cell.height * i );
-                    stage.addActor( cells[i][j] );
-                }
-            }
-        }*/
     }
 
     private void initializeCheckerButton (final Button checkButton, int width, int height) {
@@ -197,9 +201,9 @@ public class CustomLevelScreen implements Screen {
         initializeCheckerButton( primsMethodButton, METHOD_BUTTON_WIDTH, METHOD_BUTTON_HEIGHT );
         initializeCheckerButton( huntAndKillMethodButton, METHOD_BUTTON_WIDTH, METHOD_BUTTON_HEIGHT );
 
-        recbackMethodButton.setPosition( 1047, 771 );
-        primsMethodButton.setPosition( 1421, 771 );
-        huntAndKillMethodButton.setPosition( 1801, 771 );
+        recbackMethodButton.setPosition( 953, 860 );
+        primsMethodButton.setPosition( 1337, 860 );
+        huntAndKillMethodButton.setPosition( 1721, 860 );
 
         buttonGroup.add(recbackMethodButton);
         buttonGroup.add(primsMethodButton);
@@ -216,13 +220,12 @@ public class CustomLevelScreen implements Screen {
 
         Button playButton = new Button( Assets.skin, "default" );
         playButton.setOrigin( buttonWidth/2, buttonHeight/2 );
-        playButton.setPosition( 365, 8 );
+        playButton.setPosition( 700, 8 );
         playButton.setSize( buttonWidth, buttonHeight );
         playButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
-                displayMaze( true );
-
+                displayMaze();
                 return true;
             }
 

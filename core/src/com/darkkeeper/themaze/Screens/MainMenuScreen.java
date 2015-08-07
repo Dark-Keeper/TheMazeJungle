@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.darkkeeper.themaze.Basics.Assets;
 import com.darkkeeper.themaze.Basics.Settings;
 import com.darkkeeper.themaze.TheMaze;
+import com.darkkeeper.themaze.Utils.Constants;
 
 
 /**
@@ -31,7 +32,7 @@ public class MainMenuScreen implements Screen {
 
     public MainMenuScreen () {
 
-        viewPort = new ExtendViewport(TheMaze.WIDTH,TheMaze.HEIGHT);
+        viewPort = new ExtendViewport(Constants.APP_WIDTH,Constants.APP_HEIGHT);
         stage = new Stage(viewPort);
         Gdx.input.setInputProcessor(stage);
 
@@ -67,6 +68,7 @@ public class MainMenuScreen implements Screen {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
                 dispose();
+                TheMaze.game.setScreen( new OptionsMenuScreen() );
 
                 return true;
             }
@@ -101,7 +103,6 @@ public class MainMenuScreen implements Screen {
         addButton( playCustomLevelButton, 1150, 585 );
         addButton( optionsButton, 1150, 410 );
         addButton( exitButton, 1150, 235 );
-
     }
 
     private void addButton ( Button button, float x, float y ){
