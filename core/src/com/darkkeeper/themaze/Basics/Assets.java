@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -48,8 +49,8 @@ public class Assets {
     public static TextureRegionDrawable keyTip;
 
     //GAME UI
+    public static Label.LabelStyle uiTimerLabelStyle;
     public static TextureRegion bottomBarBackground;
-    public static TextureRegion bottomBarBorder;
     public static TextureRegion bottomBarZoomButton;
     public static TextureRegion bottomBarExitButton;
     public static TextureRegion bottomBarPauseButton;
@@ -88,6 +89,31 @@ public class Assets {
     public static TextureRegionDrawable gameOverBackground;
 
 
+    public static TextureAtlas backgrounds1TextureAtlas;
+    public static TextureAtlas menuElementsTextureAtlas;
+
+    public static TextureRegionDrawable mainMenuBackgroundTextureRegion;
+    public static TextureRegionDrawable gameOverBackgroundTextureRegion;
+
+    public static TextureRegion sliderTextureRegion;
+    public static TextureRegion sliderKnobTextureRegion;
+    public static TextureRegion boxTextureRegion;
+    public static TextureRegion boxCheckerTextureRegion;
+    public static TextureRegion playBtnTextureRegion;
+    public static TextureRegion widthBtnTextureRegion;
+    public static TextureRegion methodBtnTextureRegion;
+    public static TextureRegion shareBtnTextureRegion;
+    public static TextureRegion restartBtnTextureRegion;
+    public static TextureRegion menuBtnTextureRegion;
+    public static TextureRegion nextBtnTextureRegion;
+    public static TextureRegion okBtnTextureRegion;
+    public static TextureRegion levelBtnTextureRegion;
+    public static TextureRegion campaignBtnTextureRegion;
+    public static TextureRegion rateBtnTextureRegion;
+    public static TextureRegion customBtnTextureRegion;
+    public static TextureRegion optionsBtnTextureRegion;
+
+
     public static Texture loadTexture ( String file ){
         return new Texture(Gdx.files.internal( file ) );
     }
@@ -101,12 +127,49 @@ public class Assets {
         key              = new Sprite( textureAtlas.findRegion( "key" ) );
         arrowDirection   = new Sprite( textureAtlas.findRegion( "arrow" ) );
 
+
         keyTip           = new TextureRegionDrawable ( textureAtlas.findRegion( "keyTip" ) );
+
+
+        bottomBarBackground = new TextureRegion( textureAtlas.findRegion( "bbBackground" ) );
+        bottomBarExitButton = new TextureRegion( textureAtlas.findRegion( "bbExitBtn" ) );
+        bottomBarZoomButton = new TextureRegion( textureAtlas.findRegion( "bbZoomBtn" ) );
+
     }
 
 
     public static void loadMenu () {
-        menuTextureAtlas = new TextureAtlas( "menu/menuTextureAtlas.txt" );
+
+        backgrounds1TextureAtlas = new TextureAtlas( "menu/backgroundsTexturePack1.atlas" );
+
+        mainMenuBackgroundTextureRegion = new TextureRegionDrawable( backgrounds1TextureAtlas.findRegion( "mainMenuScreenBackground" ) );
+        gameOverBackgroundTextureRegion = new TextureRegionDrawable( backgrounds1TextureAtlas.findRegion( "gameOverScreenBackground" ) );
+
+
+        menuElementsTextureAtlas = new TextureAtlas( "menu/elementsTexturePack1.atlas" );
+
+        sliderTextureRegion         = new TextureRegion( menuElementsTextureAtlas.findRegion( "slider" ) );
+        sliderKnobTextureRegion     = new TextureRegion( menuElementsTextureAtlas.findRegion( "sliderKnob" ) );
+        boxTextureRegion            = new TextureRegion( menuElementsTextureAtlas.findRegion( "box" ) );
+        boxCheckerTextureRegion     = new TextureRegion( menuElementsTextureAtlas.findRegion( "boxChecker" ) );
+
+        playBtnTextureRegion        = new TextureRegion( menuElementsTextureAtlas.findRegion( "playButton" ) );
+        widthBtnTextureRegion       = new TextureRegion( menuElementsTextureAtlas.findRegion( "widthButton" ) );
+        methodBtnTextureRegion      = new TextureRegion( menuElementsTextureAtlas.findRegion( "methodButton" ) );
+        shareBtnTextureRegion       = new TextureRegion( menuElementsTextureAtlas.findRegion( "shareButton" ) );
+        restartBtnTextureRegion     = new TextureRegion( menuElementsTextureAtlas.findRegion( "restartButton" ) );
+        menuBtnTextureRegion        = new TextureRegion( menuElementsTextureAtlas.findRegion( "menuButton" ) );
+        nextBtnTextureRegion        = new TextureRegion( menuElementsTextureAtlas.findRegion( "nextButton" ) );
+        okBtnTextureRegion          = new TextureRegion( menuElementsTextureAtlas.findRegion( "okButton" ) );
+        levelBtnTextureRegion       = new TextureRegion( menuElementsTextureAtlas.findRegion( "levelButton" ) );
+        campaignBtnTextureRegion    = new TextureRegion( menuElementsTextureAtlas.findRegion( "campaignButton" ) );
+        rateBtnTextureRegion        = new TextureRegion( menuElementsTextureAtlas.findRegion( "rateButton" ) );
+        customBtnTextureRegion      = new TextureRegion( menuElementsTextureAtlas.findRegion( "customButton" ) );
+        optionsBtnTextureRegion     = new TextureRegion( menuElementsTextureAtlas.findRegion( "optionsButton" ) );
+        
+        
+
+ /*       menuTextureAtlas = new TextureAtlas( "menu/menuTextureAtlas.txt" );
         menuBackground = new TextureRegionDrawable( menuTextureAtlas.findRegion( "mainScreen" ) );
         customLevelBackground = new TextureRegionDrawable( menuTextureAtlas.findRegion( "customScreen" ) );
         defaultButtonPressed = new TextureRegionDrawable( menuTextureAtlas.findRegion( "checker" ) );
@@ -123,7 +186,7 @@ public class Assets {
         
         arrowButton = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "levelArrow" ) );
         arrowButtonPressed = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "levelArrowPressed" ) );
-        arrowButtonImpossible = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "levelArrowImpossible" ) );
+        arrowButtonImpossible = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "levelArrowImpossible" ) );*/
     }
 
     public static void loadDigit ( int i ) {
@@ -167,6 +230,26 @@ public class Assets {
         textButtonStyle.over        = skin.newDrawable( "black", 0.5f, 0.5f, 0.5f, 0.5f );
         textButtonStyle.font = defaultFont;
         skin.add( "default", textButtonStyle );*/
+
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator( Gdx.files.internal( "fonts/segoe-script-bold.ttf" ));
+        String CHARS = "0123456789:";
+/*        for ( int i = 32; i < 127; i ++){
+            CHARS += (char) i;
+        }*/
+
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 55;
+        parameter.characters = CHARS;
+        BitmapFont defaultFont = generator.generateFont( parameter );
+        skin.add( "default", defaultFont );
+        generator.dispose();
+
+
+        uiTimerLabelStyle = new Label.LabelStyle();
+        uiTimerLabelStyle.fontColor = Color.WHITE;
+        uiTimerLabelStyle.font = defaultFont;
+        skin.add( "default", uiTimerLabelStyle );
 
         menuButtonStyle = new Button.ButtonStyle();
         menuButtonStyle.up = skin.newDrawable(Assets.defaultButton,1f,1f,1f,0f);

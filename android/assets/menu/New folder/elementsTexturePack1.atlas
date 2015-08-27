@@ -1,0 +1,145 @@
+
+elementsTexturePack1.png
+format: RGBA8888
+filter: MipMapLinearLinear,Linear
+repeat: none
+slider
+  rotate: false
+  xy: 1, 1936
+  size: 900, 103
+  orig: 900, 103
+  offset: 0, 0
+  index: -1
+campaignButton
+  rotate: false
+  xy: 1, 1785
+  size: 760, 149
+  orig: 760, 149
+  offset: 0, 0
+  index: -1
+methodButton
+  rotate: false
+  xy: 1, 1634
+  size: 691, 149
+  orig: 691, 149
+  offset: 0, 0
+  index: -1
+restartButton
+  rotate: false
+  xy: 1, 1483
+  size: 640, 149
+  orig: 640, 149
+  offset: 0, 0
+  index: -1
+customButton
+  rotate: false
+  xy: 1, 1332
+  size: 616, 149
+  orig: 616, 149
+  offset: 0, 0
+  index: -1
+optionsButton
+  rotate: false
+  xy: 1, 1181
+  size: 599, 149
+  orig: 599, 149
+  offset: 0, 0
+  index: -1
+widthButton
+  rotate: false
+  xy: 1, 1030
+  size: 576, 149
+  orig: 576, 149
+  offset: 0, 0
+  index: -1
+menuButton
+  rotate: false
+  xy: 1, 879
+  size: 478, 149
+  orig: 478, 149
+  offset: 0, 0
+  index: -1
+shareButton
+  rotate: false
+  xy: 1, 728
+  size: 471, 149
+  orig: 471, 149
+  offset: 0, 0
+  index: -1
+nextButton
+  rotate: false
+  xy: 1, 577
+  size: 420, 149
+  orig: 420, 149
+  offset: 0, 0
+  index: -1
+levelButton
+  rotate: false
+  xy: 1, 426
+  size: 412, 149
+  orig: 412, 149
+  offset: 0, 0
+  index: -1
+playButton
+  rotate: false
+  xy: 1, 275
+  size: 400, 149
+  orig: 400, 149
+  offset: 0, 0
+  index: -1
+rateButton
+  rotate: false
+  xy: 1, 124
+  size: 354, 149
+  orig: 354, 149
+  offset: 0, 0
+  index: -1
+okButton
+  rotate: false
+  xy: 903, 1890
+  size: 224, 149
+  orig: 224, 149
+  offset: 0, 0
+  index: -1
+levelArrow
+  rotate: false
+  xy: 1129, 1888
+  size: 143, 151
+  orig: 143, 151
+  offset: 0, 0
+  index: -1
+levelArrowImpossible
+  rotate: false
+  xy: 1274, 1888
+  size: 143, 151
+  orig: 143, 151
+  offset: 0, 0
+  index: -1
+levelArrowPressed
+  rotate: false
+  xy: 1419, 1888
+  size: 143, 151
+  orig: 143, 151
+  offset: 0, 0
+  index: -1
+box
+  rotate: false
+  xy: 1, 1
+  size: 137, 121
+  orig: 137, 121
+  offset: 0, 0
+  index: -1
+boxChecker
+  rotate: false
+  xy: 481, 934
+  size: 95, 94
+  orig: 95, 94
+  offset: 0, 0
+  index: -1
+sliderKnob
+  rotate: false
+  xy: 694, 1706
+  size: 29, 77
+  orig: 29, 77
+  offset: 0, 0
+  index: -1

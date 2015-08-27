@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -19,6 +20,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.darkkeeper.themaze.Actors.Cell;
@@ -69,6 +74,7 @@ public class GameScreen implements Screen {
     private World world; // contains the game world's bodies and actors.
    // private GameRenderer renderer; // our custom game renderer.
     private Stage stage; // stage that holds the GUI. Pixel-exact size.
+    private Stage stageHUD;
     private OrthographicCamera guiCam; // camera for the GUI. It's the stage default camera.
 
 
@@ -76,34 +82,40 @@ public class GameScreen implements Screen {
     private RayHandler rayHandler;
     private PointLight pointLight;
 
-    public GameScreen (MazeGenerator mazeGenerator ) {
+    private boolean isZoomed = false;
+    private float totalTime;
+    private Label timerText;
+    private boolean timerIsOn;
+
+    private Table uiTable;
+    private float uiTableElementWidth;
+    private float uiTableElementHeight;
+
+    Vector3 last_touch_down = new Vector3();
+
+    public GameScreen ( MazeGenerator mazeGenerator ) {
         viewPort = new ExtendViewport(Constants.APP_WIDTH, Constants.APP_HEIGHT);
         stage = new Stage(viewPort);
+        stageHUD = new Stage( new ExtendViewport( Constants.APP_WIDTH, Constants.APP_HEIGHT ) );
 
 
         //BETTA_OPTIONS
         Settings.isLvlWithKey = true;
-
-
-
         world = new World( GRAVITY, true );
-
 
         InputProcessor backProcessor = new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
-
                 if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
                     dispose();
 //                    TheMaze.interestialAddInterface.show();
                     TheMaze.game.setScreen( new MainMenuScreen() );
                  }
-
                 return false;
             }
         };
 
-        InputMultiplexer multiplexer = new InputMultiplexer( stage, backProcessor );
+        InputMultiplexer multiplexer = new InputMultiplexer( stage, stageHUD, backProcessor );
         Gdx.input.setInputProcessor(multiplexer);
 
         Gdx.input.setCatchBackKey(true);
@@ -111,9 +123,12 @@ public class GameScreen implements Screen {
 
         this.maze = mazeGenerator.getMaze( world );
 
+        totalTime = 5 * maze.length;
         START_Y = 1080;
         START_Y -= maze[0][0].height;
         displayMaze();
+
+        displayUI();
 
 
         player = new Player( world, maze[1][1].getX(), maze[1][1].getY(), maze );
@@ -131,7 +146,7 @@ public class GameScreen implements Screen {
                 j = (int)(Math.random() * ( maze[0].length - 1 ) / 2  + maze[0].length/2);
             }
 
-            key = new Key(  maze [ i ][ j ].getX(),  maze[ i ][ j ].getY() );
+            key = new Key(  maze [ i ][ j ].getX(),  maze[ i ][ j ].getY(), Cell.width, Cell.height );
             stage.addActor( key );
         }   else {
             key = null;
@@ -150,6 +165,91 @@ public class GameScreen implements Screen {
         }
     }
 
+
+
+    private void displayUI () {
+        uiTable = new Table();
+        uiTable.setSize( Constants.APP_WIDTH, Constants.BOTTOM_BAR_HEIGHT );
+        uiTable.setPosition( 0,0 );
+ //       uiTable.setBackground( Assets.sliderBackground );
+
+
+        int backgroundPartsAmount = 7;
+
+
+        for ( int i = 0; i < backgroundPartsAmount; i ++ ){
+            Image bottomBarBackground  = new Image( Assets.bottomBarBackground );
+            bottomBarBackground.setSize( Constants.APP_WIDTH/backgroundPartsAmount, Constants.BOTTOM_BAR_HEIGHT + Cell.height/4 );
+            bottomBarBackground.setPosition( i * bottomBarBackground.getWidth() - i, 0 );
+            stageHUD.addActor( bottomBarBackground );
+        }
+
+
+
+        timerText = new Label( "0123456789:", Assets.skin );
+        timerText.setSize( 100, uiTable.getHeight() );
+        timerText.setPosition( uiTable.getWidth()/2, uiTable.getHeight()/2 - timerText.getHeight()/2 );
+
+        uiTable.addActor( timerText );
+
+
+        uiTableElementWidth =  uiTable.getHeight();
+        uiTableElementHeight = uiTable.getHeight();
+
+        Image exitImage = new Image( Assets.bottomBarExitButton );
+        exitImage.addListener( new InputListener(){
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+
+                dispose();
+//                    TheMaze.interestialAddInterface.show();
+                TheMaze.game.setScreen( new GameOverScreen() );
+
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            }
+        });
+
+        Image zoomImage = new Image ( Assets.bottomBarZoomButton );
+        zoomImage.addListener( new InputListener(){
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+
+                if ( isZoomed ){
+                    ((OrthographicCamera)stage.getCamera()).zoom += 0.5f;
+                    isZoomed = false;
+                    ((OrthographicCamera)stage.getCamera()).position.set( stage.getWidth()/2, stage.getHeight()/2, 0 );
+                }   else    {
+                    ((OrthographicCamera)stage.getCamera()).zoom -= 0.5f;
+                    isZoomed = true;
+                }
+
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            }
+        });
+
+        addUIButton( exitImage, uiTable.getWidth() - 10 * uiTableElementWidth / 5, uiTableElementWidth, uiTableElementHeight, uiTable );
+        addUIButton( zoomImage, uiTable.getWidth() - 20 * uiTableElementWidth / 5, uiTableElementWidth, uiTableElementHeight, uiTable );
+
+
+
+        stageHUD.addActor( uiTable );
+
+    }
+
+    private void addUIButton ( Image image, float xPos, float width, float height, Table table ){
+
+        image.setSize( width, height );
+        image.setPosition( xPos, table.getHeight()/2 - height/2 );
+
+        table.addActor(image);
+    }
+
+
+
     private void displayMaze () {
         for ( int i = 0; i < maze.length; i ++ ){
             for ( int j = 0; j < maze[0].length; j ++ ){
@@ -159,47 +259,6 @@ public class GameScreen implements Screen {
             }
         }
     }
-
-    public void setGameScreenUI () {
-        int backgroundPartsAmount = 7;
-
-        for ( int i = 0; i < backgroundPartsAmount; i ++ ){
-            Image bottomBarBackground  = new Image( Assets.bottomBarBackground );
-            bottomBarBackground.setSize( Constants.APP_WIDTH/backgroundPartsAmount, Constants.BOTTOM_BAR_HEIGHT + Cell.height/4 );
-            bottomBarBackground.setPosition( i * bottomBarBackground.getWidth(), 0 );
-            stage.addActor( bottomBarBackground );
-        }
-
-        Button exitButton = new Button( Assets.skin, "bbexitButton" );
-        exitButton.addListener( new InputListener(){
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                TheMaze.game.setScreen( new MainMenuScreen() );
-                return true;
-            }
-
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-            }
-        } );
-        exitButton.setSize( Constants.BOTTOM_BAR_ICON_SIZE, Constants.BOTTOM_BAR_ICON_SIZE );
-        exitButton.setPosition( Constants.APP_WIDTH - ( Constants.BOTTOM_BAR_ICON_SIZE + Constants.BOTTOM_BAR_ICON_PADDING_LEFT ), 0 );
-        stage.addActor( exitButton );
-
-        Button zoomButton = new Button( Assets.skin, "bbzoomButton" );
-        zoomButton.addListener( new InputListener(){
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                TheMaze.game.setScreen( new MainMenuScreen() );
-                return true;
-            }
-
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-            }
-        } );
-        zoomButton.setSize( Constants.BOTTOM_BAR_ICON_SIZE, Constants.BOTTOM_BAR_ICON_SIZE );
-        zoomButton.setPosition( Constants.APP_WIDTH - 2 * ( Constants.BOTTOM_BAR_ICON_SIZE + Constants.BOTTOM_BAR_ICON_PADDING_LEFT ), 0 );
-        stage.addActor( zoomButton );
-
-    }
-
 
 
     public void showControlls () {
@@ -306,38 +365,89 @@ public class GameScreen implements Screen {
         stage.addActor( keyTipButton );
     }
 
-
     @Override
     public void show() {
 
     }
 
-
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 
         stage.act(delta);
         stage.draw();
 
+        stageHUD.act( delta );
+        stageHUD.draw();
+
+        checkCameraIfZoomed ();
+
+        calculateTime();
+
+        checkIfNight ();
+        checkPlayerOnKey();
+        checkGameOver();
+        checkControlls();
+
+    }
+
+    private void checkCameraIfZoomed () {
+        if ( isZoomed ) {
+            OrthographicCamera cam = (OrthographicCamera) stage.getCamera();
+            cam.position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2, 0);
+/*        cam.viewportWidth = Gdx.graphics.getWidth() / player.getZoom();
+        cam.viewportHeight = Gdx.graphics.getHeight() / viewer.getZoom();*/
+
+            cam.update();
+        }
+    }
+
+    private void calculateTime () {
+        float deltaTime = Gdx.graphics.getDeltaTime(); //You might prefer getRawDeltaTime()
+
+        totalTime -= deltaTime; //if counting down
+
+        float minutes = ((int)totalTime) / 60;
+        float seconds = ((int)totalTime) % 60;
+
+        timerText.setText(String.format("%.0fm:%.0fs", minutes, seconds));
+
+        if ( minutes == 0f && seconds == 0f ){
+            TheMaze.game.setScreen( new GameOverScreen() );
+        }
+    }
+
+    private void checkIfNight () {
         if ( isNight ) {
             pointLight.setPosition(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2);
             rayHandler.updateAndRender();
             world.step(1 / 60f, 6, 2);
         }
+    }
 
-
+    private void checkPlayerOnKey (){
         if ( key != null ) {
             if ((int) player.getX() == (int) key.getX() && (int) player.getY() == (int) key.getY()) {
                 key.remove();
                 isPlayerWithKey = true;
+
+                key = new Key( 2 * uiTableElementWidth, uiTable.getHeight()/2 - uiTableElementHeight/2, uiTableElementWidth, uiTableElementHeight );
+                stageHUD.addActor( key );
             }
         }
+    }
 
+    private void checkControlls (){
+        if ( !player.isMoovingToNextIntersection && !isShowingControlls){
+            showControlls();
+        }   else if ( player.isMoovingToNextIntersection && isShowingControlls )   {
+            hideControlls();
+        }
+    }
 
+    private void checkGameOver () {
         if ( (int) player.getX() == (int) flag.getX() && (int) player.getY() == (int) flag.getY() ){
             if ( key != null ) {
                 if ( isPlayerWithKey ) {
@@ -346,8 +456,8 @@ public class GameScreen implements Screen {
                     Settings.saveResults();
                     TheMaze.game.setScreen(new GameOverScreen());
                 }   else if ( !isShowingKeyTip && !keyTipWasShown ) {
-                        player.isTouchingDoor = true;
-                        showKeyTip ();
+                    player.isTouchingDoor = true;
+                    showKeyTip ();
                 }
             }   else {
                 TheMaze.interestialAddInterface.show();
@@ -356,13 +466,6 @@ public class GameScreen implements Screen {
                 TheMaze.game.setScreen(new GameOverScreen());
             }
         }
-
-        if ( !player.isMoovingToNextIntersection && !isShowingControlls){
-            showControlls();
-        }   else if ( player.isMoovingToNextIntersection && isShowingControlls )   {
-            hideControlls();
-        }
-
     }
 
 
@@ -392,6 +495,39 @@ public class GameScreen implements Screen {
             rayHandler.dispose();
         }
         stage.dispose();
+    }
+
+
+    private void moveCamera( int touch_x, int touch_y ) {
+        Vector3 new_position = getNewCameraPosition( touch_x, touch_y );
+
+        if( !cameraOutOfLimit( new_position ) )
+            stage.getCamera().translate( new_position.sub( stage.getCamera().position ) );
+
+        last_touch_down.set( touch_x, touch_y, 0);
+    }
+
+    private Vector3 getNewCameraPosition( int x, int y ) {
+        Vector3 new_position = last_touch_down;
+        new_position.sub(x, y, 0);
+        new_position.y = -new_position.y;
+        new_position.add( stage.getCamera().position );
+
+        return new_position;
+    }
+
+    private boolean cameraOutOfLimit( Vector3 position ) {
+        float x_left_limit = Constants.APP_WIDTH / 2;
+        float x_right_limit = stage.getWidth() - x_left_limit;
+        float y_bottom_limit = Constants.APP_HEIGHT / 2;
+        float y_top_limit = stage.getHeight() - y_bottom_limit;
+
+        if( position.x < x_left_limit || position.x > x_right_limit )
+            return true;
+        else if( position.y < y_bottom_limit || position.y > y_top_limit )
+            return true;
+        else
+            return false;
     }
 }
 

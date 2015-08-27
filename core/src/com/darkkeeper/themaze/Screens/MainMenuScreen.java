@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -36,7 +37,7 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(viewPort);
         Gdx.input.setInputProcessor(stage);
 
-        Button playCampaignButton = new Button( Assets.skin, "default" );
+        Image playCampaignButton = new Image( Assets.playBtnTextureRegion );
         playCampaignButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
@@ -50,7 +51,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        Button playCustomLevelButton = new Button( Assets.skin, "default" );
+        Image playCustomLevelButton = new Image( Assets.customBtnTextureRegion );
         playCustomLevelButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
@@ -63,7 +64,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        Button optionsButton = new Button( Assets.skin, "default" );
+        Image optionsButton = new Image( Assets.optionsBtnTextureRegion );
         optionsButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
@@ -78,11 +79,11 @@ public class MainMenuScreen implements Screen {
         });
 
 
-        Button exitButton = new Button( Assets.skin, "default" );
-        exitButton.addListener( new InputListener() {
+        Image rateButton = new Image( Assets.rateBtnTextureRegion );
+        rateButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
-                TheMaze.exitAddInterface.show();
+           //     TheMaze.exitAddInterface.show();
                 //Gdx.app.exit();
 
                 return true;
@@ -92,24 +93,22 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-
-
         rootTable = new Table();
-        rootTable.background( Assets.menuBackground );
+        rootTable.background( Assets.mainMenuBackgroundTextureRegion );
         rootTable.setFillParent( true );
         stage.addActor( rootTable );
 
-        addButton( playCampaignButton, 1150, 760 );
-        addButton( playCustomLevelButton, 1150, 585 );
-        addButton( optionsButton, 1150, 410 );
-        addButton( exitButton, 1150, 235 );
+        addImage( playCampaignButton, 1150, 760 );
+        addImage( playCustomLevelButton, 1150, 585 );
+        addImage( optionsButton, 1150, 410 );
+        addImage( rateButton, 1150, 235 );
     }
 
-    private void addButton ( Button button, float x, float y ){
-        button.setOrigin( buttonWidth/2, buttonHeight/2 );
-        button.setPosition( x, y );
-        button.setSize( buttonWidth, buttonHeight );
-        stage.addActor( button );
+    private void addImage ( Image image, float x, float y ){
+        image.setOrigin( image.getWidth()/2, image.getHeight()/2 );
+        image.setPosition( x, y );
+    //    image.setSize( buttonWidth, buttonHeight );
+        stage.addActor( image );
     }
 
     @Override

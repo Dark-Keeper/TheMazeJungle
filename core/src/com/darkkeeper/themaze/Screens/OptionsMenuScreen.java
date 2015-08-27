@@ -29,7 +29,7 @@ public class OptionsMenuScreen implements Screen {
         System.out.println( "currentLvl = " + Settings.currentLevel + " levelsDone = " + Settings.levelsDone );
 
         rootTable = new Table();
-        rootTable.background( Assets.levelChooseBackground );
+        rootTable.background( Assets.mainMenuBackgroundTextureRegion );
         rootTable.setFillParent( true );
         stage.addActor( rootTable );
 

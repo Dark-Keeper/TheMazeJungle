@@ -412,8 +412,8 @@ public abstract class MazeGenerator {
     public static MazeGenerator generateNewMaze () {
         MazeGenerator maze;
 
-        int mazeHeight = 4 + (int)(Settings.currentLevel/1.77);
-        int mazeWidth = 7 + Settings.currentLevel;
+        int mazeHeight = Constants.MAZE_DEFAULT_HEIGHT + (int)(Settings.currentLevel/1.77);
+        int mazeWidth = Constants.MAZE_DEFAULT_WIDTH + Settings.currentLevel;
 
         double rand;
         rand = Math.random();

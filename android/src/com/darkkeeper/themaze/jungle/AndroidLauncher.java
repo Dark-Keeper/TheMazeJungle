@@ -1,15 +1,21 @@
 package com.darkkeeper.themaze.jungle;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.appodeal.ads.Appodeal;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.darkkeeper.themaze.Interfaces.ExitAddInterface;
 import com.darkkeeper.themaze.Interfaces.InterestialAddInterface;
+import com.darkkeeper.themaze.Interfaces.ShareInterface;
 import com.darkkeeper.themaze.TheMaze;
 import com.hgsavtqj.oypqhwui166369.AdConfig;
 import com.hgsavtqj.oypqhwui166369.AdListener;
@@ -21,24 +27,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AndroidLauncher extends AndroidApplication  implements AdListener, EulaListener {
 
     private Main main;
     private String str;
+    private Activity activity;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-
-
-
-
+        activity = this;
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        initialize(new TheMaze( new ExitAddAndroid(), new InterestialAddAndroid() ), config);
+        initialize(new TheMaze( new ExitAddAndroid(), new InterestialAddAndroid(), new ShareAndroid() ), config);
 
         AdConfig.setAppId(280764);  //setting appid.
         AdConfig.setApiKey("1384289212166369778"); //setting apikey
@@ -49,8 +55,6 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
         AdConfig.setEulaLanguage(AdConfig.EulaLanguage.ENGLISH); //Set the eula langauge
 
         AdConfig.setCachingEnabled( true );
-
-
 
 
         new RetrieveAirpush().execute();
@@ -107,6 +111,35 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
             });
 
         }
+    }
+
+    public class ShareAndroid implements ShareInterface {
+
+        public void share( int currentLvl ){
+
+            PackageManager pm = activity.getPackageManager();
+
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            sendIntent.setType("text/plain");
+            List<Intent> targetedShareIntents = new ArrayList<Intent>();
+            List<ResolveInfo> resInfo = pm.queryIntentActivities(sendIntent, 0);
+
+            if (!resInfo.isEmpty()) {
+                for (ResolveInfo info : resInfo) {
+                    Intent targetedShare = new Intent(android.content.Intent.ACTION_SEND);
+                    targetedShare.setType("text/plain");
+                    if (info.activityInfo.packageName.toLowerCase().contains("facebook") || info.activityInfo.name.toLowerCase().contains("facebook")||info.activityInfo.packageName.toLowerCase().contains("twitter") || info.activityInfo.name.toLowerCase().contains("twitter")|| info.activityInfo.packageName.toLowerCase().contains("vk") || info.activityInfo.name.toLowerCase().contains("vk")) {
+                        targetedShare.putExtra(Intent.EXTRA_TEXT,"Hey, I have completed "+currentLvl+" level on \""+activity.getResources().getString(R.string.app_name)+"\". Can you beat it? "+ "https://play.google.com/store/apps/details?id=" + activity.getPackageName());
+                        targetedShare.setPackage(info.activityInfo.packageName);
+                        targetedShareIntents.add(targetedShare);
+                    }
+                }
+                Intent chooserIntent = Intent.createChooser(targetedShareIntents.remove(0), "Select app to share");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[]{}));
+                activity.startActivity(chooserIntent);
+            }
+        }
+
     }
 
 

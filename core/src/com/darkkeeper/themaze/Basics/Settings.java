@@ -44,6 +44,7 @@ public class Settings {
     public static void loadResults () {
         levelsDone    = prefs.getInteger( "levelsDone", 0 );
         currentLevel  = prefs.getInteger( "currentLevel", 1 );
+        levelsDone = 30;
     }
 
     public static void saveResults () {

@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.darkkeeper.themaze.Interfaces.ExitAddInterface;
 import com.darkkeeper.themaze.Interfaces.InterestialAddInterface;
+import com.darkkeeper.themaze.Interfaces.ShareInterface;
 import com.darkkeeper.themaze.Screens.LogoScreen;
 
 public class TheMaze extends Game implements ApplicationListener, InputProcessor {
@@ -16,10 +17,12 @@ public class TheMaze extends Game implements ApplicationListener, InputProcessor
 
     public static ExitAddInterface exitAddInterface;
     public static InterestialAddInterface interestialAddInterface;
+    public static ShareInterface shareInterface;
 
-    public TheMaze( ExitAddInterface exitAddInterface, InterestialAddInterface interestialAddInterface ){
+    public TheMaze( ExitAddInterface exitAddInterface, InterestialAddInterface interestialAddInterface, ShareInterface shareInterface ){
         this.exitAddInterface           = exitAddInterface;
         this.interestialAddInterface    = interestialAddInterface;
+        this.shareInterface             = shareInterface;
     }
 
 	@Override

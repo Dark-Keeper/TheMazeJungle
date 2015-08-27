@@ -37,5 +37,26 @@ keyTip
   orig: 500, 600
   offset: 25, 13
   index: -1
+bbBackground
+  rotate: false
+  xy: 427, 760
+  size: 375, 137
+  orig: 375, 137
+  offset: 25, 13
+  index: -1
+bbExitBtn
+  rotate: false
+  xy: 543, 902
+  size: 116, 120
+  orig: 116, 120
+  offset: 25, 13
+  index: -1
+bbZoomBtn
+  rotate: false
+  xy: 427, 902
+  size: 116, 120
+  orig: 116, 120
+  offset: 25, 13
+  index: -1
 
 

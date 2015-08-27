@@ -23,25 +23,25 @@ public class Controlls extends Actor {
             setWidth( WIDTH );
             setHeight( HEIGHT );
             setOrigin( getWidth()/2, getHeight()/2 );
-            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2,player.getY()+ 5/3*WIDTH - getHeight()/2 + player.getHeight()/2);
+            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2,player.getY()+ 3/3*WIDTH - getHeight()/2 + player.getHeight()/2);
         }
         if ( direction.equals("east") ) {
             setWidth( WIDTH );
             setHeight( HEIGHT );
             setOrigin( getWidth()/2, getHeight()/2 );
-            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2 + 5/3*WIDTH,player.getY() - getHeight()/2 + player.getHeight()/2);
+            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2 + 3/3*WIDTH,player.getY() - getHeight()/2 + player.getHeight()/2);
         }
         if ( direction.equals("south") ){
             setWidth( WIDTH );
             setHeight( HEIGHT );
             setOrigin( getWidth()/2, getHeight()/2 );
-            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2,player.getY() - 5/3*WIDTH - getHeight()/2 + player.getHeight()/2);
+            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2,player.getY() - 3/3*WIDTH - getHeight()/2 + player.getHeight()/2);
         }
         if ( direction.equals("west") ){
             setWidth( WIDTH );
             setHeight( HEIGHT );
             setOrigin( getWidth()/2, getHeight()/2 );
-            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2- 5/3*WIDTH,player.getY() - getHeight()/2 + player.getHeight()/2);
+            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2- 3/3*WIDTH,player.getY() - getHeight()/2 + player.getHeight()/2);
         }
 
 

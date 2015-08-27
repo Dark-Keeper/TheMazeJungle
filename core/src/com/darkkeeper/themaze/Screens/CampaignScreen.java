@@ -1,6 +1,10 @@
 package com.darkkeeper.themaze.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -57,21 +61,47 @@ public class CampaignScreen implements Screen {
     public CampaignScreen() {
         viewPort = new ExtendViewport( Constants.APP_WIDTH, Constants.APP_HEIGHT );
         stage = new Stage(viewPort);
-        Gdx.input.setInputProcessor(stage);
 
+
+        InputProcessor backProcessor = new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+
+                if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
+                    dispose();
+//                    TheMaze.interestialAddInterface.show();
+                    TheMaze.game.setScreen( new MainMenuScreen() );
+                }
+
+                return false;
+            }
+        };
+
+        InputMultiplexer multiplexer = new InputMultiplexer( stage, backProcessor );
+        Gdx.input.setInputProcessor(multiplexer);
+
+        Gdx.input.setCatchBackKey(true);
         Settings.loadResults();
         System.out.println( "currentLvl = " + Settings.currentLevel + " levelsDone = " + Settings.levelsDone );
 
         rootTable = new Table();
-        rootTable.background( Assets.levelChooseBackground );
+        rootTable.background( Assets.mainMenuBackgroundTextureRegion );
         rootTable.setFillParent( true );
         stage.addActor( rootTable );
 
+        addScreenInfoImages();
         addLevelText();
         addLevelChooserButtons();
         addPlayButton();
     }
 
+    private void addScreenInfoImages () {
+        Image levelImage = new Image( Assets.levelBtnTextureRegion );
+        levelImage.setPosition( 1400, 700 );
+        stage.addActor( levelImage );
+
+
+    }
 
     private void addLevelChooserButtons () {
         nextLvlButton = new Button ( Assets.skin, "arrow" );
@@ -167,7 +197,7 @@ public class CampaignScreen implements Screen {
     }
 
     private void addPlayButton () {
-        Button playButton = new Button( Assets.skin, "default" );
+        Image playButton = new Image( Assets.okBtnTextureRegion );
         playButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
@@ -181,7 +211,9 @@ public class CampaignScreen implements Screen {
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
             }
         });
-        addButton( playButton, playButtonWidth, playButtonHeight, 1300, 340 );
+        playButton.setPosition( 1300, 340 );
+        stage.addActor( playButton );
+        //addButton( playButton, playButtonWidth, playButtonHeight, 1300, 340 );
     }
 
     private void addButton ( Button button, float width, float height, float x, float y ){

@@ -96,7 +96,7 @@ public class GameOverScreen implements Screen {
         shareButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
-                dispose();
+                TheMaze.shareInterface.share( Settings.currentLevel );
 
                 return true;
             }
