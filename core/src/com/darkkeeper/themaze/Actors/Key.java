@@ -26,8 +26,8 @@ public class Key extends Actor {
     public Key ( float x, float y, float width, float height ) {
         this.x = x;
         this.y = y;
-        setWidth( width * 1.2f );
-        setHeight( height * 1.2f );
+        setWidth( width );
+        setHeight( height );
         setPosition( x, y );
 
 

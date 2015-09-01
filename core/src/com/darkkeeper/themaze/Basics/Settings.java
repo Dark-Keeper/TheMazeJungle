@@ -17,27 +17,33 @@ public class Settings {
 
     public static boolean isSoundEnabled;
     public static boolean isMusicEnabled;
+    public static boolean isVibrationEnabled;
     public static boolean isNigthLevelsAvailable;
     public static int levelsDone;
     public static int currentLevel;
-    public static boolean isShadowsEnabled;
     public static boolean isLvlWithKey;
+
+    public static int mazeCustomWidth;
+    public static String mazeCustomMethod;
+    public static boolean isMazeCustomWithNight;
+    public static boolean isCustomMaze;
+
 
     public static void loadSettings (){
         prefs = Gdx.app.getPreferences( "prefs" );
 
-        isSoundEnabled              = prefs.getBoolean( "sound", true );
-        isMusicEnabled              = prefs.getBoolean( "music", true );
         isNigthLevelsAvailable      = prefs.getBoolean( "nightEndabled", true );
-        isShadowsEnabled            = prefs.getBoolean( "shadowsEnabled", true );
+ //       isSoundEnabled              = prefs.getBoolean( "sound", true );
+        isMusicEnabled              = prefs.getBoolean( "music", true );
+        isVibrationEnabled          = prefs.getBoolean( "vibration", true );
 
     }
 
     public static void saveSettings () {
-        prefs.putBoolean( "sound", isSoundEnabled );
+  //      prefs.putBoolean( "sound", isSoundEnabled );
         prefs.putBoolean( "music", isMusicEnabled );
+        prefs.putBoolean( "vibration", isVibrationEnabled );
         prefs.putBoolean( "nightEnabled", isNigthLevelsAvailable );
-        prefs.putBoolean( "shadowsEnabled", isShadowsEnabled );
         prefs.flush();
     }
 

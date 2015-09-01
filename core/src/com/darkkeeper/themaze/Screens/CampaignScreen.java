@@ -89,15 +89,15 @@ public class CampaignScreen implements Screen {
         rootTable.setFillParent( true );
         stage.addActor( rootTable );
 
-        addScreenInfoImages();
+        addLevelImage();
         addLevelText();
         addLevelChooserButtons();
         addPlayButton();
     }
 
-    private void addScreenInfoImages () {
+    private void addLevelImage () {
         Image levelImage = new Image( Assets.levelBtnTextureRegion );
-        levelImage.setPosition( 1400, 700 );
+        levelImage.setPosition( 1270, 677 );
         stage.addActor( levelImage );
 
 
@@ -203,6 +203,7 @@ public class CampaignScreen implements Screen {
 
                 dispose();
 
+                Settings.isCustomMaze = false;
                 TheMaze.game.setScreen( new GameScreen( MazeGenerator.generateNewMaze() ) );
 
                 return true;

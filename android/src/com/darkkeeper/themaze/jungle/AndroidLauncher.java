@@ -70,7 +70,7 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
 
         @Override
         public void show() {
-            runOnUiThread(new Runnable() {
+            activity.runOnUiThread(new Runnable() {
                 public void run() {
                    // Appodeal.show(AndroidLauncher.this, Appodeal.INTERSTITIAL | Appodeal.VIDEO);
                     Appodeal.show(AndroidLauncher.this, Appodeal.VIDEO | Appodeal.INTERSTITIAL);
@@ -104,7 +104,7 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
 
         @Override
         public void show() {
-            runOnUiThread(new Runnable() {
+            activity.runOnUiThread(new Runnable() {
                 public void run() {
                     Appodeal.show(AndroidLauncher.this, Appodeal.INTERSTITIAL);
                 }

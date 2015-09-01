@@ -28,18 +28,14 @@ import javax.xml.soap.Text;
  */
 public class Assets {
     public static Skin skin;
-    public static Button.ButtonStyle menuButtonStyle;
+    public static Button.ButtonStyle checkBoxButtonStyle;
     public static Button.ButtonStyle arrowButtonStyle;
     public static Button.ButtonStyle keyTipButtonStyle;
 
     public static Slider.SliderStyle sliderStyle;
-    public static TextureRegionDrawable sliderKnob;
-    public static TextureRegionDrawable sliderBackground;
 
     public static TextureAtlas digitsTextureAtlas;
     public static TextureRegionDrawable digitTextureRegionDrawable;
-
-    public static TextureRegionDrawable checker;
 
 
     //Game TEXTURES
@@ -75,30 +71,20 @@ public class Assets {
     public static TextureAtlas menuTextureAtlas;
     public static TextureAtlas menu2TextureAtlas;
 
-
-    public static TextureRegionDrawable defaultButtonPressed;
-    public static TextureRegionDrawable defaultButton;
-
-    public static TextureRegionDrawable arrowButtonPressed;
-    public static TextureRegionDrawable arrowButton;
-    public static TextureRegionDrawable arrowButtonImpossible;
-
-    public static TextureRegionDrawable menuBackground;
-    public static TextureRegionDrawable customLevelBackground;
-    public static TextureRegionDrawable levelChooseBackground;
-    public static TextureRegionDrawable gameOverBackground;
-
-
     public static TextureAtlas backgrounds1TextureAtlas;
     public static TextureAtlas menuElementsTextureAtlas;
 
     public static TextureRegionDrawable mainMenuBackgroundTextureRegion;
     public static TextureRegionDrawable gameOverBackgroundTextureRegion;
 
-    public static TextureRegion sliderTextureRegion;
-    public static TextureRegion sliderKnobTextureRegion;
-    public static TextureRegion boxTextureRegion;
-    public static TextureRegion boxCheckerTextureRegion;
+    public static TextureRegionDrawable arrowButton;
+    public static TextureRegionDrawable arrowButtonPressed;
+    public static TextureRegionDrawable arrowButtonImpossible;
+    public static TextureRegionDrawable sliderTextureRegionDrawable;
+    public static TextureRegionDrawable sliderKnobTextureRegionDrawable;
+    public static TextureRegionDrawable checkBoxTextureRegionDrawable;
+    public static TextureRegionDrawable checkBoxCheckedTextureRegionDrawable;
+
     public static TextureRegion playBtnTextureRegion;
     public static TextureRegion widthBtnTextureRegion;
     public static TextureRegion methodBtnTextureRegion;
@@ -112,6 +98,10 @@ public class Assets {
     public static TextureRegion rateBtnTextureRegion;
     public static TextureRegion customBtnTextureRegion;
     public static TextureRegion optionsBtnTextureRegion;
+
+    public static TextureRegion reckBackTextureRegion;
+    public static TextureRegion primMethodTextureRegion;
+    public static TextureRegion huntAndKillkMethodTextureRegion;
 
 
     public static Texture loadTexture ( String file ){
@@ -148,45 +138,32 @@ public class Assets {
 
         menuElementsTextureAtlas = new TextureAtlas( "menu/elementsTexturePack1.atlas" );
 
-        sliderTextureRegion         = new TextureRegion( menuElementsTextureAtlas.findRegion( "slider" ) );
-        sliderKnobTextureRegion     = new TextureRegion( menuElementsTextureAtlas.findRegion( "sliderKnob" ) );
-        boxTextureRegion            = new TextureRegion( menuElementsTextureAtlas.findRegion( "box" ) );
-        boxCheckerTextureRegion     = new TextureRegion( menuElementsTextureAtlas.findRegion( "boxChecker" ) );
+        arrowButton                         = new TextureRegionDrawable( menuElementsTextureAtlas.findRegion( "levelArrow" ) );
+        arrowButtonPressed                  = new TextureRegionDrawable( menuElementsTextureAtlas.findRegion( "levelArrowPressed" ) );
+        arrowButtonImpossible               = new TextureRegionDrawable( menuElementsTextureAtlas.findRegion( "levelArrowImpossible" ) );
 
-        playBtnTextureRegion        = new TextureRegion( menuElementsTextureAtlas.findRegion( "playButton" ) );
-        widthBtnTextureRegion       = new TextureRegion( menuElementsTextureAtlas.findRegion( "widthButton" ) );
-        methodBtnTextureRegion      = new TextureRegion( menuElementsTextureAtlas.findRegion( "methodButton" ) );
-        shareBtnTextureRegion       = new TextureRegion( menuElementsTextureAtlas.findRegion( "shareButton" ) );
-        restartBtnTextureRegion     = new TextureRegion( menuElementsTextureAtlas.findRegion( "restartButton" ) );
-        menuBtnTextureRegion        = new TextureRegion( menuElementsTextureAtlas.findRegion( "menuButton" ) );
-        nextBtnTextureRegion        = new TextureRegion( menuElementsTextureAtlas.findRegion( "nextButton" ) );
-        okBtnTextureRegion          = new TextureRegion( menuElementsTextureAtlas.findRegion( "okButton" ) );
-        levelBtnTextureRegion       = new TextureRegion( menuElementsTextureAtlas.findRegion( "levelButton" ) );
-        campaignBtnTextureRegion    = new TextureRegion( menuElementsTextureAtlas.findRegion( "campaignButton" ) );
-        rateBtnTextureRegion        = new TextureRegion( menuElementsTextureAtlas.findRegion( "rateButton" ) );
-        customBtnTextureRegion      = new TextureRegion( menuElementsTextureAtlas.findRegion( "customButton" ) );
-        optionsBtnTextureRegion     = new TextureRegion( menuElementsTextureAtlas.findRegion( "optionsButton" ) );
-        
-        
+        sliderTextureRegionDrawable         = new TextureRegionDrawable( menuElementsTextureAtlas.findRegion( "slider" ) );
+        sliderKnobTextureRegionDrawable     = new TextureRegionDrawable( menuElementsTextureAtlas.findRegion( "sliderKnob" ) );
+        checkBoxTextureRegionDrawable       = new TextureRegionDrawable( menuElementsTextureAtlas.findRegion( "checkBox" ) );
+        checkBoxCheckedTextureRegionDrawable= new TextureRegionDrawable( menuElementsTextureAtlas.findRegion( "checkBoxChecked" ) );
 
- /*       menuTextureAtlas = new TextureAtlas( "menu/menuTextureAtlas.txt" );
-        menuBackground = new TextureRegionDrawable( menuTextureAtlas.findRegion( "mainScreen" ) );
-        customLevelBackground = new TextureRegionDrawable( menuTextureAtlas.findRegion( "customScreen" ) );
-        defaultButtonPressed = new TextureRegionDrawable( menuTextureAtlas.findRegion( "checker" ) );
-        defaultButton = new TextureRegionDrawable( menuTextureAtlas.findRegion( "sliderKnob" ) );
-        sliderKnob = new TextureRegionDrawable( menuTextureAtlas.findRegion( "sliderKnob" ) );
-        sliderBackground = new TextureRegionDrawable( menuTextureAtlas.findRegion( "sliderKnob" ) );
-        checker = new TextureRegionDrawable( menuTextureAtlas.findRegion( "checker" ) );
-
-        menu2TextureAtlas = new TextureAtlas( "menu/menu2TextureAtlas.txt" );
-        levelChooseBackground = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "levelChooserScreen" ) );
-        gameOverBackground = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "gameOverScreen" ) );
-
-        arrowDirection = new Sprite( menu2TextureAtlas.findRegion( "levelArrow" ) );
-        
-        arrowButton = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "levelArrow" ) );
-        arrowButtonPressed = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "levelArrowPressed" ) );
-        arrowButtonImpossible = new TextureRegionDrawable( menu2TextureAtlas.findRegion( "levelArrowImpossible" ) );*/
+        reckBackTextureRegion               = new TextureRegion( menuElementsTextureAtlas.findRegion( "rbMethodButton" ) );
+        primMethodTextureRegion             = new TextureRegion( menuElementsTextureAtlas.findRegion( "primMethodButton" ) );
+        huntAndKillkMethodTextureRegion     = new TextureRegion( menuElementsTextureAtlas.findRegion( "h&kMethodButton" ) );
+        playBtnTextureRegion                = new TextureRegion( menuElementsTextureAtlas.findRegion( "playButton" ) );
+        widthBtnTextureRegion               = new TextureRegion( menuElementsTextureAtlas.findRegion( "widthButton" ) );
+        methodBtnTextureRegion              = new TextureRegion( menuElementsTextureAtlas.findRegion( "methodButton" ) );
+        shareBtnTextureRegion               = new TextureRegion( menuElementsTextureAtlas.findRegion( "shareButton" ) );
+        restartBtnTextureRegion             = new TextureRegion( menuElementsTextureAtlas.findRegion( "restartButton" ) );
+        menuBtnTextureRegion                = new TextureRegion( menuElementsTextureAtlas.findRegion( "menuButton" ) );
+        nextBtnTextureRegion                = new TextureRegion( menuElementsTextureAtlas.findRegion( "nextButton" ) );
+        okBtnTextureRegion                  = new TextureRegion( menuElementsTextureAtlas.findRegion( "okButton" ) );
+        levelBtnTextureRegion               = new TextureRegion( menuElementsTextureAtlas.findRegion( "levelButton" ) );
+        campaignBtnTextureRegion            = new TextureRegion( menuElementsTextureAtlas.findRegion( "campaignButton" ) );
+        rateBtnTextureRegion                = new TextureRegion( menuElementsTextureAtlas.findRegion( "rateButton" ) );
+        customBtnTextureRegion              = new TextureRegion( menuElementsTextureAtlas.findRegion( "customButton" ) );
+        optionsBtnTextureRegion             = new TextureRegion( menuElementsTextureAtlas.findRegion( "optionsButton" ) );       
+       
     }
 
     public static void loadDigit ( int i ) {
@@ -251,13 +228,13 @@ public class Assets {
         uiTimerLabelStyle.font = defaultFont;
         skin.add( "default", uiTimerLabelStyle );
 
-        menuButtonStyle = new Button.ButtonStyle();
-        menuButtonStyle.up = skin.newDrawable(Assets.defaultButton,1f,1f,1f,0f);
-        menuButtonStyle.down = skin.newDrawable(Assets.defaultButtonPressed,1f,1f,1f,0f);
-        menuButtonStyle.checked = skin.newDrawable(Assets.defaultButtonPressed,1f,1f,1f,1f);
-        menuButtonStyle.over = skin.newDrawable(Assets.defaultButtonPressed,1f,1f,1f,0f);
-        skin.add( "default", menuButtonStyle );
 
+        checkBoxButtonStyle = new Button.ButtonStyle();
+        checkBoxButtonStyle.up = skin.newDrawable(Assets.checkBoxTextureRegionDrawable,1f,1f,1f,1f);
+        checkBoxButtonStyle.down = skin.newDrawable(Assets.checkBoxTextureRegionDrawable,1f,1f,1f,1f);
+        checkBoxButtonStyle.checked = skin.newDrawable(Assets.checkBoxCheckedTextureRegionDrawable,1f,1f,1f,1f);
+        checkBoxButtonStyle.over = skin.newDrawable(Assets.checkBoxTextureRegionDrawable,1f,1f,1f,1f);
+        skin.add( "checkBox", checkBoxButtonStyle );
 
         arrowButtonStyle = new Button.ButtonStyle();
         arrowButtonStyle.up = skin.newDrawable(Assets.arrowButton);
@@ -266,17 +243,17 @@ public class Assets {
         arrowButtonStyle.over = skin.newDrawable(Assets.arrowButton);
         skin.add( "arrow", arrowButtonStyle );
 
-
         keyTipButtonStyle = new Button.ButtonStyle();
         keyTipButtonStyle.up = skin.newDrawable( Assets.keyTip );
         keyTipButtonStyle.down = skin.newDrawable( Assets.keyTip );
         keyTipButtonStyle.checked = skin.newDrawable( Assets.keyTip );
         keyTipButtonStyle.over = skin.newDrawable( Assets.keyTip );
-        skin.add ( "keyTip", keyTipButtonStyle );
+        skin.add( "keyTip", keyTipButtonStyle );
+
 
         sliderStyle = new Slider.SliderStyle();
-        sliderStyle.knob = skin.newDrawable( Assets.sliderKnob );
-        sliderStyle.background = skin.newDrawable( Assets.sliderBackground, 1f,1f,1f,0f );
+        sliderStyle.knob = skin.newDrawable( Assets.sliderKnobTextureRegionDrawable );
+        sliderStyle.background = skin.newDrawable( Assets.sliderTextureRegionDrawable, 1f,1f,1f,1f );
         skin.add( "default", sliderStyle );
 
 

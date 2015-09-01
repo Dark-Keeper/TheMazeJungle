@@ -50,6 +50,7 @@ public class GameScreen implements Screen {
     private Flag flag;
     private Key key;
 
+    private float epsilon;
     private boolean isPlayerWithKey = false;
 
     private static float START_X = 0;
@@ -60,6 +61,7 @@ public class GameScreen implements Screen {
     private Controlls controllUp;
     private Controlls controllDown;
     private Controlls controllRight;
+
 
     private boolean isShowingControlls = false;
     private boolean isShowingKeyTip = false;
@@ -80,7 +82,9 @@ public class GameScreen implements Screen {
 
     public static final Vector2 GRAVITY = new Vector2(0, 0);
     private RayHandler rayHandler;
-    private PointLight pointLight;
+    private PointLight pointLightDoor;
+    private PointLight pointLightPlayer;
+    private float randomForLight;
 
     private boolean isZoomed = false;
     private float totalTime;
@@ -123,7 +127,7 @@ public class GameScreen implements Screen {
 
         this.maze = mazeGenerator.getMaze( world );
 
-        totalTime = 5 * maze.length;
+        totalTime = 3 * maze.length;
         START_Y = 1080;
         START_Y -= maze[0][0].height;
         displayMaze();
@@ -146,21 +150,36 @@ public class GameScreen implements Screen {
                 j = (int)(Math.random() * ( maze[0].length - 1 ) / 2  + maze[0].length/2);
             }
 
-            key = new Key(  maze [ i ][ j ].getX(),  maze[ i ][ j ].getY(), Cell.width, Cell.height );
+            key = new Key(  maze [ i ][ j ].getX(),  maze[ i ][ j ].getY(), 1.2f * Cell.width, 1.2f * Cell.height );
             stage.addActor( key );
         }   else {
             key = null;
         }
 
+        epsilon = 0.005f * Cell.width;
+
         System.out.println (" ------------------- key = " + key );
 
        // isNight = true;
 
+        if ( Settings.isNigthLevelsAvailable ){
+            if ( Settings.isCustomMaze ){
+                if ( Settings.isMazeCustomWithNight ){
+                    isNight = true;
+                }
+
+            }   else {
+                if ( Settings.currentLevel%5 == 0){
+                    isNight = true;
+                }
+            }
+        }
+
         if ( isNight ) {
             rayHandler = new RayHandler(world);
             rayHandler.setCombinedMatrix(stage.getCamera().combined);
-            new PointLight( rayHandler, 4, new Color ( 1,1,1,1), 200 , flag.getX() + flag.getWidth()/2, flag.getY()+ flag.getHeight()/2 );
-            pointLight = new PointLight(rayHandler, 6, new Color(1, 1, 1, 1), 360, Constants.APP_WIDTH / 2, Constants.APP_HEIGHT / 2);
+            pointLightDoor = new PointLight( rayHandler, 4, new Color ( 1f,1f,0.5f,1), 200 , flag.getX() + flag.getWidth()/2, flag.getY()+ flag.getHeight()/2 );
+            pointLightPlayer = new PointLight(rayHandler, 6, new Color(1, 1, 0.5f, 1), 300, Constants.APP_WIDTH / 2, Constants.APP_HEIGHT / 2);
            // pointLight.setSoftnessLength(0);
         }
     }
@@ -202,7 +221,7 @@ public class GameScreen implements Screen {
 
                 dispose();
 //                    TheMaze.interestialAddInterface.show();
-                TheMaze.game.setScreen( new GameOverScreen() );
+                TheMaze.game.setScreen( new GameOverScreen( false ) );
 
                 return true;
             }
@@ -242,8 +261,8 @@ public class GameScreen implements Screen {
 
     private void addUIButton ( Image image, float xPos, float width, float height, Table table ){
 
-        image.setSize( width, height );
-        image.setPosition( xPos, table.getHeight()/2 - height/2 );
+        image.setSize( width * 0.85f, height * 0.85f );
+        image.setPosition( xPos, table.getHeight()/2 - height/2 - 1 );
 
         table.addActor(image);
     }
@@ -379,17 +398,19 @@ public class GameScreen implements Screen {
         stage.act(delta);
         stage.draw();
 
-        stageHUD.act( delta );
-        stageHUD.draw();
+
 
         checkCameraIfZoomed ();
 
         calculateTime();
 
-        checkIfNight ();
+        checkIfNight ( delta );
         checkPlayerOnKey();
         checkGameOver();
         checkControlls();
+
+        stageHUD.act( delta );
+        stageHUD.draw();
 
     }
 
@@ -415,13 +436,16 @@ public class GameScreen implements Screen {
         timerText.setText(String.format("%.0fm:%.0fs", minutes, seconds));
 
         if ( minutes == 0f && seconds == 0f ){
-            TheMaze.game.setScreen( new GameOverScreen() );
+            TheMaze.game.setScreen( new GameOverScreen( false ) );
         }
     }
 
-    private void checkIfNight () {
+    private void checkIfNight ( float delta ) {
         if ( isNight ) {
-            pointLight.setPosition(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2);
+            pointLightPlayer.setPosition(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2);
+            randomForLight = (float)Math.sin( (( 0.99f + Math.random()/50 )*totalTime) % 3.14 );
+            pointLightPlayer.setDistance( 200 + 120 * randomForLight );
+            pointLightDoor.setDistance( 150  + 70 * randomForLight );
             rayHandler.updateAndRender();
             world.step(1 / 60f, 6, 2);
         }
@@ -429,11 +453,13 @@ public class GameScreen implements Screen {
 
     private void checkPlayerOnKey (){
         if ( key != null ) {
-            if ((int) player.getX() == (int) key.getX() && (int) player.getY() == (int) key.getY()) {
+          //  System.out.println( "playerX = " + player.getX() + " playerY = " + player.getY() + " keyX = " + key.getX() + " keyY = " + key.getY() );
+            if ( Math.abs ( player.getX() - key.getX() ) < epsilon && Math.abs( player.getY() - key.getY() ) < epsilon ) {
                 key.remove();
                 isPlayerWithKey = true;
 
-                key = new Key( 2 * uiTableElementWidth, uiTable.getHeight()/2 - uiTableElementHeight/2, uiTableElementWidth, uiTableElementHeight );
+                key = new Key( 2 * uiTableElementWidth, uiTable.getHeight()/2 - (1.2f * uiTableElementHeight)/2, 1.2f * uiTableElementWidth, 1.2f * uiTableElementHeight );
+                key.setPosition( key.getX(), key.getY() );
                 stageHUD.addActor( key );
             }
         }
@@ -451,10 +477,10 @@ public class GameScreen implements Screen {
         if ( (int) player.getX() == (int) flag.getX() && (int) player.getY() == (int) flag.getY() ){
             if ( key != null ) {
                 if ( isPlayerWithKey ) {
-                    TheMaze.interestialAddInterface.show();
+          //          TheMaze.interestialAddInterface.show();
                     Settings.levelsDone += 1;
                     Settings.saveResults();
-                    TheMaze.game.setScreen(new GameOverScreen());
+                    TheMaze.game.setScreen(new GameOverScreen( true ));
                 }   else if ( !isShowingKeyTip && !keyTipWasShown ) {
                     player.isTouchingDoor = true;
                     showKeyTip ();
@@ -463,7 +489,7 @@ public class GameScreen implements Screen {
                 TheMaze.interestialAddInterface.show();
                 Settings.levelsDone += 1;
                 Settings.saveResults();
-                TheMaze.game.setScreen(new GameOverScreen());
+                TheMaze.game.setScreen(new GameOverScreen( true ));
             }
         }
     }

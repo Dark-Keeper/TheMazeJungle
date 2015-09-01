@@ -5,140 +5,168 @@ filter: MipMapLinearLinear,Linear
 repeat: none
 slider
   rotate: false
-  xy: 1, 1936
+  xy: 1, 1909
   size: 900, 103
   orig: 900, 103
   offset: 0, 0
   index: -1
 campaignButton
   rotate: false
-  xy: 1, 1785
+  xy: 1, 1758
   size: 760, 149
   orig: 760, 149
   offset: 0, 0
   index: -1
 methodButton
   rotate: false
-  xy: 1, 1634
+  xy: 1, 1607
   size: 691, 149
   orig: 691, 149
   offset: 0, 0
   index: -1
 restartButton
   rotate: false
-  xy: 1, 1483
+  xy: 1, 1456
   size: 640, 149
   orig: 640, 149
   offset: 0, 0
   index: -1
 customButton
   rotate: false
-  xy: 1, 1332
+  xy: 1, 1305
   size: 616, 149
   orig: 616, 149
   offset: 0, 0
   index: -1
 optionsButton
   rotate: false
-  xy: 1, 1181
+  xy: 1, 1154
   size: 599, 149
   orig: 599, 149
   offset: 0, 0
   index: -1
 widthButton
   rotate: false
-  xy: 1, 1030
+  xy: 1, 1003
   size: 576, 149
   orig: 576, 149
   offset: 0, 0
   index: -1
 menuButton
   rotate: false
-  xy: 1, 879
+  xy: 1, 852
   size: 478, 149
   orig: 478, 149
   offset: 0, 0
   index: -1
 shareButton
   rotate: false
-  xy: 1, 728
+  xy: 1, 701
   size: 471, 149
   orig: 471, 149
   offset: 0, 0
   index: -1
 nextButton
   rotate: false
-  xy: 1, 577
+  xy: 1, 550
   size: 420, 149
   orig: 420, 149
   offset: 0, 0
   index: -1
 levelButton
   rotate: false
-  xy: 1, 426
+  xy: 1, 399
   size: 412, 149
   orig: 412, 149
   offset: 0, 0
   index: -1
 playButton
   rotate: false
-  xy: 1, 275
+  xy: 1, 248
   size: 400, 149
   orig: 400, 149
   offset: 0, 0
   index: -1
 rateButton
   rotate: false
-  xy: 1, 124
+  xy: 1, 97
   size: 354, 149
   orig: 354, 149
   offset: 0, 0
   index: -1
 okButton
   rotate: false
-  xy: 903, 1890
+  xy: 903, 1863
   size: 224, 149
   orig: 224, 149
   offset: 0, 0
   index: -1
+h&kMethodButton
+  rotate: false
+  xy: 1, 14
+  size: 214, 81
+  orig: 214, 81
+  offset: 0, 0
+  index: -1
+primMethodButton
+  rotate: false
+  xy: 1129, 1931
+  size: 214, 81
+  orig: 214, 81
+  offset: 0, 0
+  index: -1
+rbMethodButton
+  rotate: false
+  xy: 1345, 1931
+  size: 214, 81
+  orig: 214, 81
+  offset: 0, 0
+  index: -1
+checkBox
+  rotate: false
+  xy: 763, 1786
+  size: 137, 121
+  orig: 137, 121
+  offset: 0, 0
+  index: -1
 levelArrow
   rotate: false
-  xy: 1129, 1888
+  xy: 481, 850
   size: 143, 151
   orig: 143, 151
   offset: 0, 0
   index: -1
 levelArrowImpossible
   rotate: false
-  xy: 1274, 1888
+  xy: 474, 697
   size: 143, 151
   orig: 143, 151
   offset: 0, 0
   index: -1
 levelArrowPressed
   rotate: false
-  xy: 1419, 1888
+  xy: 423, 544
   size: 143, 151
   orig: 143, 151
   offset: 0, 0
   index: -1
-box
+checkBoxChecked
   rotate: false
-  xy: 1, 1
+  xy: 415, 421
   size: 137, 121
   orig: 137, 121
   offset: 0, 0
   index: -1
 boxChecker
   rotate: false
-  xy: 481, 934
+  xy: 217, 1
   size: 95, 94
   orig: 95, 94
   offset: 0, 0
   index: -1
 sliderKnob
   rotate: false
-  xy: 694, 1706
+  xy: 694, 1679
   size: 29, 77
   orig: 29, 77
   offset: 0, 0

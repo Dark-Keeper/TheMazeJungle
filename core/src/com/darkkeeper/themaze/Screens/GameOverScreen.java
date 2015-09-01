@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -29,7 +30,11 @@ public class GameOverScreen implements Screen {
     private static int buttonWidth = 780;
     private static int buttonHeight = 150;
 
-    public GameOverScreen (){
+    private boolean isCompleted;
+
+    public GameOverScreen ( boolean isCompleted ){
+
+        this.isCompleted = isCompleted;
         viewPort = new ExtendViewport( Constants.APP_WIDTH, Constants.APP_HEIGHT );
         stage = new Stage(viewPort);
         Gdx.input.setInputProcessor(stage);
@@ -38,7 +43,7 @@ public class GameOverScreen implements Screen {
 
 
         rootTable = new Table();
-        rootTable.background( Assets.gameOverBackground );
+        rootTable.background( Assets.gameOverBackgroundTextureRegion );
         rootTable.setFillParent( true );
         stage.addActor( rootTable );
 
@@ -49,22 +54,39 @@ public class GameOverScreen implements Screen {
 
     private void addButtons() {
 
-        Button nextButton = new Button( Assets.skin, "default" );
-        nextButton.addListener( new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+        if ( isCompleted && !Settings.isCustomMaze ) {
+            Image nextButton = new Image( Assets.nextBtnTextureRegion );
+            nextButton.addListener(new InputListener() {
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
-                dispose();
-                Settings.currentLevel+=1;
-                TheMaze.game.setScreen( new GameScreen( MazeGenerator.generateNewMaze() ) );
+                    dispose();
+                    Settings.currentLevel += 1;
+                    TheMaze.game.setScreen(new GameScreen(MazeGenerator.generateNewMaze()));
 
-                return true;
-            }
+                    return true;
+                }
 
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-            }
-        });;
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                }
+            });
+            addButton( nextButton, 1150, 760 );
 
-        Button menuButton = new Button( Assets.skin, "default" );
+            Image shareButton = new Image( Assets.shareBtnTextureRegion );
+            shareButton.addListener( new InputListener() {
+                public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+
+                    TheMaze.shareInterface.share( Settings.currentLevel );
+
+                    return true;
+                }
+
+                public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                }
+            });
+            addButton( shareButton, 1150, 235 );
+        }
+
+        Image menuButton = new Image( Assets.menuBtnTextureRegion );
         menuButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
@@ -76,47 +98,36 @@ public class GameOverScreen implements Screen {
 
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
             }
-        });;
+        });
 
-        Button restartButton = new Button( Assets.skin, "default" );
+        Image restartButton = new Image( Assets.restartBtnTextureRegion );
         restartButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
                 dispose();
-                TheMaze.game.setScreen( new GameScreen( MazeGenerator.generateNewMaze() ) );
+                if ( Settings.isCustomMaze ){
+                    TheMaze.game.setScreen( new GameScreen( MazeGenerator.generateNewCustomMaze() ) );
+                }   else {
+                    TheMaze.game.setScreen(new GameScreen(MazeGenerator.generateNewMaze()));
+                }
 
                 return true;
             }
 
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
             }
-        });;
+        });
 
-        Button shareButton = new Button( Assets.skin, "default" );
-        shareButton.addListener( new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
-                TheMaze.shareInterface.share( Settings.currentLevel );
-
-                return true;
-            }
-
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-            }
-        });;
-
-        addButton( nextButton, 1150, 760 );
         addButton( menuButton, 1150, 585 );
         addButton( restartButton, 1150, 410 );
-        addButton( shareButton, 1150, 235 );
-
 
     }
 
-    private void addButton ( Button button, float x, float y ){
+    private void addButton ( Image button, float x, float y ){
         button.setOrigin( buttonWidth/2, buttonHeight/2 );
         button.setPosition( x, y );
-        button.setSize( buttonWidth, buttonHeight );
+   //     button.setSize( buttonWidth, buttonHeight );
         stage.addActor( button );
     }
 

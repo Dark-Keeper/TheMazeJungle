@@ -37,7 +37,7 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(viewPort);
         Gdx.input.setInputProcessor(stage);
 
-        Image playCampaignButton = new Image( Assets.playBtnTextureRegion );
+        Image playCampaignButton = new Image( Assets.campaignBtnTextureRegion );
         playCampaignButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 

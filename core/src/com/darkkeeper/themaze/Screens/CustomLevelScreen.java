@@ -47,7 +47,7 @@ public class CustomLevelScreen implements Screen {
 
     private Button recbackMethodButton;
     private Button huntAndKillMethodButton;
-    private Button primsMethodButton;
+    private Button primMethodButton;
 
     private int mazeWidth;
     private int mazeHeight;
@@ -77,7 +77,7 @@ public class CustomLevelScreen implements Screen {
         Gdx.input.setCatchBackKey(true);
 
         rootTable = new Table();
-        rootTable.background( Assets.customLevelBackground );
+        rootTable.background( Assets.mainMenuBackgroundTextureRegion );
         rootTable.setFillParent( true );
         stage.addActor( rootTable );
 
@@ -85,10 +85,17 @@ public class CustomLevelScreen implements Screen {
 
         addMethodButtons();
 
-        widthSlider = new MySlider( 4, 50, 1, false, Assets.skin, "default" );
-        heightSlider = new MySlider( 4, 50, 1, false, Assets.skin, "default" );
-        initializeSlider(widthSlider, 960, 634 );
-        initializeSlider(heightSlider, 960, 417 );
+        Image widthTextImage = new Image( Assets.widthBtnTextureRegion );
+        widthTextImage.setPosition( 170, 615 );
+
+        stage.addActor( widthTextImage );
+
+        widthSlider = new MySlider( 14f, 54f, 2f, false, Assets.skin, "default" );
+      //  heightSlider = new MySlider( 4, 50, 1, false, Assets.skin, "default" );
+        initializeSlider( widthSlider, 960, 634 );
+
+    //    widthSlider.setStepSize( 2f );
+      //  initializeSlider(heightSlider, 960, 417 );
 
 /*        addMazeSizeButtons();
         addSkinSelectButtons();*/
@@ -99,6 +106,9 @@ public class CustomLevelScreen implements Screen {
 
 
     private void changeSliderText ( MySlider slider ){
+        
+        int value = Math.round( slider.getValue() ) + 1;
+        System.out.println("value = " + value + " float = " + slider.getValue() );
 
         if ( slider.currentImage!=null ){
             slider.currentImage.remove();
@@ -106,20 +116,20 @@ public class CustomLevelScreen implements Screen {
         if ( slider.currentImage2!=null ){
             slider.currentImage2.remove();
         }
-        if ( slider.getValue() > 0 && slider.getValue() < 10 ) {
-            Assets.loadDigit( (int)slider.getValue() );
+        if ( value > 0 && value < 10 ) {
+            Assets.loadDigit( (int)value );
             slider.currentImage = new Image( Assets.digitTextureRegionDrawable );
             slider.currentImage.setSize(40, 60);
             slider.currentImage.setPosition( slider.getX() + slider.getWidth()/2, slider.getY() + 90 );
             stage.addActor(slider.currentImage);
-        }   else if ( slider.getValue() > 9 && slider.getValue() < 100 ){
-            Assets.loadDigit( (int)slider.getValue() / 10);
+        }   else if ( value > 9 && value < 100 ){
+            Assets.loadDigit( (int)value / 10);
             slider.currentImage = new Image( Assets.digitTextureRegionDrawable );
             slider.currentImage.setSize(40, 60);
             slider.currentImage.setPosition( slider.getX() + slider.getWidth()/2 - 20, slider.getY() + 90 );
             stage.addActor(slider.currentImage);
 
-            Assets.loadDigit( (int)slider.getValue() % 10 );
+            Assets.loadDigit( (int)value % 10 );
             slider.currentImage2 = new Image( Assets.digitTextureRegionDrawable );
             slider.currentImage2.setSize(40, 60);
             slider.currentImage2.setPosition( slider.getX() + slider.getWidth()/2 + 20, slider.getY() + 90 );
@@ -128,6 +138,7 @@ public class CustomLevelScreen implements Screen {
     }
 
     private void initializeSlider ( final MySlider slider, float xPos, float yPos ){
+
         slider.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 changeSliderText( slider );
@@ -144,7 +155,8 @@ public class CustomLevelScreen implements Screen {
         });       
         slider.setWidth( 880 );
         slider.setHeight( 100 );
-        slider.setValue( 10 );
+        slider.setValue( 14f );
+     //   System.out.println(" float = " + slider.getValue() );
         slider.setPosition( xPos, yPos );
         stage.addActor( slider );
         changeSliderText( slider );
@@ -155,24 +167,18 @@ public class CustomLevelScreen implements Screen {
 
     private void displayMaze () {
 
-        mazeWidth = (int)widthSlider.getValue();
-       // mazeHeight = (int)heightSlider.getValue();
-        mazeHeight = (int)(mazeWidth/1.77);
-
-        MazeGenerator maze;
+        Settings.mazeCustomWidth = (int)(Math.round(widthSlider.getValue() + 1) / 2) ;
+        Settings.isCustomMaze = true;
 
         if (recbackMethodButton.isChecked()) {
-            maze = new RecursiveBacktrackerMazeGenerator(mazeWidth, mazeHeight, 0, 1);
-        } else if (primsMethodButton.isChecked()) {
-            maze = new PrimMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            Settings.mazeCustomMethod = "recback";
+        } else if (primMethodButton.isChecked()) {
+            Settings.mazeCustomMethod = "prim";
         } else {
-            maze = new HuntAndKillMazeGenerator(mazeWidth, mazeHeight, 0, 1);
+            Settings.mazeCustomMethod = "hunt";
         }
 
-        maze.generate();
-        Assets.currentStyleTexture = Assets.gameTexture1;
-
-        TheMaze.game.setScreen( new GameScreen( maze ) );
+        TheMaze.game.setScreen( new GameScreen( MazeGenerator.generateNewCustomMaze() ) );
 
     }
 
@@ -194,19 +200,32 @@ public class CustomLevelScreen implements Screen {
     private void addMethodButtons (){
         ButtonGroup buttonGroup = new ButtonGroup();
 
-        recbackMethodButton = new Button( Assets.skin, "default" );
-        primsMethodButton = new Button( Assets.skin, "default" );
-        huntAndKillMethodButton = new Button( Assets.skin, "default" );
+        recbackMethodButton     = new Button( Assets.skin, "checkBox" );
+        primMethodButton       = new Button( Assets.skin, "checkBox" );
+        huntAndKillMethodButton = new Button( Assets.skin, "checkBox" );
+
         initializeCheckerButton( recbackMethodButton, METHOD_BUTTON_WIDTH, METHOD_BUTTON_HEIGHT );
-        initializeCheckerButton( primsMethodButton, METHOD_BUTTON_WIDTH, METHOD_BUTTON_HEIGHT );
+        initializeCheckerButton( primMethodButton, METHOD_BUTTON_WIDTH, METHOD_BUTTON_HEIGHT );
         initializeCheckerButton( huntAndKillMethodButton, METHOD_BUTTON_WIDTH, METHOD_BUTTON_HEIGHT );
 
+        Image recbackMethodTextImage       = new Image( Assets.reckBackTextureRegion );
+        Image primMethodTextImage           = new Image( Assets.primMethodTextureRegion );
+        Image huntAndKillMethodTextImage    = new Image( Assets.huntAndKillkMethodTextureRegion );
+
+        stage.addActor( recbackMethodTextImage );
+        stage.addActor( primMethodTextImage );
+        stage.addActor( huntAndKillMethodTextImage );
+
+        recbackMethodTextImage.setPosition( 910, 967 );
+        primMethodTextImage.setPosition( 1303, 967 );
+        huntAndKillMethodTextImage.setPosition( 1690, 967 );
+
         recbackMethodButton.setPosition( 953, 860 );
-        primsMethodButton.setPosition( 1337, 860 );
+        primMethodButton.setPosition( 1337, 860 );
         huntAndKillMethodButton.setPosition( 1721, 860 );
 
         buttonGroup.add(recbackMethodButton);
-        buttonGroup.add(primsMethodButton);
+        buttonGroup.add(primMethodButton);
         buttonGroup.add(huntAndKillMethodButton);
 
         buttonGroup.setMaxCheckCount( 1 );
@@ -218,7 +237,7 @@ public class CustomLevelScreen implements Screen {
         int buttonWidth = 500;
         int buttonHeight = 190;
 
-        Button playButton = new Button( Assets.skin, "default" );
+        Image playButton = new Image( Assets.playBtnTextureRegion );
         playButton.setOrigin( buttonWidth/2, buttonHeight/2 );
         playButton.setPosition( 700, 8 );
         playButton.setSize( buttonWidth, buttonHeight );
