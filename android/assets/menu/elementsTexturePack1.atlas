@@ -3,170 +3,212 @@ elementsTexturePack1.png
 format: RGBA8888
 filter: MipMapLinearLinear,Linear
 repeat: none
+dailyQuestsBox
+  rotate: false
+  xy: 1, 1366
+  size: 1533, 662
+  orig: 1533, 662
+  offset: 0, 0
+  index: -1
+nightLevelsButton
+  rotate: false
+  xy: 1, 1252
+  size: 922, 112
+  orig: 922, 112
+  offset: 0, 0
+  index: -1
 slider
   rotate: false
-  xy: 1, 1909
+  xy: 1, 1147
   size: 900, 103
   orig: 900, 103
   offset: 0, 0
   index: -1
 campaignButton
   rotate: false
-  xy: 1, 1758
+  xy: 1, 996
   size: 760, 149
   orig: 760, 149
   offset: 0, 0
   index: -1
+vibrationsButton
+  rotate: false
+  xy: 1, 878
+  size: 785, 116
+  orig: 785, 116
+  offset: 0, 0
+  index: -1
 methodButton
   rotate: false
-  xy: 1, 1607
+  xy: 1, 727
   size: 691, 149
   orig: 691, 149
   offset: 0, 0
   index: -1
 restartButton
   rotate: false
-  xy: 1, 1456
+  xy: 1, 576
   size: 640, 149
   orig: 640, 149
   offset: 0, 0
   index: -1
 customButton
   rotate: false
-  xy: 1, 1305
+  xy: 1, 425
   size: 616, 149
   orig: 616, 149
   offset: 0, 0
   index: -1
 optionsButton
   rotate: false
-  xy: 1, 1154
+  xy: 1, 274
   size: 599, 149
   orig: 599, 149
   offset: 0, 0
   index: -1
 widthButton
   rotate: false
-  xy: 1, 1003
+  xy: 1, 123
   size: 576, 149
   orig: 576, 149
   offset: 0, 0
   index: -1
 menuButton
   rotate: false
-  xy: 1, 852
+  xy: 1536, 1879
   size: 478, 149
   orig: 478, 149
   offset: 0, 0
   index: -1
 shareButton
   rotate: false
-  xy: 1, 701
+  xy: 1536, 1728
   size: 471, 149
   orig: 471, 149
   offset: 0, 0
   index: -1
+nightButton
+  rotate: false
+  xy: 1, 1
+  size: 471, 120
+  orig: 471, 120
+  offset: 0, 0
+  index: -1
 nextButton
   rotate: false
-  xy: 1, 550
+  xy: 1536, 1577
   size: 420, 149
   orig: 420, 149
   offset: 0, 0
   index: -1
 levelButton
   rotate: false
-  xy: 1, 399
+  xy: 1536, 1426
   size: 412, 149
   orig: 412, 149
   offset: 0, 0
   index: -1
+musicButton
+  rotate: false
+  xy: 925, 1244
+  size: 431, 120
+  orig: 431, 120
+  offset: 0, 0
+  index: -1
 playButton
   rotate: false
-  xy: 1, 248
+  xy: 903, 1093
   size: 400, 149
   orig: 400, 149
   offset: 0, 0
   index: -1
-rateButton
+helpButton
   rotate: false
-  xy: 1, 97
-  size: 354, 149
-  orig: 354, 149
-  offset: 0, 0
-  index: -1
-okButton
-  rotate: false
-  xy: 903, 1863
-  size: 224, 149
-  orig: 224, 149
-  offset: 0, 0
-  index: -1
-h&kMethodButton
-  rotate: false
-  xy: 1, 14
-  size: 214, 81
-  orig: 214, 81
-  offset: 0, 0
-  index: -1
-primMethodButton
-  rotate: false
-  xy: 1129, 1931
-  size: 214, 81
-  orig: 214, 81
-  offset: 0, 0
-  index: -1
-rbMethodButton
-  rotate: false
-  xy: 1345, 1931
-  size: 214, 81
-  orig: 214, 81
-  offset: 0, 0
-  index: -1
-checkBox
-  rotate: false
-  xy: 763, 1786
-  size: 137, 121
-  orig: 137, 121
+  xy: 1536, 1275
+  size: 370, 149
+  orig: 370, 149
   offset: 0, 0
   index: -1
 levelArrow
   rotate: false
-  xy: 481, 850
+  xy: 1358, 1213
   size: 143, 151
   orig: 143, 151
+  offset: 0, 0
+  index: -1
+okButton
+  rotate: false
+  xy: 1305, 1062
+  size: 224, 149
+  orig: 224, 149
+  offset: 0, 0
+  index: -1
+stopWatch
+  rotate: false
+  xy: 1531, 1029
+  size: 234, 244
+  orig: 234, 244
   offset: 0, 0
   index: -1
 levelArrowImpossible
   rotate: false
-  xy: 474, 697
+  xy: 1767, 1122
   size: 143, 151
   orig: 143, 151
   offset: 0, 0
   index: -1
+checkBox
+  rotate: false
+  xy: 763, 1024
+  size: 137, 121
+  orig: 137, 121
+  offset: 0, 0
+  index: -1
+h&kMethodButton
+  rotate: false
+  xy: 902, 1010
+  size: 214, 81
+  orig: 214, 81
+  offset: 0, 0
+  index: -1
 levelArrowPressed
   rotate: false
-  xy: 423, 544
+  xy: 694, 725
   size: 143, 151
   orig: 143, 151
   offset: 0, 0
   index: -1
 checkBoxChecked
   rotate: false
-  xy: 415, 421
+  xy: 1767, 999
   size: 137, 121
   orig: 137, 121
   offset: 0, 0
   index: -1
+primMethodButton
+  rotate: false
+  xy: 643, 642
+  size: 214, 81
+  orig: 214, 81
+  offset: 0, 0
+  index: -1
+rbMethodButton
+  rotate: false
+  xy: 643, 559
+  size: 214, 81
+  orig: 214, 81
+  offset: 0, 0
+  index: -1
 boxChecker
   rotate: false
-  xy: 217, 1
+  xy: 474, 27
   size: 95, 94
   orig: 95, 94
   offset: 0, 0
   index: -1
 sliderKnob
   rotate: false
-  xy: 694, 1679
+  xy: 2016, 1951
   size: 29, 77
   orig: 29, 77
   offset: 0, 0

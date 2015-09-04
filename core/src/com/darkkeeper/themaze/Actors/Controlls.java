@@ -8,8 +8,8 @@ import com.darkkeeper.themaze.Basics.Assets;
  * Created by andreipiatosin on 6/1/15.
  */
 public class Controlls extends Actor {
-    private int WIDTH = 150;
-    private int HEIGHT = 65;
+    private float WIDTH = 150;
+    private float HEIGHT = 65;
 
     private Player player;
     private String direction;
@@ -23,25 +23,25 @@ public class Controlls extends Actor {
             setWidth( WIDTH );
             setHeight( HEIGHT );
             setOrigin( getWidth()/2, getHeight()/2 );
-            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2, player.getY()+ 4/5*WIDTH - getHeight()/2 + player.getHeight()/2);
+            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2, player.getY()+ 5/5*WIDTH - getHeight()/2 + player.getHeight()/2);
         }
         if ( direction.equals("east") ) {
             setWidth( WIDTH );
             setHeight( HEIGHT );
             setOrigin( getWidth()/2, getHeight()/2 );
-            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2 + 4/5*WIDTH,player.getY() - getHeight()/2 + player.getHeight()/2);
+            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2 + 5/5*WIDTH,player.getY() - getHeight()/2 + player.getHeight()/2);
         }
         if ( direction.equals("south") ){
             setWidth( WIDTH );
             setHeight( HEIGHT );
             setOrigin( getWidth()/2, getHeight()/2 );
-            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2,player.getY() - 4/5*WIDTH - getHeight()/2 + player.getHeight()/2);
+            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2,player.getY() - 5/5*WIDTH - getHeight()/2 + player.getHeight()/2);
         }
         if ( direction.equals("west") ){
             setWidth( WIDTH );
             setHeight( HEIGHT );
             setOrigin( getWidth()/2, getHeight()/2 );
-            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2- 4/5*WIDTH,player.getY() - getHeight()/2 + player.getHeight()/2);
+            setPosition( player.getX() - getWidth()/2 + player.getWidth()/2- 5/5*WIDTH,player.getY() - getHeight()/2 + player.getHeight()/2);
         }
 
 

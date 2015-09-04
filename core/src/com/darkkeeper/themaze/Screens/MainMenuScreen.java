@@ -1,6 +1,10 @@
 package com.darkkeeper.themaze.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -9,12 +13,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.darkkeeper.themaze.Basics.Assets;
 import com.darkkeeper.themaze.Basics.Settings;
 import com.darkkeeper.themaze.TheMaze;
 import com.darkkeeper.themaze.Utils.Constants;
+
+import java.util.Calendar;
 
 
 /**
@@ -35,7 +42,46 @@ public class MainMenuScreen implements Screen {
 
         viewPort = new ExtendViewport(Constants.APP_WIDTH,Constants.APP_HEIGHT);
         stage = new Stage(viewPort);
-        Gdx.input.setInputProcessor(stage);
+
+        InputProcessor backProcessor = new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+
+                if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
+                    dispose();
+                    TheMaze.exitAddInterface.show();
+                }
+
+                return false;
+            }
+        };
+
+        InputMultiplexer multiplexer = new InputMultiplexer( stage, backProcessor );
+        Gdx.input.setInputProcessor(multiplexer);
+
+        if ( !Settings.isRated ){
+            TheMaze.rateInterface.showRateNotification();
+            Settings.saveSettings();
+        }
+
+        rootTable = new Table();
+        rootTable.background( Assets.mainMenuBackgroundTextureRegion );
+        rootTable.setFillParent( true );
+        stage.addActor( rootTable );
+        addNavigationButtons ();
+
+        checkDaily ();
+
+    }
+
+    private void checkDaily ( ) {
+        int currentDayOfTheYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+        if ( Settings.currentDayOfTheYear < currentDayOfTheYear ){
+            showDailyBox( currentDayOfTheYear );
+        }
+    }
+
+    private void addNavigationButtons () {
 
         Image playCampaignButton = new Image( Assets.campaignBtnTextureRegion );
         playCampaignButton.addListener( new InputListener() {
@@ -43,7 +89,6 @@ public class MainMenuScreen implements Screen {
 
                 dispose();
                 TheMaze.game.setScreen( new CampaignScreen () );
-
                 return true;
             }
 
@@ -70,7 +115,6 @@ public class MainMenuScreen implements Screen {
 
                 dispose();
                 TheMaze.game.setScreen( new OptionsMenuScreen() );
-
                 return true;
             }
 
@@ -79,13 +123,11 @@ public class MainMenuScreen implements Screen {
         });
 
 
-        Image rateButton = new Image( Assets.rateBtnTextureRegion );
-        rateButton.addListener( new InputListener() {
+        Image helpButton = new Image( Assets.helpBtnTextureRegion );
+        helpButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
-           //     TheMaze.exitAddInterface.show();
-                //Gdx.app.exit();
-
+                TheMaze.rateInterface.help();
                 return true;
             }
 
@@ -93,19 +135,47 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        rootTable = new Table();
-        rootTable.background( Assets.mainMenuBackgroundTextureRegion );
-        rootTable.setFillParent( true );
-        stage.addActor( rootTable );
-
-        addImage( playCampaignButton, 1150, 760 );
+        addImage( playCampaignButton, 1150, 760);
         addImage( playCustomLevelButton, 1150, 585 );
         addImage( optionsButton, 1150, 410 );
-        addImage( rateButton, 1150, 235 );
+        addImage( helpButton, 1150, 235 );
+    }
+
+    private void showDailyBox ( final int currentDayOfTheYear ) {
+
+        final Image[] checkboxes = new Image[Settings.daysInARow];
+        final Image dailyQuestBox = new Image ( Assets.dailyQuestsBoxTextureRegion );
+        dailyQuestBox.addListener( new InputListener(){
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+
+                for ( int i = 0; i < Settings.daysInARow; i++ ){
+                    checkboxes[i].remove();
+                }
+                dailyQuestBox.remove();
+
+                if ( Settings.daysInARow < 5) {
+                    Settings.daysInARow = Settings.daysInARow + 1;
+                }
+                Settings.currentDayOfTheYear = currentDayOfTheYear;
+                Settings.saveSettings();
+
+                return true;
+            }
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            }
+        });
+        addImage( dailyQuestBox, stage.getWidth()/2 - dailyQuestBox.getWidth()/2, stage.getHeight()/2 - dailyQuestBox.getHeight()/2 );
+
+        for ( int i = 0; i < Settings.daysInARow; i++ ){
+            checkboxes[i] = new Image( Assets.boxCheckerTextureRegion );
+            checkboxes[i].setOrigin( Align.center );
+            checkboxes[i].setPosition( 415 + i * 293, 543 );
+            stage.addActor( checkboxes[i] );
+        }
+
     }
 
     private void addImage ( Image image, float x, float y ){
-        image.setOrigin( image.getWidth()/2, image.getHeight()/2 );
         image.setPosition( x, y );
     //    image.setSize( buttonWidth, buttonHeight );
         stage.addActor( image );

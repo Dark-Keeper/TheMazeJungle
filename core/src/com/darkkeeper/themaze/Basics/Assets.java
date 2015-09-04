@@ -49,6 +49,7 @@ public class Assets {
     public static TextureRegion bottomBarBackground;
     public static TextureRegion bottomBarZoomButton;
     public static TextureRegion bottomBarExitButton;
+    public static TextureRegion bottomBarStopWatchButton;
     public static TextureRegion bottomBarPauseButton;
     public static TextureRegion[] bottomBarSoundButton;
 
@@ -85,6 +86,10 @@ public class Assets {
     public static TextureRegionDrawable checkBoxTextureRegionDrawable;
     public static TextureRegionDrawable checkBoxCheckedTextureRegionDrawable;
 
+    public static TextureRegion boxCheckerTextureRegion;
+    public static TextureRegion dailyQuestsBoxTextureRegion;
+
+
     public static TextureRegion playBtnTextureRegion;
     public static TextureRegion widthBtnTextureRegion;
     public static TextureRegion methodBtnTextureRegion;
@@ -95,9 +100,13 @@ public class Assets {
     public static TextureRegion okBtnTextureRegion;
     public static TextureRegion levelBtnTextureRegion;
     public static TextureRegion campaignBtnTextureRegion;
-    public static TextureRegion rateBtnTextureRegion;
+    public static TextureRegion helpBtnTextureRegion;
     public static TextureRegion customBtnTextureRegion;
     public static TextureRegion optionsBtnTextureRegion;
+    public static TextureRegion nightBtnTextureRegion;
+    public static TextureRegion nightLevelsBtnTextureRegion;
+    public static TextureRegion vibrationsBtnTextureRegion;
+    public static TextureRegion musicBtnTextureRegion;
 
     public static TextureRegion reckBackTextureRegion;
     public static TextureRegion primMethodTextureRegion;
@@ -124,6 +133,7 @@ public class Assets {
         bottomBarBackground = new TextureRegion( textureAtlas.findRegion( "bbBackground" ) );
         bottomBarExitButton = new TextureRegion( textureAtlas.findRegion( "bbExitBtn" ) );
         bottomBarZoomButton = new TextureRegion( textureAtlas.findRegion( "bbZoomBtn" ) );
+    //    bottomBarStopWatchButton    = new TextureRegion( textureAtlas.findRegion( "bbStopWatchBtn" ) );
 
     }
 
@@ -147,6 +157,10 @@ public class Assets {
         checkBoxTextureRegionDrawable       = new TextureRegionDrawable( menuElementsTextureAtlas.findRegion( "checkBox" ) );
         checkBoxCheckedTextureRegionDrawable= new TextureRegionDrawable( menuElementsTextureAtlas.findRegion( "checkBoxChecked" ) );
 
+
+        boxCheckerTextureRegion             = new TextureRegion( menuElementsTextureAtlas.findRegion( "boxChecker" ) );
+        dailyQuestsBoxTextureRegion         = new TextureRegion( menuElementsTextureAtlas.findRegion( "dailyQuestsBox" ) );
+
         reckBackTextureRegion               = new TextureRegion( menuElementsTextureAtlas.findRegion( "rbMethodButton" ) );
         primMethodTextureRegion             = new TextureRegion( menuElementsTextureAtlas.findRegion( "primMethodButton" ) );
         huntAndKillkMethodTextureRegion     = new TextureRegion( menuElementsTextureAtlas.findRegion( "h&kMethodButton" ) );
@@ -160,10 +174,14 @@ public class Assets {
         okBtnTextureRegion                  = new TextureRegion( menuElementsTextureAtlas.findRegion( "okButton" ) );
         levelBtnTextureRegion               = new TextureRegion( menuElementsTextureAtlas.findRegion( "levelButton" ) );
         campaignBtnTextureRegion            = new TextureRegion( menuElementsTextureAtlas.findRegion( "campaignButton" ) );
-        rateBtnTextureRegion                = new TextureRegion( menuElementsTextureAtlas.findRegion( "rateButton" ) );
+        helpBtnTextureRegion                = new TextureRegion( menuElementsTextureAtlas.findRegion( "helpButton" ) );
         customBtnTextureRegion              = new TextureRegion( menuElementsTextureAtlas.findRegion( "customButton" ) );
-        optionsBtnTextureRegion             = new TextureRegion( menuElementsTextureAtlas.findRegion( "optionsButton" ) );       
-       
+        optionsBtnTextureRegion             = new TextureRegion( menuElementsTextureAtlas.findRegion( "optionsButton" ) );
+        nightBtnTextureRegion               = new TextureRegion( menuElementsTextureAtlas.findRegion( "nightButton" ) );
+        nightLevelsBtnTextureRegion         = new TextureRegion( menuElementsTextureAtlas.findRegion( "nightLevelsButton" ) );
+        vibrationsBtnTextureRegion          = new TextureRegion( menuElementsTextureAtlas.findRegion( "vibrationsButton" ) );
+        musicBtnTextureRegion               = new TextureRegion( menuElementsTextureAtlas.findRegion( "musicButton" ) );
+
     }
 
     public static void loadDigit ( int i ) {

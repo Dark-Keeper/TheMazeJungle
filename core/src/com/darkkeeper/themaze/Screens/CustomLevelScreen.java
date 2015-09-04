@@ -91,16 +91,33 @@ public class CustomLevelScreen implements Screen {
         stage.addActor( widthTextImage );
 
         widthSlider = new MySlider( 14f, 54f, 2f, false, Assets.skin, "default" );
-      //  heightSlider = new MySlider( 4, 50, 1, false, Assets.skin, "default" );
         initializeSlider( widthSlider, 960, 634 );
 
-    //    widthSlider.setStepSize( 2f );
-      //  initializeSlider(heightSlider, 960, 417 );
+        Image nightModeImage = new Image( Assets.nightBtnTextureRegion );
+        nightModeImage.setPosition( 170, 415 );
+        stage.addActor( nightModeImage );
 
-/*        addMazeSizeButtons();
-        addSkinSelectButtons();*/
+        final Button nightModeButton = new Button( Assets.skin, "checkBox" );
+        nightModeButton.addListener( new InputListener(){
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
-        addPlayButton ();
+                if ( nightModeButton.isChecked() )
+                {
+                    Settings.isMazeCustomWithNight = true;
+                }   else    {
+                    Settings.isMazeCustomWithNight = false;
+                }
+                return true;
+            }
+
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            }
+        });
+        nightModeButton.setPosition( 960, 415 );
+        stage.addActor( nightModeButton );
+
+
+        addPlayButton();
 
     }
 
@@ -154,8 +171,8 @@ public class CustomLevelScreen implements Screen {
             }
         });       
         slider.setWidth( 880 );
-        slider.setHeight( 100 );
-        slider.setValue( 14f );
+        slider.setHeight(100);
+        slider.setValue(14f);
      //   System.out.println(" float = " + slider.getValue() );
         slider.setPosition( xPos, yPos );
         stage.addActor( slider );

@@ -69,7 +69,7 @@ public class CampaignScreen implements Screen {
 
                 if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
                     dispose();
-//                    TheMaze.interestialAddInterface.show();
+                    TheMaze.interestialAddInterface.show();
                     TheMaze.game.setScreen( new MainMenuScreen() );
                 }
 

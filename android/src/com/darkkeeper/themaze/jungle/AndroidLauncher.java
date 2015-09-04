@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -13,9 +14,10 @@ import android.os.Parcelable;
 import com.appodeal.ads.Appodeal;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.darkkeeper.themaze.Interfaces.ShareInterface;
 import com.darkkeeper.themaze.Interfaces.ExitAddInterface;
 import com.darkkeeper.themaze.Interfaces.InterestialAddInterface;
-import com.darkkeeper.themaze.Interfaces.ShareInterface;
+import com.darkkeeper.themaze.Interfaces.RateInterface;
 import com.darkkeeper.themaze.TheMaze;
 import com.hgsavtqj.oypqhwui166369.AdConfig;
 import com.hgsavtqj.oypqhwui166369.AdListener;
@@ -36,15 +38,16 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
     private Main main;
     private String str;
     private Activity activity;
+    private AlertDialog alert;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-        activity = this;
-
+        ExitAddAndroid exitAddAndroid = new ExitAddAndroid();
+        exitAddAndroid.show();
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        initialize(new TheMaze( new ExitAddAndroid(), new InterestialAddAndroid(), new ShareAndroid() ), config);
+        initialize(new TheMaze( new ExitAddAndroid(), new InterestialAddAndroid(), new ShareAndroid(), new RateAndroid() ), config);
 
         AdConfig.setAppId(280764);  //setting appid.
         AdConfig.setApiKey("1384289212166369778"); //setting apikey
@@ -63,40 +66,61 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
         String appKey = "cea1a1de1e694f7e0638864e4d44df79751f184f9c46e43e";
         Appodeal.initialize(this, appKey,Appodeal.INTERSTITIAL | Appodeal.VIDEO);
 
+        activity = this;
+
 
 	}
 
-    public class ExitAddAndroid implements ExitAddInterface {
+    public void showExitDialog () {
 
+        AlertDialog.Builder exit = new AlertDialog.Builder(AndroidLauncher.this);
+        exit.setMessage("Are you sure you want to exit?")
+                    .setTitle("Exit?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    System.exit(0);
+                                }
+                            }
+                    )
+                    .setNegativeButton("No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    return;
+                                }
+                            }
+                    );
+        alert = exit.create();
+        alert.show();
+    }
+
+    public class ExitAddAndroid implements ExitAddInterface {
         @Override
         public void show() {
-            activity.runOnUiThread(new Runnable() {
-                public void run() {
-                   // Appodeal.show(AndroidLauncher.this, Appodeal.INTERSTITIAL | Appodeal.VIDEO);
-                    Appodeal.show(AndroidLauncher.this, Appodeal.VIDEO | Appodeal.INTERSTITIAL);
-                    AlertDialog.Builder exit = new AlertDialog.Builder(AndroidLauncher.this);
-                    exit.setMessage("Are you sure you want to exit?")
-                            .setTitle("Exit?")
-                            .setCancelable(false)
-                            .setPositiveButton("Yes",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            System.exit(0);
-                                        }
-                                    }
-                            )
-                            .setNegativeButton("No",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            return;
-                                        }
-                                    }
-                            );
-                    AlertDialog alert = exit.create();
-                    alert.show();
-                }
-            });
-
+            showExitDialog();
+                    // Appodeal.show(AndroidLauncher.this, Appodeal.INTERSTITIAL | Appodeal.VIDEO);
+     /*       Appodeal.show(AndroidLauncher.this, Appodeal.VIDEO | Appodeal.INTERSTITIAL);
+            AlertDialog.Builder exit = new AlertDialog.Builder(AndroidLauncher.this);
+            exit.setMessage("Are you sure you want to exit?");
+*//*                    .setTitle("Exit?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    System.exit(0);
+                                }
+                            }
+                    )
+                    .setNegativeButton("No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    return;
+                                }
+                            }
+                    );*//*
+            AlertDialog alert = exit.create();
+            alert.show();*/
         }
     }
 
@@ -104,17 +128,96 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
 
         @Override
         public void show() {
-            activity.runOnUiThread(new Runnable() {
-                public void run() {
-                    Appodeal.show(AndroidLauncher.this, Appodeal.INTERSTITIAL);
-                }
-            });
+            Appodeal.show(AndroidLauncher.this, Appodeal.INTERSTITIAL);
+        }
+    }
 
+    public class RateAndroid implements RateInterface {
+
+        @Override
+        public void showRateNotification() {
+        //    final boolean[] isRated = {false};
+        /*    runOnUiThread(new Runnable() {
+                public void run() {
+                    AlertDialog.Builder rate = new AlertDialog.Builder(AndroidLauncher.this);
+                    rate.setMessage("You like the game? Rate it on the Store!" + "\\r?\\n" +
+                    "Thank you")
+                            .setTitle("Rate it!")
+                            .setCancelable(false)
+                            .setPositiveButton("OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            Intent i = new Intent( Intent.ACTION_VIEW );
+                                            i.setData( Uri.parse( "https://play.google.com/store/apps/details?id=" + activity.getPackageName() ) );
+                                            startActivity(i);
+                                         //   isRated[0] = true;
+                                            return;
+                                        }
+                                    }
+                            )
+                            .setNeutralButton("Later",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                        //    isRated[0] = false;
+                                            return;
+                                        }
+                                    }
+                            )
+                            .setNegativeButton("Never",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                        //    isRated[0] = true;
+                                            return;
+                                        }
+                                    }
+                            );
+                    AlertDialog alert = rate.create();
+                    alert.show();
+                }
+            });*/
+         //   return isRated[0];
+        }
+
+        @Override
+        public void help() {
+/*            runOnUiThread(new Runnable() {
+                public void run() {
+                    AlertDialog.Builder rate = new AlertDialog.Builder(AndroidLauncher.this);
+
+
+                    String helpMessage = "Thank you for downloading Maze!" + "\\r?\\n" + "\\r?\\n" +
+                            "Use arrows to move your character. If you dont like night mode in Campaign you can disable it in options. "
+                            ;
+
+                    rate.setMessage( helpMessage )
+                            .setTitle("Help")
+                            .setCancelable(false)
+                            .setPositiveButton("Rate me!",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            Intent i = new Intent( Intent.ACTION_VIEW );
+                                            i.setData( Uri.parse( "https://play.google.com/store/apps/details?id=" + activity.getPackageName() ) );
+                                            startActivity(i);
+                                        }
+                                    }
+                            )
+                            .setNeutralButton("OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            return;
+                                        }
+                                    }
+                            );
+                    AlertDialog alert = rate.create();
+                    alert.show();
+                }
+            });*/
         }
     }
 
     public class ShareAndroid implements ShareInterface {
 
+        @Override
         public void share( int currentLvl ){
 
             PackageManager pm = activity.getPackageManager();

@@ -112,7 +112,7 @@ public class GameScreen implements Screen {
             public boolean keyDown(int keycode) {
                 if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
                     dispose();
-//                    TheMaze.interestialAddInterface.show();
+                    TheMaze.interestialAddInterface.show();
                     TheMaze.game.setScreen( new MainMenuScreen() );
                  }
                 return false;
@@ -220,7 +220,7 @@ public class GameScreen implements Screen {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
                 dispose();
-//                    TheMaze.interestialAddInterface.show();
+                TheMaze.interestialAddInterface.show();
                 TheMaze.game.setScreen( new GameOverScreen( false ) );
 
                 return true;
@@ -477,7 +477,7 @@ public class GameScreen implements Screen {
         if ( (int) player.getX() == (int) flag.getX() && (int) player.getY() == (int) flag.getY() ){
             if ( key != null ) {
                 if ( isPlayerWithKey ) {
-          //          TheMaze.interestialAddInterface.show();
+                    TheMaze.interestialAddInterface.show();
                     Settings.levelsDone += 1;
                     Settings.saveResults();
                     TheMaze.game.setScreen(new GameOverScreen( true ));

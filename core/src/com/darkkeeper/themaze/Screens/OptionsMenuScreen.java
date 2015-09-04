@@ -64,8 +64,8 @@ public class OptionsMenuScreen implements Screen {
     
     private void addOptions() {
         
-        Image nightMode = new Image( Assets.widthBtnTextureRegion );
-        nightMode.setPosition( 450, 650 );
+        Image nightMode = new Image( Assets.nightLevelsBtnTextureRegion );
+        nightMode.setPosition( 350, 650 );
         stage.addActor( nightMode );        
         final Button nightModeBtn = new Button( Assets.skin, "checkBox" );
         nightModeBtn.addListener( new InputListener(){
@@ -82,7 +82,7 @@ public class OptionsMenuScreen implements Screen {
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
             }
         });
-        nightModeBtn.setPosition(1300, 650);
+        nightModeBtn.setPosition(1400, 650);
         nightModeBtn.setChecked( Settings.isNigthLevelsAvailable );
         stage.addActor( nightModeBtn );
 
@@ -112,8 +112,8 @@ public class OptionsMenuScreen implements Screen {
         stage.addActor( soundModeBtn );*/
 
 
-        final Image musicMode = new Image( Assets.widthBtnTextureRegion );
-        musicMode.setPosition( 450, 500 );
+        final Image musicMode = new Image( Assets.musicBtnTextureRegion );
+        musicMode.setPosition( 350, 500 );
         stage.addActor( musicMode );
         final Button musicModeBtn = new Button( Assets.skin, "checkBox" );
         musicModeBtn.addListener( new InputListener(){
@@ -131,14 +131,14 @@ public class OptionsMenuScreen implements Screen {
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
             }
         });
-        musicModeBtn.setPosition(1300, 500);
+        musicModeBtn.setPosition(1400, 500);
         musicModeBtn.setChecked( Settings.isMusicEnabled );
         stage.addActor( musicModeBtn );
 
 
 
-        final Image vibrationMode = new Image( Assets.widthBtnTextureRegion );
-        vibrationMode.setPosition( 450, 350 );
+        final Image vibrationMode = new Image( Assets.vibrationsBtnTextureRegion );
+        vibrationMode.setPosition( 350, 350 );
         stage.addActor( vibrationMode );
         final Button vibrationModeBtn = new Button( Assets.skin, "checkBox" );
         vibrationModeBtn.addListener( new InputListener(){
@@ -156,7 +156,7 @@ public class OptionsMenuScreen implements Screen {
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
             }
         });
-        vibrationModeBtn.setPosition(1300, 350);
+        vibrationModeBtn.setPosition(1400, 350);
         vibrationModeBtn.setChecked( Settings.isVibrationEnabled );
         stage.addActor( vibrationModeBtn );
 
