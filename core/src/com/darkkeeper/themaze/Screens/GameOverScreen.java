@@ -41,6 +41,11 @@ public class GameOverScreen implements Screen {
 
         Settings.loadResults();
 
+        if ( !Settings.isRated ){
+            TheMaze.rateInterface.showRateNotification();
+            Settings.saveSettings();
+        }
+
 
         rootTable = new Table();
         rootTable.background( Assets.gameOverBackgroundTextureRegion );

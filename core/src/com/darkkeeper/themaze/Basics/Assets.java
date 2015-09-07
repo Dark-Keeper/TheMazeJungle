@@ -1,6 +1,7 @@
 package com.darkkeeper.themaze.Basics;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -112,6 +113,8 @@ public class Assets {
     public static TextureRegion primMethodTextureRegion;
     public static TextureRegion huntAndKillkMethodTextureRegion;
 
+    public static Music menuMusic;
+
 
     public static Texture loadTexture ( String file ){
         return new Texture(Gdx.files.internal( file ) );
@@ -193,6 +196,12 @@ public class Assets {
     public static void loadLogo() {
         logoTextureAtlas = new TextureAtlas( "logo/logoTextureAtlas.txt" );
         logoBackground = new TextureRegionDrawable( logoTextureAtlas.findRegion( "logoScreen" ) );
+    }
+
+    public static void loadMusic (){
+        menuMusic = Gdx.audio.newMusic(Gdx.files.internal ( "audio/menuMusic.ogg") );
+        menuMusic.setLooping(true);
+        menuMusic.play();
     }
 
     public static void loadFonts () {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -43,6 +44,10 @@ public class MainMenuScreen implements Screen {
         viewPort = new ExtendViewport(Constants.APP_WIDTH,Constants.APP_HEIGHT);
         stage = new Stage(viewPort);
 
+        if ( Settings.isMusicEnabled ){
+            Assets.loadMusic();
+        }
+
         InputProcessor backProcessor = new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
@@ -58,11 +63,6 @@ public class MainMenuScreen implements Screen {
 
         InputMultiplexer multiplexer = new InputMultiplexer( stage, backProcessor );
         Gdx.input.setInputProcessor(multiplexer);
-
-        if ( !Settings.isRated ){
-            TheMaze.rateInterface.showRateNotification();
-            Settings.saveSettings();
-        }
 
         rootTable = new Table();
         rootTable.background( Assets.mainMenuBackgroundTextureRegion );

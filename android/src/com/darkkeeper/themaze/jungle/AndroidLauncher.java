@@ -9,6 +9,9 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.os.Parcelable;
 
 import com.appodeal.ads.Appodeal;
@@ -38,14 +41,15 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
     private Main main;
     private String str;
     private Activity activity;
-    private AlertDialog alert;
+    private Handler exitHandler;
+    private Handler interestialHandler;
+    private Handler rateHandler;
+    private Handler helpHandler;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-        ExitAddAndroid exitAddAndroid = new ExitAddAndroid();
-        exitAddAndroid.show();
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         initialize(new TheMaze( new ExitAddAndroid(), new InterestialAddAndroid(), new ShareAndroid(), new RateAndroid() ), config);
 
@@ -69,10 +73,42 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
         activity = this;
 
 
+
+        rateHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                showRateDialog();
+            }
+        };
+
+        helpHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                showHelpDialog();
+            }
+        };
+
+        exitHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                showExitDialog();
+            }
+        };
+
+        interestialHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                Appodeal.show(AndroidLauncher.this, Appodeal.INTERSTITIAL);
+            }
+        };
+
+
+
 	}
 
     public void showExitDialog () {
 
+        Appodeal.show(AndroidLauncher.this, Appodeal.VIDEO | Appodeal.INTERSTITIAL);
         AlertDialog.Builder exit = new AlertDialog.Builder(AndroidLauncher.this);
         exit.setMessage("Are you sure you want to exit?")
                     .setTitle("Exit?")
@@ -91,36 +127,88 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
                                 }
                             }
                     );
-        alert = exit.create();
+        AlertDialog alert = exit.create();
         alert.show();
+    }
+
+    public void showRateDialog () {
+
+        AlertDialog.Builder rate = new AlertDialog.Builder(AndroidLauncher.this);
+        rate.setMessage("You like the game? Rate it on the Store!" + "\n" +
+                "Thank you")
+                .setTitle("Rate it!")
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent i = new Intent( Intent.ACTION_VIEW );
+                                i.setData( Uri.parse( "https://play.google.com/store/apps/details?id=" + activity.getPackageName() ) );
+                                startActivity(i);
+                                //   isRated[0] = true;
+                                return;
+                            }
+                        }
+                )
+                .setNeutralButton("Later",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //    isRated[0] = false;
+                                return;
+                            }
+                        }
+                )
+                .setNegativeButton("Never",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //    isRated[0] = true;
+                                return;
+                            }
+                        }
+                );
+        AlertDialog alert = rate.create();
+        alert.show();
+    }
+
+    public void showHelpDialog () {
+
+        AlertDialog.Builder rate = new AlertDialog.Builder(AndroidLauncher.this);
+
+
+        String helpMessage = "Thank you for downloading Maze!" + "\n" + "\n" +
+                "Use arrows to move your character. If you dont like night mode in Campaign you can disable it in options. "
+                ;
+
+        rate.setMessage( helpMessage )
+                .setTitle("Help")
+                .setCancelable(false)
+                .setPositiveButton("Rate me!",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent i = new Intent( Intent.ACTION_VIEW );
+                                i.setData( Uri.parse( "https://play.google.com/store/apps/details?id=" + activity.getPackageName() ) );
+                                startActivity(i);
+                            }
+                        }
+                )
+                .setNeutralButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                return;
+                            }
+                        }
+                );
+        AlertDialog alert = rate.create();
+        alert.show();
+
     }
 
     public class ExitAddAndroid implements ExitAddInterface {
         @Override
         public void show() {
-            showExitDialog();
-                    // Appodeal.show(AndroidLauncher.this, Appodeal.INTERSTITIAL | Appodeal.VIDEO);
-     /*       Appodeal.show(AndroidLauncher.this, Appodeal.VIDEO | Appodeal.INTERSTITIAL);
-            AlertDialog.Builder exit = new AlertDialog.Builder(AndroidLauncher.this);
-            exit.setMessage("Are you sure you want to exit?");
-*//*                    .setTitle("Exit?")
-                    .setCancelable(false)
-                    .setPositiveButton("Yes",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    System.exit(0);
-                                }
-                            }
-                    )
-                    .setNegativeButton("No",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    return;
-                                }
-                            }
-                    );*//*
-            AlertDialog alert = exit.create();
-            alert.show();*/
+
+            Message message = exitHandler.obtainMessage( 0, null );
+            message.sendToTarget();
+
         }
     }
 
@@ -128,7 +216,10 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
 
         @Override
         public void show() {
-            Appodeal.show(AndroidLauncher.this, Appodeal.INTERSTITIAL);
+
+            Message message = interestialHandler.obtainMessage( 0, null );
+            message.sendToTarget();
+
         }
     }
 
@@ -137,81 +228,18 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
         @Override
         public void showRateNotification() {
         //    final boolean[] isRated = {false};
-        /*    runOnUiThread(new Runnable() {
-                public void run() {
-                    AlertDialog.Builder rate = new AlertDialog.Builder(AndroidLauncher.this);
-                    rate.setMessage("You like the game? Rate it on the Store!" + "\\r?\\n" +
-                    "Thank you")
-                            .setTitle("Rate it!")
-                            .setCancelable(false)
-                            .setPositiveButton("OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            Intent i = new Intent( Intent.ACTION_VIEW );
-                                            i.setData( Uri.parse( "https://play.google.com/store/apps/details?id=" + activity.getPackageName() ) );
-                                            startActivity(i);
-                                         //   isRated[0] = true;
-                                            return;
-                                        }
-                                    }
-                            )
-                            .setNeutralButton("Later",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                        //    isRated[0] = false;
-                                            return;
-                                        }
-                                    }
-                            )
-                            .setNegativeButton("Never",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                        //    isRated[0] = true;
-                                            return;
-                                        }
-                                    }
-                            );
-                    AlertDialog alert = rate.create();
-                    alert.show();
-                }
-            });*/
+
+            Message message = rateHandler.obtainMessage( 0, null );
+            message.sendToTarget();
          //   return isRated[0];
         }
 
         @Override
         public void help() {
-/*            runOnUiThread(new Runnable() {
-                public void run() {
-                    AlertDialog.Builder rate = new AlertDialog.Builder(AndroidLauncher.this);
 
+            Message message = helpHandler.obtainMessage( 0, null );
+            message.sendToTarget();
 
-                    String helpMessage = "Thank you for downloading Maze!" + "\\r?\\n" + "\\r?\\n" +
-                            "Use arrows to move your character. If you dont like night mode in Campaign you can disable it in options. "
-                            ;
-
-                    rate.setMessage( helpMessage )
-                            .setTitle("Help")
-                            .setCancelable(false)
-                            .setPositiveButton("Rate me!",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            Intent i = new Intent( Intent.ACTION_VIEW );
-                                            i.setData( Uri.parse( "https://play.google.com/store/apps/details?id=" + activity.getPackageName() ) );
-                                            startActivity(i);
-                                        }
-                                    }
-                            )
-                            .setNeutralButton("OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            return;
-                                        }
-                                    }
-                            );
-                    AlertDialog alert = rate.create();
-                    alert.show();
-                }
-            });*/
         }
     }
 

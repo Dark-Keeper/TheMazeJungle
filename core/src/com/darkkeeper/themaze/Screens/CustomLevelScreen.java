@@ -103,10 +103,11 @@ public class CustomLevelScreen implements Screen {
 
                 if ( nightModeButton.isChecked() )
                 {
-                    Settings.isMazeCustomWithNight = true;
-                }   else    {
                     Settings.isMazeCustomWithNight = false;
+                }   else    {
+                    Settings.isMazeCustomWithNight = true;
                 }
+             //   System.out.println(Settings.isMazeCustomWithNight);
                 return true;
             }
 

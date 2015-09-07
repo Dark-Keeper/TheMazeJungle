@@ -163,7 +163,9 @@ public class GameScreen implements Screen {
        // isNight = true;
 
         if ( Settings.isNigthLevelsAvailable ){
+            System.out.println( "isCustomMaze = " + Settings.isCustomMaze );
             if ( Settings.isCustomMaze ){
+                System.out.println( "isMazeCustomWithNight = " + Settings.isMazeCustomWithNight );
                 if ( Settings.isMazeCustomWithNight ){
                     isNight = true;
                 }
@@ -176,7 +178,7 @@ public class GameScreen implements Screen {
         }
 
         if ( isNight ) {
-            rayHandler = new RayHandler(world);
+            rayHandler = new RayHandler( world );
             rayHandler.setCombinedMatrix(stage.getCamera().combined);
             pointLightDoor = new PointLight( rayHandler, 4, new Color ( 1f,1f,0.5f,1), 200 , flag.getX() + flag.getWidth()/2, flag.getY()+ flag.getHeight()/2 );
             pointLightPlayer = new PointLight(rayHandler, 6, new Color(1, 1, 0.5f, 1), 300, Constants.APP_WIDTH / 2, Constants.APP_HEIGHT / 2);
@@ -235,12 +237,26 @@ public class GameScreen implements Screen {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
                 if ( isZoomed ){
-                    ((OrthographicCamera)stage.getCamera()).zoom += 0.5f;
                     isZoomed = false;
+                    if ( isNight ){
+                        pointLightDoor.setPosition( flag.getX() + flag.getWidth() / 2, flag.getY()  + flag.getHeight() / 2 );
+                        pointLightPlayer.setPosition( player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2);
+
+                    }
+                    ((OrthographicCamera)stage.getCamera()).zoom += 0.5f;
                     ((OrthographicCamera)stage.getCamera()).position.set( stage.getWidth()/2, stage.getHeight()/2, 0 );
+
+
+
+
                 }   else    {
-                    ((OrthographicCamera)stage.getCamera()).zoom -= 0.5f;
                     isZoomed = true;
+                    if ( isNight ){
+                        pointLightDoor.setPosition( ( (flag.getX() + flag.getWidth() / 2 ) -  ( player.getX() + player.getWidth()/2 ) ) * 2 + stage.getWidth()/2, ( (flag.getY()  + flag.getHeight() / 2 ) - ( player.getY() + player.getHeight() / 2 ) ) * 2 + stage.getHeight()/2 );
+                        pointLightPlayer.setPosition( stage.getWidth()/2, stage.getHeight()/2 );
+
+                    }
+                    ((OrthographicCamera)stage.getCamera()).zoom -= 0.5f;
                 }
 
                 return true;
@@ -380,8 +396,8 @@ public class GameScreen implements Screen {
             }
         } );
         keyTipButton.setSize( 600, 800 );
-        keyTipButton.setPosition( Constants.APP_WIDTH/2 - keyTipButton.getWidth()/2, Constants.APP_HEIGHT/2 - keyTipButton.getHeight()/2 );
-        stage.addActor( keyTipButton );
+        keyTipButton.setPosition( Constants.APP_WIDTH/2 - keyTipButton.getWidth()/2, Constants.APP_HEIGHT/2 - keyTipButton.getHeight()/2 + Constants.BOTTOM_BAR_HEIGHT );
+        stageHUD.addActor( keyTipButton );
     }
 
     @Override
@@ -400,11 +416,9 @@ public class GameScreen implements Screen {
 
 
 
-        checkCameraIfZoomed ();
-
         calculateTime();
 
-        checkIfNight ( delta );
+        checkIfNight ();
         checkPlayerOnKey();
         checkGameOver();
         checkControlls();
@@ -416,12 +430,12 @@ public class GameScreen implements Screen {
 
     private void checkCameraIfZoomed () {
         if ( isZoomed ) {
-            OrthographicCamera cam = (OrthographicCamera) stage.getCamera();
-            cam.position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2, 0);
+          //  OrthographicCamera cam = (OrthographicCamera) stage.getCamera();
+
 /*        cam.viewportWidth = Gdx.graphics.getWidth() / player.getZoom();
         cam.viewportHeight = Gdx.graphics.getHeight() / viewer.getZoom();*/
 
-            cam.update();
+
         }
     }
 
@@ -440,12 +454,23 @@ public class GameScreen implements Screen {
         }
     }
 
-    private void checkIfNight ( float delta ) {
+    private void checkIfNight () {
         if ( isNight ) {
-            pointLightPlayer.setPosition(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2);
-            randomForLight = (float)Math.sin( (( 0.99f + Math.random()/50 )*totalTime) % 3.14 );
-            pointLightPlayer.setDistance( 200 + 120 * randomForLight );
-            pointLightDoor.setDistance( 150  + 70 * randomForLight );
+            if ( !isZoomed ){
+                pointLightPlayer.setPosition(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2);
+
+                randomForLight = (float)Math.sin( (( 0.99f + Math.random()/50 )*totalTime) % 3.14 );
+                pointLightPlayer.setDistance( 200 + 120 * randomForLight );
+                pointLightDoor.setDistance( 650  + 70 * randomForLight );
+            }   else {
+                stage.getCamera().position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2, 0);
+                stage.getCamera().update();
+
+                randomForLight = (float)Math.sin( (( 0.99f + Math.random()/50 )*totalTime) % 3.14 );
+                pointLightPlayer.setDistance( 400 + 240 * randomForLight );
+                pointLightDoor.setDistance( 1000  + 140 * randomForLight );
+            }
+
             rayHandler.updateAndRender();
             world.step(1 / 60f, 6, 2);
         }
@@ -497,7 +522,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        stage.getViewport().update( width , height );
     }
 
     @Override
