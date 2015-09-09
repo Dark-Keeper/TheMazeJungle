@@ -2,8 +2,11 @@ package com.darkkeeper.themaze.jungle;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -13,6 +16,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.WindowManager;
 
 import com.appodeal.ads.Appodeal;
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -34,10 +40,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 
 public class AndroidLauncher extends AndroidApplication  implements AdListener, EulaListener {
 
+    private static final String TAG = "LOGS";
+    private static final String COMMERCIAL_COUNTER = "002";
+    private static final String IS_RATED           = "003";
     private Main main;
     private String str;
     private Activity activity;
@@ -46,12 +56,32 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
     private Handler rateHandler;
     private Handler helpHandler;
 
+    private SharedPreferences prefs;
+/*    @Override
+    protected void onResume (){
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        super.onResume();
+    }*/
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        initialize(new TheMaze( new ExitAddAndroid(), new InterestialAddAndroid(), new ShareAndroid(), new RateAndroid() ), config);
+        initialize(new TheMaze(new ExitAddAndroid(), new InterestialAddAndroid(), new ShareAndroid(), new RateAndroid()), config);
 
         AdConfig.setAppId(280764);  //setting appid.
         AdConfig.setApiKey("1384289212166369778"); //setting apikey
@@ -98,7 +128,7 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
         interestialHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
-                Appodeal.show(AndroidLauncher.this, Appodeal.INTERSTITIAL);
+                Appodeal.show( AndroidLauncher.this, Appodeal.INTERSTITIAL );
             }
         };
 
@@ -133,40 +163,62 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
 
     public void showRateDialog () {
 
-        AlertDialog.Builder rate = new AlertDialog.Builder(AndroidLauncher.this);
-        rate.setMessage("You like the game? Rate it on the Store!" + "\n" +
-                "Thank you")
-                .setTitle("Rate it!")
-                .setCancelable(false)
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Intent i = new Intent( Intent.ACTION_VIEW );
-                                i.setData( Uri.parse( "https://play.google.com/store/apps/details?id=" + activity.getPackageName() ) );
-                                startActivity(i);
-                                //   isRated[0] = true;
-                                return;
+        prefs = getPreferences( MODE_PRIVATE );
+
+        final boolean[] isRated = {prefs.getBoolean(IS_RATED, false)};
+
+        if ( !isRated[0]){
+            AlertDialog.Builder rate = new AlertDialog.Builder(AndroidLauncher.this);
+            rate.setMessage("You like the game? Rate it on the Store!" + "\n" +
+                    "Thank you")
+                    .setTitle("Rate it!")
+                    .setCancelable(false)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent i = new Intent( Intent.ACTION_VIEW );
+                                    i.setData( Uri.parse( "https://play.google.com/store/apps/details?id=" + activity.getPackageName() ) );
+                                    startActivity(i);
+
+                                    isRated[0] = true;
+                                    SharedPreferences.Editor ed = prefs.edit();
+                                    ed.putBoolean( IS_RATED, isRated[0] );
+                                    ed.commit();
+
+                                    return;
+                                }
                             }
-                        }
-                )
-                .setNeutralButton("Later",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //    isRated[0] = false;
-                                return;
+                    )
+                    .setNeutralButton("Later",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                    isRated[0] = false;
+                                    SharedPreferences.Editor ed = prefs.edit();
+                                    ed.putBoolean( IS_RATED, isRated[0] );
+                                    ed.commit();
+
+                                    return;
+                                }
                             }
-                        }
-                )
-                .setNegativeButton("Never",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //    isRated[0] = true;
-                                return;
+                    )
+                    .setNegativeButton("Never",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                    isRated[0] = true;
+                                    SharedPreferences.Editor ed = prefs.edit();
+                                    ed.putBoolean( IS_RATED, isRated[0] );
+                                    ed.commit();
+
+                                    return;
+                                }
                             }
-                        }
-                );
-        AlertDialog alert = rate.create();
-        alert.show();
+                    );
+            AlertDialog alert = rate.create();
+            alert.show();
+        }
+
     }
 
     public void showHelpDialog () {
@@ -175,7 +227,13 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
 
 
         String helpMessage = "Thank you for downloading Maze!" + "\n" + "\n" +
-                "Use arrows to move your character. If you dont like night mode in Campaign you can disable it in options. "
+                "You should find the key and use it to open the door before the time runs out. " +
+                "Use SWIPE or arrows on the screen to move your character. " + "\n" + "\n" +
+                "Login every day to collect your time bonuses. Use them to add additional 15 seconds to the current level." + "\n" + "\n" +
+                "You can toggle zoom by clicking the bottom right loop button. If you dont like night mode, you can disable it in options. " + "\n" + "\n" +
+                "Report any bug to apiatosin@gmail.com and leave five stars on the store! " + "\n" + "\n" +
+                "Have fun!" + "\n" + "\n" +
+                "Developer: Andrei Piatosin"
                 ;
 
         rate.setMessage( helpMessage )
@@ -190,15 +248,55 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
                             }
                         }
                 )
-                .setNeutralButton("OK",
+                .setNeutralButton("Report",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                sendEmail();
+                                return;
+                            }
+                        }
+                )
+                .setNegativeButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick (DialogInterface dialog, int id){
                                 return;
                             }
                         }
                 );
+
         AlertDialog alert = rate.create();
         alert.show();
+
+    }
+
+    private void sendEmail(){
+
+        Intent myIntent1 = new Intent(android.content.Intent.ACTION_SEND);
+        myIntent1.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"apiatosin@gmail.com"});
+        final String my1 = Settings.Secure.getString(activity.getBaseContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        final String my2 = android.os.Build.DEVICE;
+        final String my3 = android.os.Build.MANUFACTURER;
+        final String my4 = android.os.Build.MODEL;
+        final String my5 = android.os.Build.VERSION.RELEASE;
+        final int my6 = android.os.Build.VERSION.SDK_INT;
+        final String my7 = android.os.Build.BRAND;
+        final String my8 = android.os.Build.VERSION.INCREMENTAL;
+        final String my9 = android.os.Build.PRODUCT;
+        myIntent1.putExtra(android.content.Intent.EXTRA_SUBJECT, "Support Request: " + my1 + " Device: " + my2 + " Manufacturer: " + my3 + " Model: " + my4 + " Version: " + my5 + " SDK: " + my6 + " Brand: " + my7 + " Incremental: " + my8 + " Product: " + my9);
+        myIntent1.setType("text/plain");
+//IN CASE EMAIL APP FAILS, THEN DEFINE THE OPTION TO LAUNCH SUPPORT WEBSITE
+        String url2 = "";
+        Intent myIntent2 = new Intent(Intent.ACTION_VIEW);
+        myIntent2.setData(Uri.parse(url2));
+//IF USER CLICKS THE OK BUTTON, THEN DO THIS
+        try {
+// TRY TO LAUNCH TO EMAIL APP
+            activity.startActivity(Intent.createChooser(myIntent1, "Send email to Developer"));
+//                                                          startActivity(myIntent1);
+        } catch (ActivityNotFoundException ex) {
+// ELSE LAUNCH TO WEB BROWSER
+         //   activity.startActivity(myIntent2);
+        }
 
     }
 
@@ -206,7 +304,7 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
         @Override
         public void show() {
 
-            Message message = exitHandler.obtainMessage( 0, null );
+            Message message = exitHandler.obtainMessage(0, null);
             message.sendToTarget();
 
         }
@@ -217,8 +315,16 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
         @Override
         public void show() {
 
-            Message message = interestialHandler.obtainMessage( 0, null );
-            message.sendToTarget();
+            prefs = getPreferences(MODE_PRIVATE);
+            int counter = prefs.getInt( COMMERCIAL_COUNTER, 3 );
+            if ( counter%2 == 0 ) {
+                Message message = interestialHandler.obtainMessage(0, null);
+                message.sendToTarget();
+            }
+            SharedPreferences.Editor ed = prefs.edit();
+            counter++;
+            ed.putInt( COMMERCIAL_COUNTER, counter );
+            ed.commit();
 
         }
     }
@@ -229,8 +335,18 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
         public void showRateNotification() {
         //    final boolean[] isRated = {false};
 
-            Message message = rateHandler.obtainMessage( 0, null );
-            message.sendToTarget();
+            prefs = getPreferences(MODE_PRIVATE);
+            int counter = prefs.getInt( COMMERCIAL_COUNTER, 1 );
+            if ( counter%2 == 1 ) {
+
+                Message message = rateHandler.obtainMessage( 0, null );
+                message.sendToTarget();
+
+            }
+/*            SharedPreferences.Editor ed = prefs.edit();
+            ed.putInt( COMMERCIAL_COUNTER, counter );
+            ed.commit();*/
+
          //   return isRated[0];
         }
 
@@ -333,7 +449,6 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
 
     @Override
     public void onAdError(String s) {
-
     }
 
     @Override
@@ -348,7 +463,6 @@ public class AndroidLauncher extends AndroidApplication  implements AdListener, 
 
     @Override
     public void onAdClosed() {
-
     }
 
     @Override

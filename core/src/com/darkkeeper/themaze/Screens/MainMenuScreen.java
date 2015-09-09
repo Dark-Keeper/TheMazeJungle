@@ -45,7 +45,10 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(viewPort);
 
         if ( Settings.isMusicEnabled ){
-            Assets.loadMusic();
+            if ( !Assets.menuMusic.isPlaying() ) {
+                Assets.menuMusic.setLooping(true);
+                Assets.menuMusic.play();
+            }
         }
 
         InputProcessor backProcessor = new InputAdapter() {
@@ -53,7 +56,6 @@ public class MainMenuScreen implements Screen {
             public boolean keyDown(int keycode) {
 
                 if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
-                    dispose();
                     TheMaze.exitAddInterface.show();
                 }
 
@@ -158,6 +160,9 @@ public class MainMenuScreen implements Screen {
                 }
                 Settings.currentDayOfTheYear = currentDayOfTheYear;
                 Settings.saveSettings();
+                Settings.loadStopWatchesAmount();
+                Settings.stopWatchesAmount = Settings.stopWatchesAmount + Settings.daysInARow;
+                Settings.saveStopWatchesAmount();
 
                 return true;
             }
@@ -168,8 +173,9 @@ public class MainMenuScreen implements Screen {
 
         for ( int i = 0; i < Settings.daysInARow; i++ ){
             checkboxes[i] = new Image( Assets.boxCheckerTextureRegion );
+            checkboxes[i].setScale( 2.0f );
             checkboxes[i].setOrigin( Align.center );
-            checkboxes[i].setPosition( 415 + i * 293, 543 );
+            checkboxes[i].setPosition( 322 + i * 293, 483 );
             stage.addActor( checkboxes[i] );
         }
 
@@ -197,7 +203,10 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update( width , height );
+  //      System.out.println("RESIZING" + " "+width + " " + height );
+        stage.getViewport().update( width, height );
+
+      //  System.out.println("RESIZED" + " "+stage.getViewport().getScreenWidth() + " " + stage.getViewport().getScreenHeight() );
     }
 
     @Override

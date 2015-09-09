@@ -71,7 +71,7 @@ public class OptionsMenuScreen implements Screen {
         nightModeBtn.addListener( new InputListener(){
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
-                if ( nightModeBtn.isChecked() ) {
+                if ( !nightModeBtn.isChecked() ) {
                     Settings.isNigthLevelsAvailable = true;
                 }   else {
                     Settings.isNigthLevelsAvailable = false;                    
@@ -119,10 +119,13 @@ public class OptionsMenuScreen implements Screen {
         musicModeBtn.addListener( new InputListener(){
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
-                if ( musicModeBtn.isChecked() ){
+                if ( !musicModeBtn.isChecked() ){
                     Settings.isMusicEnabled = true;
+                    Assets.menuMusic.setLooping( true );
+                    Assets.menuMusic.play();
                 }   else    {
                     Settings.isMusicEnabled = false;
+                    Assets.menuMusic.stop();
                 }
 
                 return true;
@@ -144,7 +147,7 @@ public class OptionsMenuScreen implements Screen {
         vibrationModeBtn.addListener( new InputListener(){
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
-                if ( vibrationModeBtn.isChecked() ){
+                if ( !vibrationModeBtn.isChecked() ){
                     Settings.isVibrationEnabled = true;
                 }   else    {
                     Settings.isVibrationEnabled = false;

@@ -46,7 +46,6 @@ public class GameOverScreen implements Screen {
             Settings.saveSettings();
         }
 
-
         rootTable = new Table();
         rootTable.background( Assets.gameOverBackgroundTextureRegion );
         rootTable.setFillParent( true );

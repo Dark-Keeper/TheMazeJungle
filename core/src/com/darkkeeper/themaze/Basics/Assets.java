@@ -136,12 +136,13 @@ public class Assets {
         bottomBarBackground = new TextureRegion( textureAtlas.findRegion( "bbBackground" ) );
         bottomBarExitButton = new TextureRegion( textureAtlas.findRegion( "bbExitBtn" ) );
         bottomBarZoomButton = new TextureRegion( textureAtlas.findRegion( "bbZoomBtn" ) );
-    //    bottomBarStopWatchButton    = new TextureRegion( textureAtlas.findRegion( "bbStopWatchBtn" ) );
+     //   bottomBarStopWatchButton    = new TextureRegion( textureAtlas.findRegion( "bbStopWatchBtn" ) );
 
     }
 
 
     public static void loadMenu () {
+        loadMusic();
 
         backgrounds1TextureAtlas = new TextureAtlas( "menu/backgroundsTexturePack1.atlas" );
 
@@ -185,6 +186,8 @@ public class Assets {
         vibrationsBtnTextureRegion          = new TextureRegion( menuElementsTextureAtlas.findRegion( "vibrationsButton" ) );
         musicBtnTextureRegion               = new TextureRegion( menuElementsTextureAtlas.findRegion( "musicButton" ) );
 
+        bottomBarStopWatchButton            = new TextureRegion( menuElementsTextureAtlas.findRegion( "stopWatch" ) );
+
     }
 
     public static void loadDigit ( int i ) {
@@ -200,8 +203,6 @@ public class Assets {
 
     public static void loadMusic (){
         menuMusic = Gdx.audio.newMusic(Gdx.files.internal ( "audio/menuMusic.ogg") );
-        menuMusic.setLooping(true);
-        menuMusic.play();
     }
 
     public static void loadFonts () {

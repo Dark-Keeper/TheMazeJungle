@@ -289,7 +289,7 @@ public class CustomLevelScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        viewPort.update( width, height );
+        stage.getViewport().update( width , height );
     }
 
     @Override

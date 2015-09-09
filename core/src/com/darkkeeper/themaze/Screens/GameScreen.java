@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
@@ -43,7 +44,7 @@ import box2dLight.RayHandler;
 /**
  * Created by andreipiatosin on 5/15/15.
  */
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, GestureDetector.GestureListener {
     private Viewport viewPort;
 
     private Player player;
@@ -55,6 +56,8 @@ public class GameScreen implements Screen {
 
     private static float START_X = 0;
     private static float START_Y = 1080;
+
+    private boolean isSwipeEnabled;
 
 
     private Controlls controllLeft;
@@ -89,6 +92,7 @@ public class GameScreen implements Screen {
     private boolean isZoomed = false;
     private float totalTime;
     private Label timerText;
+    private Label stopWatchesAmountText;
     private boolean timerIsOn;
 
     private Table uiTable;
@@ -113,13 +117,13 @@ public class GameScreen implements Screen {
                 if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
                     dispose();
                     TheMaze.interestialAddInterface.show();
-                    TheMaze.game.setScreen( new MainMenuScreen() );
+                    TheMaze.game.setScreen( new GameOverScreen( false ) );
                  }
                 return false;
             }
         };
 
-        InputMultiplexer multiplexer = new InputMultiplexer( stage, stageHUD, backProcessor );
+        InputMultiplexer multiplexer = new InputMultiplexer( new GestureDetector( 0.0f, 0.0f, 0.0f, 5f, this ), stage, stageHUD, backProcessor );
         Gdx.input.setInputProcessor(multiplexer);
 
         Gdx.input.setCatchBackKey(true);
@@ -171,7 +175,7 @@ public class GameScreen implements Screen {
                 }
 
             }   else {
-                if ( Settings.currentLevel%5 == 0){
+                if ( Settings.currentLevel%3 == 0){
                     isNight = true;
                 }
             }
@@ -265,6 +269,39 @@ public class GameScreen implements Screen {
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
             }
         });
+
+        stopWatchesAmountText = new Label( "0123456789", Assets.skin );
+        stopWatchesAmountText.setSize( 100, uiTable.getHeight() );
+        stopWatchesAmountText.setPosition( uiTable.getWidth()/2 - 10 * uiTableElementWidth / 5 - 40, uiTable.getHeight()/2 - stopWatchesAmountText.getHeight()/2 );
+
+        uiTable.addActor( stopWatchesAmountText );
+
+        Settings.loadStopWatchesAmount();
+  //      Settings.stopWatchesAmount = 10;
+        stopWatchesAmountText.setText( Settings.stopWatchesAmount+"" );
+
+        Image stopWatchImage = new Image ( Assets.bottomBarStopWatchButton );
+        stopWatchImage.addListener( new InputListener(){
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println(Settings.stopWatchesAmount);
+                if ( Settings.stopWatchesAmount > 0 ){
+                    Settings.stopWatchesAmount --;
+                    stopWatchesAmountText.setText( Settings.stopWatchesAmount + "" );
+                    totalTime+=15;
+                    Settings.saveStopWatchesAmount();
+                }
+
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            }
+        });
+
+        stopWatchImage.setSize( uiTableElementWidth, uiTableElementHeight );
+        stopWatchImage.setPosition( uiTable.getWidth()/2 - 10 * uiTableElementWidth / 5, uiTable.getHeight()/2 - uiTableElementHeight/2 + 2 );
+        uiTable.addActor ( stopWatchImage );
+       // addUIButton( stopWatchImage, uiTable.getWidth()/2 - 10 * uiTableElementWidth / 5, uiTableElementWidth*1.2f, uiTableElementHeight*1.2f, uiTable );
 
         addUIButton( exitImage, uiTable.getWidth() - 10 * uiTableElementWidth / 5, uiTableElementWidth, uiTableElementHeight, uiTable );
         addUIButton( zoomImage, uiTable.getWidth() - 20 * uiTableElementWidth / 5, uiTableElementWidth, uiTableElementHeight, uiTable );
@@ -428,17 +465,6 @@ public class GameScreen implements Screen {
 
     }
 
-    private void checkCameraIfZoomed () {
-        if ( isZoomed ) {
-          //  OrthographicCamera cam = (OrthographicCamera) stage.getCamera();
-
-/*        cam.viewportWidth = Gdx.graphics.getWidth() / player.getZoom();
-        cam.viewportHeight = Gdx.graphics.getHeight() / viewer.getZoom();*/
-
-
-        }
-    }
-
     private void calculateTime () {
         float deltaTime = Gdx.graphics.getDeltaTime(); //You might prefer getRawDeltaTime()
 
@@ -447,7 +473,7 @@ public class GameScreen implements Screen {
         float minutes = ((int)totalTime) / 60;
         float seconds = ((int)totalTime) % 60;
 
-        timerText.setText(String.format("%.0fm:%.0fs", minutes, seconds));
+        timerText.setText(String.format("%.00fm:%.00fs", minutes, seconds));
 
         if ( minutes == 0f && seconds == 0f ){
             TheMaze.game.setScreen( new GameOverScreen( false ) );
@@ -493,9 +519,15 @@ public class GameScreen implements Screen {
     private void checkControlls (){
         if ( !player.isMoovingToNextIntersection && !isShowingControlls){
             showControlls();
+            isSwipeEnabled = true;
         }   else if ( player.isMoovingToNextIntersection && isShowingControlls )   {
             hideControlls();
+            isSwipeEnabled = false;
         }
+    }
+
+    private void enableSwiping () {
+
     }
 
     private void checkGameOver () {
@@ -579,6 +611,66 @@ public class GameScreen implements Screen {
             return true;
         else
             return false;
+    }
+
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+        return false;
+    }
+
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+        System.out.println( velocityX + " " + velocityY );
+        if ( isSwipeEnabled && ( Math.abs(velocityX) > 600 || Math.abs(velocityY) > 600 )) {
+            if (Math.abs(velocityX) > Math.abs(velocityY)) {
+                if (velocityX > 0) {
+                    player.mooveRight();
+                } else if (velocityX < 0) {
+                    player.mooveLeft();
+                } else {
+                    // Do nothing.
+                }
+            } else {
+                if (velocityY > 0) {
+                    player.mooveDown();
+                } else if (velocityY < 0) {
+                    player.mooveUp();
+                } else {
+                    // Do nothing.
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        return false;
+    }
+
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean zoom(float initialDistance, float distance) {
+        return false;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        return false;
     }
 }
 
