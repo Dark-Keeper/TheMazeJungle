@@ -31,6 +31,9 @@ public class Cell extends Actor {
     public int j;
     public World world;
 
+    public float mazeWidth;
+    public float mazeHeight;
+
     private float isWallUp;
     private float isWallRight;
     private float isWallDown;
@@ -39,13 +42,15 @@ public class Cell extends Actor {
     private ShaderProgram shader;
     private ShaderProgram shaderGround;
 
-    public Cell ( World world, float width, float height, int i, int j) {
+    public Cell ( World world, float width, float height, int i, int j, float stageWidth, float stageHeight ) {
         this.width = width;
         this.height = height;
         this.isWall = Constants.cells[i][j];
         this.i = i;
         this.j = j;
         this.world = world;
+        this.mazeWidth = stageWidth;
+        this.mazeHeight = stageHeight;
 
         try {
             if (Constants.cells[i-1][j] == true) {
@@ -207,7 +212,7 @@ public class Cell extends Actor {
             shader.end();
 
             batch.setShader( shader );*/
-            batch.draw(Assets.currentStyleTexture, getX(),getY(), width, height, width/Constants.APP_WIDTH*j, ( height/(Constants.APP_HEIGHT + 10)*i )/2, width/Constants.APP_WIDTH*(j+1), ( height/(Constants.APP_HEIGHT + 10)*(i+1) )/2 );
+            batch.draw(Assets.currentStyleTexture, getX(), getY(), width, height, width/mazeWidth*j, ( height/( mazeHeight )*i )/2, width/mazeWidth*(j+1), ( height / ( mazeHeight )*( i + 1 ) )/2 );
             if ( isWallUp == 0.0f ){
                 batch.draw( Assets.currentStyleTexture, getX(), getY() + 3*height/4f, width, height/4f, 23f/2048f, 2028f/2048f, 24f/2048f, 1f );
             }
@@ -233,8 +238,7 @@ public class Cell extends Actor {
             }
 */
 
-
-            batch.draw(Assets.currentStyleTexture, getX(), getY(), width, height, width / Constants.APP_WIDTH * j, (height / Constants.APP_HEIGHT * i) / 2 + 0.5f, width / Constants.APP_WIDTH * (j + 1), (height / Constants.APP_HEIGHT * (i + 1)) / 2 + 0.5f);
+            batch.draw(Assets.currentStyleTexture, getX(), getY(), width, height, width / mazeWidth * j, ( height / ( mazeHeight ) * i ) / 2 + 0.5f, width / mazeWidth * (j + 1), ( height / ( mazeHeight ) * (i + 1)) / 2 + 0.5f);
 
             if ( isWallUp == 1.0f ){
                 batch.draw( Assets.currentStyleTexture, getX(), getY() + 3*height/4f, width, height/4f, 22f/2048f, 2028f/2048f, 23f/2048f, 1f );

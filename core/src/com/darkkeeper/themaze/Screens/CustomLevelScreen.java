@@ -90,7 +90,7 @@ public class CustomLevelScreen implements Screen {
 
         stage.addActor( widthTextImage );
 
-        widthSlider = new MySlider( 14f, 54f, 2f, false, Assets.skin, "default" );
+        widthSlider = new MySlider( 14f, 74f, 2f, false, Assets.skin, "default" );
         initializeSlider( widthSlider, 960, 634 );
 
         Image nightModeImage = new Image( Assets.nightBtnTextureRegion );

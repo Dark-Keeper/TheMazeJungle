@@ -39,7 +39,9 @@ public class GameOverScreen implements Screen {
         stage = new Stage(viewPort);
         Gdx.input.setInputProcessor(stage);
 
-        Settings.loadResults();
+     //   Settings.loadResults();
+
+        TheMaze.interestialAddInterface.showBanner();
 
         if ( !Settings.isRated ){
             TheMaze.rateInterface.showRateNotification();

@@ -65,8 +65,10 @@ public class Assets {
 
 
     //Logo Textures
-    public static TextureAtlas logoTextureAtlas;
-    public static TextureRegionDrawable logoBackground;
+/*    public static TextureAtlas logoTextureAtlas;
+    public static TextureRegionDrawable logoBackground;*/
+    public static Texture logoTexture;
+    public static TextureRegionDrawable logoTextureDrawable;
 
 
     //Menu Texures
@@ -197,8 +199,10 @@ public class Assets {
     }
 
     public static void loadLogo() {
-        logoTextureAtlas = new TextureAtlas( "logo/logoTextureAtlas.txt" );
-        logoBackground = new TextureRegionDrawable( logoTextureAtlas.findRegion( "logoScreen" ) );
+/*        logoTextureAtlas = new TextureAtlas( "logo/logoTextureAtlas.txt" );
+        logoBackground = new TextureRegionDrawable( logoTextureAtlas.findRegion( "logoScreen" ) );*/
+        //logoTexture = new Texture( "logo/logo.jpg" );
+     //   logoTextureDrawable = new TextureRegionDrawable()
     }
 
     public static void loadMusic (){

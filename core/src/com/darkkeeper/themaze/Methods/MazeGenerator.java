@@ -285,7 +285,7 @@ public abstract class MazeGenerator {
      *
      */
 
-    public com.darkkeeper.themaze.Actors.Cell[][] getMaze ( World world ) {
+    public com.darkkeeper.themaze.Actors.Cell[][] getMaze ( World world, float mazeWidth, float mazeHeight ) {
 
         Constants.cells = new boolean[ 2*height+1 ][ 2*width+1 ];
 
@@ -331,7 +331,7 @@ public abstract class MazeGenerator {
 
         for ( int i = 0; i < 2*height+1; i++ ){
             for ( int j = 0; j < 2*width+1; j++ ){
-                cellsForMaze[i][j] = new com.darkkeeper.themaze.Actors.Cell( world, Constants.APP_WIDTH/(2*width+1), ( Constants.APP_HEIGHT - Constants.BOTTOM_BAR_HEIGHT )/(2*height+1), i,j );
+                cellsForMaze[i][j] = new com.darkkeeper.themaze.Actors.Cell( world, mazeWidth/(2*width+1), ( mazeHeight - Constants.BOTTOM_BAR_HEIGHT )/(2*height+1), i, j, mazeWidth, mazeHeight );
 /*                if ( cells[i][j] ){
                     System.out.print("#");
                 }   else {

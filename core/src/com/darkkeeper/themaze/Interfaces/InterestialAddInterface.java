@@ -5,4 +5,6 @@ package com.darkkeeper.themaze.Interfaces;
  */
 public interface InterestialAddInterface {
     public void show();
+    public void hideBanner();
+    public void showBanner();
 }

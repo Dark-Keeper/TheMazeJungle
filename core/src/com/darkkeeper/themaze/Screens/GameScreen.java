@@ -107,6 +107,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         stageHUD = new Stage( new ExtendViewport( Constants.APP_WIDTH, Constants.APP_HEIGHT ) );
 
 
+        TheMaze.interestialAddInterface.hideBanner();
+
         //BETTA_OPTIONS
         Settings.isLvlWithKey = true;
         world = new World( GRAVITY, true );
@@ -129,10 +131,18 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         Gdx.input.setCatchBackKey(true);
 
 
-        this.maze = mazeGenerator.getMaze( world );
+        this.maze = mazeGenerator.getMaze( world, stage.getWidth(), stage.getHeight() );
 
-        totalTime = 3 * maze.length;
-        START_Y = 1080;
+        if ( Settings.currentLevel == 1 ){
+            totalTime = 999;
+    //        Settings.isLvlWithKey = false;
+            TheMaze.rateInterface.help();
+        }   else {
+            totalTime = 1.8f * maze.length;
+        }
+
+        START_Y = stage.getHeight();
+   //     System.out.println( stage.getHeight() + "               !!!!!");
         START_Y -= maze[0][0].height;
         displayMaze();
 
@@ -149,7 +159,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
             int i = 0;
             int j = 0;
-            while ( maze [i][j].isWall || maze [i][j] == maze [ maze.length - 2 ][ maze[0].length - 2 ] ){
+            while ( maze [i][j].isWall || ( maze[i][j].getX() > maze[ maze.length/2 ][ maze[0].length/2].getX() && maze[i][j].getY() < maze[ maze.length/2 ][ maze[0].length/2].getY() ) ){
                 i = (int)(Math.random() * ( maze.length - 1 ) / 2 + maze.length/2);
                 j = (int)(Math.random() * ( maze[0].length - 1 ) / 2  + maze[0].length/2);
             }
@@ -182,10 +192,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         }
 
         if ( isNight ) {
+            totalTime = totalTime * 1.7f;
             rayHandler = new RayHandler( world );
             rayHandler.setCombinedMatrix(stage.getCamera().combined);
             pointLightDoor = new PointLight( rayHandler, 4, new Color ( 1f,1f,0.5f,1), 200 , flag.getX() + flag.getWidth()/2, flag.getY()+ flag.getHeight()/2 );
-            pointLightPlayer = new PointLight(rayHandler, 6, new Color(1, 1, 0.5f, 1), 300, Constants.APP_WIDTH / 2, Constants.APP_HEIGHT / 2);
+            pointLightPlayer = new PointLight(rayHandler, 6, new Color(1, 1, 0.5f, 1), 300, stage.getWidth() / 2, stage.getHeight() / 2);
            // pointLight.setSoftnessLength(0);
         }
     }
@@ -194,7 +205,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     private void displayUI () {
         uiTable = new Table();
-        uiTable.setSize( Constants.APP_WIDTH, Constants.BOTTOM_BAR_HEIGHT );
+        uiTable.setSize( stage.getWidth(), Constants.BOTTOM_BAR_HEIGHT + Cell.height/4 );
         uiTable.setPosition( 0,0 );
  //       uiTable.setBackground( Assets.sliderBackground );
 
@@ -204,7 +215,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
         for ( int i = 0; i < backgroundPartsAmount; i ++ ){
             Image bottomBarBackground  = new Image( Assets.bottomBarBackground );
-            bottomBarBackground.setSize( Constants.APP_WIDTH/backgroundPartsAmount, Constants.BOTTOM_BAR_HEIGHT + Cell.height/4 );
+            bottomBarBackground.setSize( stage.getWidth()/backgroundPartsAmount, Constants.BOTTOM_BAR_HEIGHT + Cell.height/4 );
             bottomBarBackground.setPosition( i * bottomBarBackground.getWidth() - i, 0 );
             stageHUD.addActor( bottomBarBackground );
         }
@@ -213,7 +224,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
         timerText = new Label( "0123456789:", Assets.skin );
         timerText.setSize( 100, uiTable.getHeight() );
-        timerText.setPosition( uiTable.getWidth()/2, uiTable.getHeight()/2 - timerText.getHeight()/2 );
+        timerText.setPosition( uiTable.getWidth()/2, uiTable.getHeight()/2 - timerText.getHeight()/2 - 2 );
 
         uiTable.addActor( timerText );
 
@@ -261,6 +272,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
                     }
                     ((OrthographicCamera)stage.getCamera()).zoom -= 0.5f;
+                    ((OrthographicCamera)stage.getCamera()).position.set( player.getX()/2, player.getY()/2, 0 );
                 }
 
                 return true;
@@ -272,7 +284,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
         stopWatchesAmountText = new Label( "0123456789", Assets.skin );
         stopWatchesAmountText.setSize( 100, uiTable.getHeight() );
-        stopWatchesAmountText.setPosition( uiTable.getWidth()/2 - 10 * uiTableElementWidth / 5 - 40, uiTable.getHeight()/2 - stopWatchesAmountText.getHeight()/2 );
+        stopWatchesAmountText.setPosition( uiTable.getWidth()/2 - 10 * uiTableElementWidth / 5 - 40, uiTable.getHeight()/2 - stopWatchesAmountText.getHeight()/2 - 2 );
 
         uiTable.addActor( stopWatchesAmountText );
 
@@ -299,14 +311,12 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         });
 
         stopWatchImage.setSize( uiTableElementWidth, uiTableElementHeight );
-        stopWatchImage.setPosition( uiTable.getWidth()/2 - 10 * uiTableElementWidth / 5, uiTable.getHeight()/2 - uiTableElementHeight/2 + 2 );
+        stopWatchImage.setPosition( uiTable.getWidth()/2 - 10 * uiTableElementWidth / 5, uiTable.getHeight()/2 - uiTableElementHeight/2 - 2 );
         uiTable.addActor ( stopWatchImage );
        // addUIButton( stopWatchImage, uiTable.getWidth()/2 - 10 * uiTableElementWidth / 5, uiTableElementWidth*1.2f, uiTableElementHeight*1.2f, uiTable );
 
         addUIButton( exitImage, uiTable.getWidth() - 10 * uiTableElementWidth / 5, uiTableElementWidth, uiTableElementHeight, uiTable );
         addUIButton( zoomImage, uiTable.getWidth() - 20 * uiTableElementWidth / 5, uiTableElementWidth, uiTableElementHeight, uiTable );
-
-
 
         stageHUD.addActor( uiTable );
 
@@ -315,7 +325,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private void addUIButton ( Image image, float xPos, float width, float height, Table table ){
 
         image.setSize( width * 0.85f, height * 0.85f );
-        image.setPosition( xPos, table.getHeight()/2 - height/2 - 1 );
+        image.setPosition( xPos, table.getHeight()/2 - height/2 -2 );
 
         table.addActor(image);
     }
@@ -341,6 +351,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             controllUp = new Controlls( player, "north" );
             controllUp.addListener(new InputListener() {
                 public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                    vibrate();
                     player.mooveUp();
                     System.out.println("clicked");
                     return true;
@@ -357,6 +368,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             controllRight = new Controlls( player, "east" );
             controllRight.addListener(new InputListener() {
                 public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                    vibrate();
                     player.mooveRight();
                     return true;
                 }
@@ -372,6 +384,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             controllDown = new Controlls( player, "south" );
             controllDown.addListener(new InputListener() {
                 public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                    vibrate();
                     player.mooveDown();
                     return true;
                 }
@@ -387,6 +400,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             controllLeft = new Controlls( player, "west" );
             controllLeft.addListener(new InputListener() {
                 public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                    vibrate();
                     player.mooveLeft();
                     return true;
                 }
@@ -423,17 +437,18 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         keyTipButton = new Button( Assets.skin, "keyTip" );
         keyTipButton.addListener( new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                keyTipButton.remove();
+                isShowingKeyTip = false;
+                keyTipWasShown = true;
                 return true;
             }
 
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                keyTipButton.remove();
-                isShowingKeyTip = false;
-                keyTipWasShown = true;
+
             }
         } );
         keyTipButton.setSize( 600, 800 );
-        keyTipButton.setPosition( Constants.APP_WIDTH/2 - keyTipButton.getWidth()/2, Constants.APP_HEIGHT/2 - keyTipButton.getHeight()/2 + Constants.BOTTOM_BAR_HEIGHT );
+        keyTipButton.setPosition( stage.getWidth()/2 - keyTipButton.getWidth()/2, stage.getHeight()/2 - keyTipButton.getHeight()/2 + Constants.BOTTOM_BAR_HEIGHT );
         stageHUD.addActor( keyTipButton );
     }
 
@@ -526,10 +541,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         }
     }
 
-    private void enableSwiping () {
-
-    }
-
     private void checkGameOver () {
         if ( (int) player.getX() == (int) flag.getX() && (int) player.getY() == (int) flag.getY() ){
             if ( key != null ) {
@@ -549,6 +560,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 TheMaze.game.setScreen(new GameOverScreen( true ));
             }
         }
+    }
+
+    private void vibrate(){
+        if ( Settings.isVibrationEnabled )
+           Gdx.input.vibrate(200);
     }
 
 
@@ -580,39 +596,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         stage.dispose();
     }
 
-
-    private void moveCamera( int touch_x, int touch_y ) {
-        Vector3 new_position = getNewCameraPosition( touch_x, touch_y );
-
-        if( !cameraOutOfLimit( new_position ) )
-            stage.getCamera().translate( new_position.sub( stage.getCamera().position ) );
-
-        last_touch_down.set( touch_x, touch_y, 0);
-    }
-
-    private Vector3 getNewCameraPosition( int x, int y ) {
-        Vector3 new_position = last_touch_down;
-        new_position.sub(x, y, 0);
-        new_position.y = -new_position.y;
-        new_position.add( stage.getCamera().position );
-
-        return new_position;
-    }
-
-    private boolean cameraOutOfLimit( Vector3 position ) {
-        float x_left_limit = Constants.APP_WIDTH / 2;
-        float x_right_limit = stage.getWidth() - x_left_limit;
-        float y_bottom_limit = Constants.APP_HEIGHT / 2;
-        float y_top_limit = stage.getHeight() - y_bottom_limit;
-
-        if( position.x < x_left_limit || position.x > x_right_limit )
-            return true;
-        else if( position.y < y_bottom_limit || position.y > y_top_limit )
-            return true;
-        else
-            return false;
-    }
-
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         return false;
@@ -632,6 +615,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     public boolean fling(float velocityX, float velocityY, int button) {
         System.out.println( velocityX + " " + velocityY );
         if ( isSwipeEnabled && ( Math.abs(velocityX) > 600 || Math.abs(velocityY) > 600 )) {
+            vibrate();
             if (Math.abs(velocityX) > Math.abs(velocityY)) {
                 if (velocityX > 0) {
                     player.mooveRight();

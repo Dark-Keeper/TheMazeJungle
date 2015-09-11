@@ -50,6 +50,7 @@ public class MainMenuScreen implements Screen {
                 Assets.menuMusic.play();
             }
         }
+        TheMaze.interestialAddInterface.showBanner();
 
         InputProcessor backProcessor = new InputAdapter() {
             @Override
