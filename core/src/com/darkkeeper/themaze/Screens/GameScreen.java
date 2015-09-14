@@ -138,7 +138,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     //        Settings.isLvlWithKey = false;
             TheMaze.rateInterface.help();
         }   else {
-            totalTime = 1.8f * maze.length;
+            totalTime = 1.8f * maze.length + (maze.length/6) * (maze.length/6) ;
         }
 
         START_Y = stage.getHeight();
