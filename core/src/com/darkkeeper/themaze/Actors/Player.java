@@ -88,7 +88,7 @@ public class Player extends Actor {
                 walkRight[i] = tmp[3][i];
                 walkUp[i] = tmp[2][i];
         }
-        Animation startAnimation = new Animation(0.1f, walkDown[FRAME_COLS]);
+        Animation startAnimation = new Animation(0.1f, walkDown[FRAME_COLS-1]);
         walkDownAnimation = new Animation(0.15f, walkDown);
         walkLeftAnimation = new Animation(0.15f, walkLeft);
         walkRightAnimation = new Animation(0.15f, walkRight);
